@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --purple: #7c3aed;
+    --yellow: #FFD700;
+    --blue: #3498db;
+    --green: #2ecc71;
+    --orange: #e67e22;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    background-color: #fdfaf6;
+    transition: background-color 0.5s ease;
+}
+
+.font-nunito {
+    font-family: 'Nunito', sans-serif;
+}
+
+.rainbow-shadow {
+    box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.3), 
+                0 20px 60px -15px rgba(52, 152, 219, 0.2);
+}
+
+@media print {
+    .no-print { display: none; }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--purple), var(--blue));
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #4c1d95, #1e40af);
+  border: 3px solid #1e293b;
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-floating {
+    animation: floating 3s ease-in-out infinite;
+}

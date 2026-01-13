@@ -1,0 +1,7 @@
+{
+  "name": "Pegue & Pregue – Gerador de Histórias Bíblicas Visuais",
+  "description": "Um aplicativo premium para ministério infantil que gera visuais bíblicos recortáveis e narrativas adaptadas para diversas faixas etárias, pronto para impressão A4 frente e verso.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
