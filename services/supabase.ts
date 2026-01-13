@@ -7,4 +7,4 @@ if (!supabaseUrl || !supabaseKey) {
     console.warn('Supabase URL or Key is missing. Check your .env.local file.');
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseKey || '');
+export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseKey || 'placeholder');
