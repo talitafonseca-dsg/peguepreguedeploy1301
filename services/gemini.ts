@@ -55,19 +55,13 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
        - Exemplo Daniel: Se o texto diz "Daniel orava na cova", mostre ele orando pacificamente com leões dormindo ao redor - NÃO mostre leões atacando.
        - NUNCA mostre momentos de violência ou medo excessivo.
        - Mostre o MOMENTO DE FÉ/MILAGRE, não o momento de perigo.
-       
-       REGRA CRÍTICA SOBRE DEUS:
-       - NUNCA desenhe Deus como uma pessoa/figura humana.
-       - Represente a presença de Deus APENAS como: luz dourada/brilhante vindo do céu, raios de luz solar, nuvens luminosas, ou áurea celestial.
-       - Quando "Deus fala" com alguém, mostre o personagem olhando para cima em direção a uma luz brilhante no céu.
-       - Exemplo: "Noah looking up at golden rays of divine light coming from the sky" em vez de "God talking to Noah".
-       
-       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição.
+       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição (Ex: "Close up of a golden shinning Belt of Truth on a tunic").
        - VARIAR OS ENQUADRAMENTOS: Use "Wide shot", "Close up", "Low angle".
        - CENA COMPLETA: Descreva o ambiente e ação.
+       - NÃO inclua números repetitivos.
        - NÃO inclua anjos/halos (exceto se essenciais ao tema, ex: Anunciação).
        - Os personagens devem ser humanos normais.
-       - Se houver Jesus, descreva-o com detalhes visuais específicos e mantenha consistente.
+       - Se houver Jesus ou multidão, descreva-os.
     
     7. TÍTULO: Deve ser APENAS o nome da história.
 
@@ -132,59 +126,67 @@ export async function generateSceneImage(
   // Define o estilo visual baseado na escolha do usuário
   let stylePrompt = "";
   if (style === IllustrationStyle.STYLE_2D) {
-    stylePrompt = `Premium quality 2D digital sticker illustration for children's books. 
-STYLE REQUIREMENTS:
-- Cute, friendly cartoon characters with big expressive eyes
-- Vivid and vibrant saturated colors
-- Clean thick white outline around everything (sticker effect)
-- Smooth gradients and soft shadows
-- Pure white background (#FFFFFF)
-- Professional children's book illustration quality
-- Consistent art style throughout`;
+    stylePrompt = `MANDATORY ART STYLE - 2D STICKER (MUST BE IDENTICAL IN ALL IMAGES):
+- Flat 2D cartoon illustration (NOT 3D, NOT realistic, NOT painterly)
+- Thick white outline around EVERYTHING like a sticker/decal
+- Bright saturated colors with simple flat fills
+- Big cute eyes on characters, friendly expressions
+- Simple shapes, minimal detail
+- Chibi/cute proportions (larger heads)
+- Pure white background ONLY
+- THIS EXACT STYLE MUST BE USED - NO VARIATION ALLOWED`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
-    stylePrompt = `Black and white coloring page for children ages 4-8.
-STYLE REQUIREMENTS:
-- Thick clean black outlines only
-- NO grayscale, NO shading, NO color fills
-- Pure white background
-- Simple shapes easy for kids to color
-- Minimal fine details
-- Large areas to color`;
+    stylePrompt = `MANDATORY ART STYLE - COLORING PAGE (MUST BE IDENTICAL IN ALL IMAGES):
+- Black outlines ONLY on pure white background
+- NO color, NO shading, NO grayscale fills
+- Thick clean lines suitable for children to color
+- Simple shapes with large areas to fill
+- THIS EXACT STYLE MUST BE USED - NO VARIATION ALLOWED`;
   } else {
-    stylePrompt = `3D Pixar-style illustration for children's books.
-STYLE REQUIREMENTS:
-- Smooth 3D rendered characters
-- Volumetric lighting with soft shadows
-- Cute and appealing character designs
-- Warm, inviting color palette
-- Pure white background
-- Professional animation studio quality`;
+    stylePrompt = `MANDATORY ART STYLE - 3D PIXAR (MUST BE IDENTICAL IN ALL IMAGES):
+- 3D rendered cartoon characters like Pixar/Disney movies
+- Soft volumetric lighting
+- Cute appealing designs with smooth surfaces
+- Warm color palette
+- Pure white background ONLY
+- THIS EXACT STYLE MUST BE USED - NO VARIATION ALLOWED`;
   }
 
   // Variação de ângulo para evitar imagens repetidas no refresh
   const variationInstruction = isVariation
-    ? " CAMERA: Use a different camera angle than usual (wide shot, low angle, or over-the-shoulder)."
+    ? " Use a slightly different camera angle."
     : "";
 
   // Combina a ação da cena com a descrição fixa do personagem
-  const finalPrompt = `Children's Bible story illustration, ${stylePrompt}.
+  const finalPrompt = `CHILDREN'S BIBLE ILLUSTRATION - STRICT REQUIREMENTS
+
+${stylePrompt}
 
 SCENE: ${scenePrompt}
 
-CHARACTER (keep consistent): ${characterDesc}
+MAIN CHARACTER (MUST LOOK IDENTICAL IN EVERY IMAGE):
+${characterDesc}
+- The character MUST have the EXACT same face, hair, clothes, and body type in EVERY scene
+- DO NOT change the character's appearance
 
-RULES:
-- Pure white background
-- NO text in image
-- NO halos
-- NEVER draw God as a person, only as golden light from sky
-- Cute friendly cartoon style for kids
-- Keep exact same art style and character appearance in all images
-${variationInstruction}`;
+BIBLICAL ACCURACY RULES:
+- NEVER show God as a human figure or old man with beard
+- Represent God's presence as: golden light rays from above, glowing clouds, or voice (no visible figure)
+- Show biblical events ACCURATELY as described in scripture
+- Characters wear authentic ancient Middle Eastern clothing
+${variationInstruction}
+
+STRICT RULES:
+- NO text or letters anywhere in the image
+- NO halos on any character
+- NO wings on humans
+- Friendly, child-appropriate content only
+- Pure white background, no complex scenery
+- MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES`;
 
   const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
-  if (isDev) console.log(`[Imagem] Gerando cena(tentativa ${retryCount + 1}): `, scenePrompt.substring(0, 100) + '...');
+  if (isDev) console.log(`[Imagem] Gerando cena (tentativa ${retryCount + 1}):`, scenePrompt.substring(0, 100) + '...');
 
   try {
     const response = await ai.models.generateContent({
@@ -211,7 +213,7 @@ ${variationInstruction}`;
       if ((part as any).inlineData) {
         const inlineData = (part as any).inlineData;
         if (isDev) console.log('[Imagem] Imagem gerada com sucesso!');
-        return `data:${inlineData.mimeType || 'image/png'}; base64, ${inlineData.data} `;
+        return `data:${inlineData.mimeType || 'image/png'};base64,${inlineData.data}`;
       }
     }
 
@@ -224,7 +226,7 @@ ${variationInstruction}`;
 
     // Retry até 2 vezes se não conseguiu gerar
     if (retryCount < 2) {
-      if (isDev) console.log(`[Imagem] Retentando geração(${retryCount + 1}/3)...`);
+      if (isDev) console.log(`[Imagem] Retentando geração (${retryCount + 1}/3)...`);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Aguarda 1s antes de retentar
       return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
     }
@@ -238,7 +240,7 @@ ${variationInstruction}`;
     }
 
     if (retryCount < 2) {
-      if (isDev) console.log(`[Imagem] Retentando após erro(${retryCount + 1}/3)...`);
+      if (isDev) console.log(`[Imagem] Retentando após erro (${retryCount + 1}/3)...`);
       await new Promise(resolve => setTimeout(resolve, 1500));
       return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
     }
@@ -258,18 +260,18 @@ export async function generateActivityContent(apiKey: string, storyName: string,
   const prompt = `
     Como pedagogo especialista em BNCC e educação cristã, crie o conteúdo para uma folha de atividades A4 sobre a história: "${storyName}".
     Público Alvo: Crianças de ${age}.
-Idioma: ${languageName}.
+    Idioma: ${languageName}.
     
-    Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo(NENHUM CAMPO PODE SER NULL):
-1. title: Título da atividade(ex: "Aprendendo com [Nome da História]").
-    - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história(com referência).NÃO use Salmos genéricos.
-    - "quiz": Array com EXATAMENTE 1(UMA) pergunta de múltipla escolha.
+    Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo (NENHUM CAMPO PODE SER NULL):
+    1. title: Título da atividade (ex: "Aprendendo com [Nome da História]").
+    - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história (com referência). NÃO use Salmos genéricos.
+    - "quiz": Array com EXATAMENTE 1 (UMA) pergunta de múltipla escolha.
        - A pergunta deve ser DESAFIADORA e TEMÁTICA, testando a compreensão da história.
        - PROIBIDO perguntas genéricas como "Onde está na bíblia?" ou "O que aprendemos?".
        - Deve ser uma pergunta sobre um EVENTO ou AÇÃO específica do personagem.
-       - Deve ter 4(QUATRO) opções de resposta.
-    - "wordSearch": Array com 10 a 15 palavras - chave DA HISTÓRIA(todas em UPPERCASE, sem acentos, sem espaços, máx 12 letras).
-    - "coloringPrompt": Prompt em INGLÊS para gerar um desenho de colorir(black and white outlines, for kids) sobre a cena principal.
+       - Deve ter 4 (QUATRO) opções de resposta.
+    - "wordSearch": Array com 10 a 15 palavras-chave DA HISTÓRIA (todas em UPPERCASE, sem acentos, sem espaços, máx 12 letras).
+    - "coloringPrompt": Prompt em INGLÊS para gerar um desenho de colorir (black and white outlines, for kids) sobre a cena principal.
     - "completeThePhrase": Objeto com "phrase" e "missingWord".
        - A frase deve ser um VERSÍCULO CHAVE ou LIÇÃO MORAL da história.
        - A frase NÃO pode ser simples demais.
@@ -277,21 +279,21 @@ Idioma: ${languageName}.
        - exemplo: { "phrase": "Pela _______, Noé construiu a arca para salvar sua família.", "missingWord": "fé" }
 
     Retorne APENAS o JSON válido, sem markdown.
-  exemplo:
-{
-  "title": "Daniel na Cova dos Leões",
-    "bibleVerse": "O meu Deus enviou o seu anjo, e fechou a boca dos leões. (Daniel 6:22)",
+    exemplo:
+    {
+      "title": "Daniel na Cova dos Leões",
+      "bibleVerse": "O meu Deus enviou o seu anjo, e fechou a boca dos leões. (Daniel 6:22)",
       "quiz": [{ "question": "Qual atitude de Daniel fez o rei Dario assinar o decreto?", "options": ["Sua fidelidade a Deus", "Sua desobediência", "Sua riqueza"], "correctAnswer": 0 }],
-        "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "PROTECAO", "DARIO", "COVA"],
-          "coloringPrompt": "Daniel praying in the lions den, cute lions sleeping, simple black and white outlines, coloring page style for kids",
-            "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" }
-}
+      "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "PROTECAO", "DARIO", "COVA"],
+      "coloringPrompt": "Daniel praying in the lions den, cute lions sleeping, simple black and white outlines, coloring page style for kids",
+      "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" }
+    }
 
     IMPORTANTE SOBRE O IDIOMA:
-- TODO o conteúdo gerado(perguntas, opções, versículos, títulos e palavras - chave) DEVE ESTAR EM ${languageName}.
-- Se ${languageName} for Inglês, o quiz e o versículo DEVEM ser em Inglês.
+    - TODO o conteúdo gerado (perguntas, opções, versículos, títulos e palavras-chave) DEVE ESTAR EM ${languageName}.
+    - Se ${languageName} for Inglês, o quiz e o versículo DEVEM ser em Inglês.
     - Se ${languageName} for Espanhol, o quiz e o versículo DEVEM ser em Espanhol.
-    - O campo "coloringPrompt" DEVE ser sempre em INGLÊS(pois é para o modelo de imagem).
+    - O campo "coloringPrompt" DEVE ser sempre em INGLÊS (pois é para o modelo de imagem).
   `;
 
   try {
