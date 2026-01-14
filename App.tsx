@@ -475,7 +475,7 @@ const App: React.FC = () => {
                   <span className="bg-blue-500 text-white p-2 rounded-xl"><ICONS.Bible /></span> {t.storyLabel}
                 </label>
                 <select
-                  value={selectedStory}
+                  value={selectedStory || "custom"}
                   onChange={(e) => {
                     const val = e.target.value;
                     if (val === "custom") {
@@ -493,13 +493,14 @@ const App: React.FC = () => {
                   ))}
                   <option value="custom">{t.otherStory}...</option>
                 </select>
-                {selectedStory === "" && (
+                {(selectedStory === "" || !BIBLE_STORIES[lang].includes(selectedStory)) && (
                   <input
                     type="text"
                     placeholder={t.otherStory}
-                    className="w-full mt-4 bg-white dark:bg-slate-900 border-b-4 border-blue-200 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium"
+                    className="w-full mt-4 bg-white dark:bg-slate-900 border-2 border-blue-200 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base"
                     value={customStory}
                     onChange={(e) => setCustomStory(e.target.value)}
+                    autoFocus
                   />
                 )}
               </div>
