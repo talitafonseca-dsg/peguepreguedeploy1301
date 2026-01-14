@@ -49,8 +49,13 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
     
     5. PRECISÃO HISTÓRICA: Garanta vestimentas da época e cenários autênticos do Oriente Médio antigo.
     
-    6. PROMPTS DE IMAGEM: 
-       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição (Ex: "Close up of a golden shinning Belt of Truth on a tunic", "A glowing Dove representing the Holy Spirit").
+    6. PROMPTS DE IMAGEM (CRÍTICO - FIDELIDADE BÍBLICA):
+       - O imagePrompt DEVE ilustrar EXATAMENTE o que está descrito no narrativeText daquela cena.
+       - Exemplo Jonas: Se o texto diz "Jonas orou no ventre do peixe", o prompt deve ser "Jonas inside the belly of a large fish, praying on his knees, dark interior with soft light" - NÃO mostre ele sendo engolido.
+       - Exemplo Daniel: Se o texto diz "Daniel orava na cova", mostre ele orando pacificamente com leões dormindo ao redor - NÃO mostre leões atacando.
+       - NUNCA mostre momentos de violência ou medo excessivo.
+       - Mostre o MOMENTO DE FÉ/MILAGRE, não o momento de perigo.
+       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição (Ex: "Close up of a golden shinning Belt of Truth on a tunic").
        - VARIAR OS ENQUADRAMENTOS: Use "Wide shot", "Close up", "Low angle".
        - CENA COMPLETA: Descreva o ambiente e ação.
        - NÃO inclua números repetitivos.
