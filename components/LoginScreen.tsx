@@ -5,12 +5,15 @@ export const LoginScreen: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loadingReset, setLoadingReset] = useState(false);
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setSuccessMessage('');
 
         const { error } = await supabase.auth.signInWithPassword({
             email,
@@ -21,6 +24,55 @@ export const LoginScreen: React.FC = () => {
             setError('Erro ao fazer login: ' + error.message);
         }
         setLoading(false);
+    };
+
+    const handleForgotPassword = async () => {
+        if (!email.trim()) {
+            setError('Digite seu e-mail primeiro para recuperar a senha.');
+            return;
+        }
+
+        setLoadingReset(true);
+        setError('');
+        setSuccessMessage('');
+
+        try {
+            // Verificar se o email existe na tabela profiles (ou seja, se é um comprador)
+            const { data: profiles, error: profileError } = await supabase
+                .from('profiles')
+                .select('id, email')
+                .eq('email', email.trim().toLowerCase())
+                .limit(1);
+
+            if (profileError) {
+                console.error('Erro ao verificar perfil:', profileError);
+                setError('Erro ao verificar cadastro. Tente novamente.');
+                setLoadingReset(false);
+                return;
+            }
+
+            // Se não encontrou o perfil, o usuário não é um comprador
+            if (!profiles || profiles.length === 0) {
+                setError('Este e-mail não está cadastrado. Você precisa comprar o acesso primeiro.');
+                setLoadingReset(false);
+                return;
+            }
+
+            // Usuário é comprador, enviar email de recuperação
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+                redirectTo: `${window.location.origin}`,
+            });
+
+            if (resetError) {
+                setError('Erro ao enviar email de recuperação: ' + resetError.message);
+            } else {
+                setSuccessMessage('✅ E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+            }
+        } catch (err: any) {
+            setError('Erro inesperado: ' + err.message);
+        } finally {
+            setLoadingReset(false);
+        }
     };
 
     return (
@@ -57,8 +109,14 @@ export const LoginScreen: React.FC = () => {
                     </div>
 
                     {error && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-bold">
-                            {error}
+                        <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 rounded-xl text-sm font-bold">
+                            ⚠️ {error}
+                        </div>
+                    )}
+
+                    {successMessage && (
+                        <div className="bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-3 rounded-xl text-sm font-bold">
+                            {successMessage}
                         </div>
                     )}
 
@@ -68,6 +126,15 @@ export const LoginScreen: React.FC = () => {
                         className="w-full bg-purple-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-purple-700 transition-colors shadow-lg shadow-purple-200 dark:shadow-none disabled:opacity-50"
                     >
                         {loading ? 'Entrando...' : 'Entrar'}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={handleForgotPassword}
+                        disabled={loadingReset}
+                        className="w-full py-2 text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors font-bold disabled:opacity-50"
+                    >
+                        {loadingReset ? '⏳ Enviando...' : '🔓 Esqueci minha senha'}
                     </button>
                 </form>
             </div>
