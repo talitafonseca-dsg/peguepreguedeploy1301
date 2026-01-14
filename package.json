@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/genai": "^1.35.0",
     "@google/generative-ai": "^0.21.0",
     "@supabase/supabase-js": "^2.39.0",
     "jspdf": "^2.5.1",
