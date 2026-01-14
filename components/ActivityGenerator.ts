@@ -299,7 +299,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text("Pegue & Pregue - www.pegueepregue.com", pageWidth / 2, pageHeight - 10, { align: "center" });
+        doc.text("Pegue & Pregue - www.peguepregue.online", pageWidth / 2, pageHeight - 10, { align: "center" });
     }
 
     const fileName = activity.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');
