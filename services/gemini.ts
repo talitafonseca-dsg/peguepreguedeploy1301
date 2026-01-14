@@ -148,12 +148,11 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp-image-generation",
-      contents: finalPrompt,
+      model: "gemini-2.5-flash-preview-05-20",
+      contents: { parts: [{ text: finalPrompt }] },
       config: {
-        responseModalities: ["IMAGE"],
-        numberOfImages: 1,
-        aspectRatio: "3:4"
+        responseModalities: ["image", "text"],
+        imageConfig: { aspectRatio: "3:4" }
       } as any
     });
 
