@@ -17,7 +17,7 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
   const languageName = langMap[lang];
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-flash-latest",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -153,7 +153,7 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
 
   try {
     // Usar modelo com capacidade de imagem
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
@@ -217,7 +217,7 @@ export async function generateActivityContent(apiKey: string, storyName: string,
   const languageName = langMap[lang];
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-flash-latest",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {
