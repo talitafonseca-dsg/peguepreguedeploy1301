@@ -167,30 +167,20 @@ STYLE REQUIREMENTS:
     : "";
 
   // Combina a ação da cena com a descrição fixa do personagem
-  const finalPrompt = `ILLUSTRATION REQUEST FOR CHILDREN'S BIBLE STORY BOOK
+  const finalPrompt = `Children's Bible story illustration, ${stylePrompt}.
 
-${stylePrompt}
+SCENE: ${scenePrompt}
 
-SCENE TO ILLUSTRATE: ${scenePrompt}
+CHARACTER (keep consistent): ${characterDesc}
 
-MAIN CHARACTER APPEARANCE (KEEP 100% CONSISTENT IN ALL IMAGES):
-${characterDesc}
-IMPORTANT: The main character must have the EXACT SAME face, hair, clothes, and body proportions in EVERY scene.
-
-SETTING: Ancient Israel/Middle East biblical times
-BACKGROUND: Pure white background, no complex backgrounds
-${variationInstruction}
-
-CRITICAL RULES:
-- NO text or letters in the image
-- NO halos on characters
-- NO wings on humans (only on angels if specifically mentioned)
-- NEVER draw God as a person or human figure - represent God ONLY as golden divine light from the sky, sun rays, or luminous clouds
-- If the scene involves God speaking, show the character looking UP at bright light from heaven
-- Characters should look friendly and approachable (cute cartoon style)
-- Age-appropriate for children ages 3-10
-- MAINTAIN THE EXACT SAME ART STYLE in every image
-- The character must look EXACTLY as described above in every scene`;
+RULES:
+- Pure white background
+- NO text in image
+- NO halos
+- NEVER draw God as a person, only as golden light from sky
+- Cute friendly cartoon style for kids
+- Keep exact same art style and character appearance in all images
+${variationInstruction}`;
 
   const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
