@@ -17,7 +17,7 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
   const languageName = langMap[lang];
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
+    model: "gemini-1.5-flash-latest",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -152,8 +152,8 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
   if (isDev) console.log(`[Imagem] Gerando cena (tentativa ${retryCount + 1}):`, scenePrompt.substring(0, 100) + '...');
 
   try {
-    // Usar modelo com capacidade de imagem (gemini-pro-vision suporta imagens)
-    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    // Usar modelo com capacidade de imagem
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
@@ -217,7 +217,7 @@ export async function generateActivityContent(apiKey: string, storyName: string,
   const languageName = langMap[lang];
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
+    model: "gemini-1.5-flash-latest",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {
