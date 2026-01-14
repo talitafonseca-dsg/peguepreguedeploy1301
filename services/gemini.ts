@@ -148,7 +148,7 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-05-20",
+      model: "gemini-2.5-flash-image-preview",
       contents: { parts: [{ text: finalPrompt }] },
       config: {
         responseModalities: ["image", "text"],
