@@ -126,26 +126,61 @@ export async function generateSceneImage(
   // Define o estilo visual baseado na escolha do usuário
   let stylePrompt = "";
   if (style === IllustrationStyle.STYLE_2D) {
-    stylePrompt = "Premium 2D digital sticker illustration style, vivid and vibrant colors, clean thick white outline (sticker effect), pure white background.";
+    stylePrompt = `Premium quality 2D digital sticker illustration for children's books. 
+STYLE REQUIREMENTS:
+- Cute, friendly cartoon characters with big expressive eyes
+- Vivid and vibrant saturated colors
+- Clean thick white outline around everything (sticker effect)
+- Smooth gradients and soft shadows
+- Pure white background (#FFFFFF)
+- Professional children's book illustration quality
+- Consistent art style throughout`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
-    stylePrompt = "Black and white coloring page for kids, thick clean black outlines, NO GRAYSCALE, NO SHADING, NO COLOR, pure white background, minimal details.";
+    stylePrompt = `Black and white coloring page for children ages 4-8.
+STYLE REQUIREMENTS:
+- Thick clean black outlines only
+- NO grayscale, NO shading, NO color fills
+- Pure white background
+- Simple shapes easy for kids to color
+- Minimal fine details
+- Large areas to color`;
   } else {
-    stylePrompt = "3D Pixar style illustration, smooth rendering, volumetric lighting, cute characters, pure white background.";
+    stylePrompt = `3D Pixar-style illustration for children's books.
+STYLE REQUIREMENTS:
+- Smooth 3D rendered characters
+- Volumetric lighting with soft shadows
+- Cute and appealing character designs
+- Warm, inviting color palette
+- Pure white background
+- Professional animation studio quality`;
   }
 
   // Variação de ângulo para evitar imagens repetidas no refresh
   const variationInstruction = isVariation
-    ? " IMPORTANT: Render this EXACT scene from a NEW and COMPLETELY DIFFERENT camera angle than usual. Use a creative perspective (wide shot, low angle, or over-the-shoulder)."
+    ? " CAMERA: Use a different camera angle than usual (wide shot, low angle, or over-the-shoulder)."
     : "";
 
   // Combina a ação da cena com a descrição fixa do personagem
-  const finalPrompt = `Children's illustration. ${stylePrompt}. 
-Action/Scene: ${scenePrompt}. 
-CONSISTENT CHARACTER REFERENCE (MUST MATCH EXACTLY): ${characterDesc}. 
-Ensure the main character looks IDENTICAL in every generated image based on the description above.
+  const finalPrompt = `ILLUSTRATION REQUEST FOR CHILDREN'S BIBLE STORY BOOK
+
+${stylePrompt}
+
+SCENE TO ILLUSTRATE: ${scenePrompt}
+
+MAIN CHARACTER APPEARANCE (KEEP CONSISTENT IN ALL IMAGES):
+${characterDesc}
+
+SETTING: Ancient Israel/Middle East biblical times
+BACKGROUND: Pure white background, no complex backgrounds
 ${variationInstruction}
-Environment: Ancient Israel, pure white background. 
-RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings on humans. Characters are normal humans.`;
+
+CRITICAL RULES:
+- NO text or letters in the image
+- NO halos on characters
+- NO wings on humans (only on angels if specifically mentioned)
+- Characters should look friendly and approachable
+- Age-appropriate for children ages 3-10
+- The character must look EXACTLY as described above in every scene`;
 
   const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
