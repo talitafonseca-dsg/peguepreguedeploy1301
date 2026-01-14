@@ -339,7 +339,7 @@ const App: React.FC = () => {
       {/* Header */}
       <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-b-4 border-yellow-400 dark:border-yellow-600 py-3 px-4 mb-8 sticky top-0 z-50 shadow-xl">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => { setScenes([]); setCustomStory(''); }}>
+          <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.location.reload()}>
             <img
               src={LOGO_MAP[lang]}
               alt="Logo Pegue & Pregue"
