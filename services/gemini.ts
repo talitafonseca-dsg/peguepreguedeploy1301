@@ -55,13 +55,19 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
        - Exemplo Daniel: Se o texto diz "Daniel orava na cova", mostre ele orando pacificamente com leões dormindo ao redor - NÃO mostre leões atacando.
        - NUNCA mostre momentos de violência ou medo excessivo.
        - Mostre o MOMENTO DE FÉ/MILAGRE, não o momento de perigo.
-       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição (Ex: "Close up of a golden shinning Belt of Truth on a tunic").
+       
+       REGRA CRÍTICA SOBRE DEUS:
+       - NUNCA desenhe Deus como uma pessoa/figura humana.
+       - Represente a presença de Deus APENAS como: luz dourada/brilhante vindo do céu, raios de luz solar, nuvens luminosas, ou áurea celestial.
+       - Quando "Deus fala" com alguém, mostre o personagem olhando para cima em direção a uma luz brilhante no céu.
+       - Exemplo: "Noah looking up at golden rays of divine light coming from the sky" em vez de "God talking to Noah".
+       
+       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição.
        - VARIAR OS ENQUADRAMENTOS: Use "Wide shot", "Close up", "Low angle".
        - CENA COMPLETA: Descreva o ambiente e ação.
-       - NÃO inclua números repetitivos.
        - NÃO inclua anjos/halos (exceto se essenciais ao tema, ex: Anunciação).
        - Os personagens devem ser humanos normais.
-       - Se houver Jesus ou multidão, descreva-os.
+       - Se houver Jesus, descreva-o com detalhes visuais específicos e mantenha consistente.
     
     7. TÍTULO: Deve ser APENAS o nome da história.
 
@@ -167,8 +173,9 @@ ${stylePrompt}
 
 SCENE TO ILLUSTRATE: ${scenePrompt}
 
-MAIN CHARACTER APPEARANCE (KEEP CONSISTENT IN ALL IMAGES):
+MAIN CHARACTER APPEARANCE (KEEP 100% CONSISTENT IN ALL IMAGES):
 ${characterDesc}
+IMPORTANT: The main character must have the EXACT SAME face, hair, clothes, and body proportions in EVERY scene.
 
 SETTING: Ancient Israel/Middle East biblical times
 BACKGROUND: Pure white background, no complex backgrounds
@@ -178,13 +185,16 @@ CRITICAL RULES:
 - NO text or letters in the image
 - NO halos on characters
 - NO wings on humans (only on angels if specifically mentioned)
-- Characters should look friendly and approachable
+- NEVER draw God as a person or human figure - represent God ONLY as golden divine light from the sky, sun rays, or luminous clouds
+- If the scene involves God speaking, show the character looking UP at bright light from heaven
+- Characters should look friendly and approachable (cute cartoon style)
 - Age-appropriate for children ages 3-10
+- MAINTAIN THE EXACT SAME ART STYLE in every image
 - The character must look EXACTLY as described above in every scene`;
 
   const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
-  if (isDev) console.log(`[Imagem] Gerando cena (tentativa ${retryCount + 1}):`, scenePrompt.substring(0, 100) + '...');
+  if (isDev) console.log(`[Imagem] Gerando cena(tentativa ${retryCount + 1}): `, scenePrompt.substring(0, 100) + '...');
 
   try {
     const response = await ai.models.generateContent({
@@ -211,7 +221,7 @@ CRITICAL RULES:
       if ((part as any).inlineData) {
         const inlineData = (part as any).inlineData;
         if (isDev) console.log('[Imagem] Imagem gerada com sucesso!');
-        return `data:${inlineData.mimeType || 'image/png'};base64,${inlineData.data}`;
+        return `data:${inlineData.mimeType || 'image/png'}; base64, ${inlineData.data} `;
       }
     }
 
@@ -224,7 +234,7 @@ CRITICAL RULES:
 
     // Retry até 2 vezes se não conseguiu gerar
     if (retryCount < 2) {
-      if (isDev) console.log(`[Imagem] Retentando geração (${retryCount + 1}/3)...`);
+      if (isDev) console.log(`[Imagem] Retentando geração(${retryCount + 1}/3)...`);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Aguarda 1s antes de retentar
       return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
     }
@@ -238,7 +248,7 @@ CRITICAL RULES:
     }
 
     if (retryCount < 2) {
-      if (isDev) console.log(`[Imagem] Retentando após erro (${retryCount + 1}/3)...`);
+      if (isDev) console.log(`[Imagem] Retentando após erro(${retryCount + 1}/3)...`);
       await new Promise(resolve => setTimeout(resolve, 1500));
       return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
     }
@@ -258,18 +268,18 @@ export async function generateActivityContent(apiKey: string, storyName: string,
   const prompt = `
     Como pedagogo especialista em BNCC e educação cristã, crie o conteúdo para uma folha de atividades A4 sobre a história: "${storyName}".
     Público Alvo: Crianças de ${age}.
-    Idioma: ${languageName}.
+Idioma: ${languageName}.
     
-    Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo (NENHUM CAMPO PODE SER NULL):
-    1. title: Título da atividade (ex: "Aprendendo com [Nome da História]").
-    - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história (com referência). NÃO use Salmos genéricos.
-    - "quiz": Array com EXATAMENTE 1 (UMA) pergunta de múltipla escolha.
+    Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo(NENHUM CAMPO PODE SER NULL):
+1. title: Título da atividade(ex: "Aprendendo com [Nome da História]").
+    - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história(com referência).NÃO use Salmos genéricos.
+    - "quiz": Array com EXATAMENTE 1(UMA) pergunta de múltipla escolha.
        - A pergunta deve ser DESAFIADORA e TEMÁTICA, testando a compreensão da história.
        - PROIBIDO perguntas genéricas como "Onde está na bíblia?" ou "O que aprendemos?".
        - Deve ser uma pergunta sobre um EVENTO ou AÇÃO específica do personagem.
-       - Deve ter 4 (QUATRO) opções de resposta.
-    - "wordSearch": Array com 10 a 15 palavras-chave DA HISTÓRIA (todas em UPPERCASE, sem acentos, sem espaços, máx 12 letras).
-    - "coloringPrompt": Prompt em INGLÊS para gerar um desenho de colorir (black and white outlines, for kids) sobre a cena principal.
+       - Deve ter 4(QUATRO) opções de resposta.
+    - "wordSearch": Array com 10 a 15 palavras - chave DA HISTÓRIA(todas em UPPERCASE, sem acentos, sem espaços, máx 12 letras).
+    - "coloringPrompt": Prompt em INGLÊS para gerar um desenho de colorir(black and white outlines, for kids) sobre a cena principal.
     - "completeThePhrase": Objeto com "phrase" e "missingWord".
        - A frase deve ser um VERSÍCULO CHAVE ou LIÇÃO MORAL da história.
        - A frase NÃO pode ser simples demais.
@@ -277,21 +287,21 @@ export async function generateActivityContent(apiKey: string, storyName: string,
        - exemplo: { "phrase": "Pela _______, Noé construiu a arca para salvar sua família.", "missingWord": "fé" }
 
     Retorne APENAS o JSON válido, sem markdown.
-    exemplo:
-    {
-      "title": "Daniel na Cova dos Leões",
-      "bibleVerse": "O meu Deus enviou o seu anjo, e fechou a boca dos leões. (Daniel 6:22)",
+  exemplo:
+{
+  "title": "Daniel na Cova dos Leões",
+    "bibleVerse": "O meu Deus enviou o seu anjo, e fechou a boca dos leões. (Daniel 6:22)",
       "quiz": [{ "question": "Qual atitude de Daniel fez o rei Dario assinar o decreto?", "options": ["Sua fidelidade a Deus", "Sua desobediência", "Sua riqueza"], "correctAnswer": 0 }],
-      "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "PROTECAO", "DARIO", "COVA"],
-      "coloringPrompt": "Daniel praying in the lions den, cute lions sleeping, simple black and white outlines, coloring page style for kids",
-      "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" }
-    }
+        "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "PROTECAO", "DARIO", "COVA"],
+          "coloringPrompt": "Daniel praying in the lions den, cute lions sleeping, simple black and white outlines, coloring page style for kids",
+            "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" }
+}
 
     IMPORTANTE SOBRE O IDIOMA:
-    - TODO o conteúdo gerado (perguntas, opções, versículos, títulos e palavras-chave) DEVE ESTAR EM ${languageName}.
-    - Se ${languageName} for Inglês, o quiz e o versículo DEVEM ser em Inglês.
+- TODO o conteúdo gerado(perguntas, opções, versículos, títulos e palavras - chave) DEVE ESTAR EM ${languageName}.
+- Se ${languageName} for Inglês, o quiz e o versículo DEVEM ser em Inglês.
     - Se ${languageName} for Espanhol, o quiz e o versículo DEVEM ser em Espanhol.
-    - O campo "coloringPrompt" DEVE ser sempre em INGLÊS (pois é para o modelo de imagem).
+    - O campo "coloringPrompt" DEVE ser sempre em INGLÊS(pois é para o modelo de imagem).
   `;
 
   try {
