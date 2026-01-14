@@ -152,8 +152,8 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
   if (isDev) console.log(`[Imagem] Gerando cena (tentativa ${retryCount + 1}):`, scenePrompt.substring(0, 100) + '...');
 
   try {
-    // Usar modelo com capacidade de imagem
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    // Usar modelo específico para geração de imagens
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp-image-generation" });
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
