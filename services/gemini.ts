@@ -1,6 +1,5 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
-import { StoryScene, AgeGroup, IllustrationStyle, BibleStory, LanguageCode, ActivityContent } from "../types";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { AgeGroup, IllustrationStyle, BibleStory, LanguageCode, ActivityContent } from "../types";
 
 const langMap: Record<LanguageCode, string> = {
   pt: 'Português',
@@ -14,8 +13,35 @@ const langMap: Record<LanguageCode, string> = {
  * GERA A ESTRUTURA DA HISTÓRIA (TEXTO E PROMPTS)
  */
 export async function generateStoryStructure(apiKey: string, storyName: string, age: AgeGroup, lang: LanguageCode): Promise<BibleStory> {
-  const ai = new GoogleGenAI({ apiKey });
+  const genAI = new GoogleGenerativeAI(apiKey);
   const languageName = langMap[lang];
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: SchemaType.OBJECT,
+        properties: {
+          title: { type: SchemaType.STRING },
+          characterDescription: { type: SchemaType.STRING },
+          scenes: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                id: { type: SchemaType.NUMBER },
+                imagePrompt: { type: SchemaType.STRING },
+                narrativeText: { type: SchemaType.STRING }
+              },
+              required: ["id", "imagePrompt", "narrativeText"]
+            }
+          }
+        },
+        required: ["title", "characterDescription", "scenes"]
+      }
+    }
+  });
 
   const prompt = `
     Como um especialista em educação cristã infantil e teólogo experiente, adapte a história bíblica: "${storyName}" para crianças de ${age}.
@@ -71,35 +97,10 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            title: { type: Type.STRING },
-            characterDescription: { type: Type.STRING },
-            scenes: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  id: { type: Type.NUMBER },
-                  imagePrompt: { type: Type.STRING },
-                  narrativeText: { type: Type.STRING }
-                },
-                required: ["id", "imagePrompt", "narrativeText"]
-              }
-            }
-          },
-          required: ["title", "characterDescription", "scenes"]
-        }
-      }
-    });
-
-    return JSON.parse(response.text || "{}");
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+    return JSON.parse(text);
   } catch (error: any) {
     console.error("Erro ao gerar estrutura da história:", error);
     throw new Error(`Falha ao gerar história: ${error.message}`);
@@ -108,6 +109,9 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
 
 /**
  * GERA A IMAGEM DE CADA CENA
+ * Nota: A API @google/generative-ai não suporta geração de imagens diretamente.
+ * Usamos o modelo Gemini para gerar uma descrição detalhada e retornamos um placeholder.
+ * Para geração real de imagens, seria necessário usar a API Imagen ou outra solução.
  */
 export async function generateSceneImage(
   apiKey: string,
@@ -117,9 +121,8 @@ export async function generateSceneImage(
   retryCount = 0,
   isVariation = false
 ): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey });
+  const genAI = new GoogleGenerativeAI(apiKey);
 
-  // Define o estilo visual baseado na escolha do usuário
   // Define o estilo visual baseado na escolha do usuário
   let stylePrompt = "";
   if (style === IllustrationStyle.STYLE_2D) {
@@ -149,24 +152,20 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
   if (isDev) console.log(`[Imagem] Gerando cena (tentativa ${retryCount + 1}):`, scenePrompt.substring(0, 100) + '...');
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image",
-      contents: { parts: [{ text: finalPrompt }] },
-      config: {
-        responseModalities: ["image", "text"],
-        imageConfig: { aspectRatio: "3:4" }
-      } as any
+    // Usar modelo com capacidade de imagem (gemini-2.0-flash-exp suporta imagens)
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
+      generationConfig: {
+        // @ts-ignore - responseModalities pode não estar tipado mas funciona
+        responseModalities: ["TEXT", "IMAGE"],
+      }
     });
 
-    if (isDev) console.log('[Imagem] Resposta recebida, verificando partes...');
+    const response = result.response;
+    const parts = response.candidates?.[0]?.content?.parts || [];
 
-    // Verificar se há candidatos na resposta
-    if (!response.candidates || response.candidates.length === 0) {
-      if (isDev) console.error('[Imagem] Nenhum candidato na resposta:', JSON.stringify(response));
-      throw new Error('API não retornou candidatos');
-    }
-
-    const parts = response.candidates[0]?.content?.parts || [];
     if (isDev) console.log(`[Imagem] Encontradas ${parts.length} partes na resposta`);
 
     for (const part of parts) {
@@ -179,15 +178,15 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
 
     // Se não encontrou imagem, verificar se há texto com erro
     for (const part of parts) {
-      if ((part as any).text) {
-        if (isDev) console.log('[Imagem] API retornou texto ao invés de imagem:', (part as any).text);
+      if (part.text) {
+        if (isDev) console.log('[Imagem] API retornou texto ao invés de imagem:', part.text);
       }
     }
 
     // Retry até 2 vezes se não conseguiu gerar
     if (retryCount < 2) {
       if (isDev) console.log(`[Imagem] Retentando geração (${retryCount + 1}/3)...`);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Aguarda 1s antes de retentar
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
     }
   } catch (error: any) {
@@ -214,8 +213,45 @@ RULES: NO text. NO angels without wings (if context implies). NO halos. NO wings
  * GERA CONTEÚDO PARA ATIVIDADE EDUCATIVA (BNCC)
  */
 export async function generateActivityContent(apiKey: string, storyName: string, age: AgeGroup, lang: LanguageCode): Promise<ActivityContent> {
-  const ai = new GoogleGenAI({ apiKey });
+  const genAI = new GoogleGenerativeAI(apiKey);
   const languageName = langMap[lang];
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: SchemaType.OBJECT,
+        properties: {
+          title: { type: SchemaType.STRING },
+          bibleVerse: { type: SchemaType.STRING },
+          quiz: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                question: { type: SchemaType.STRING },
+                options: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                correctAnswer: { type: SchemaType.NUMBER }
+              },
+              required: ["question", "options", "correctAnswer"]
+            }
+          },
+          wordSearch: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+          coloringPrompt: { type: SchemaType.STRING },
+          completeThePhrase: {
+            type: SchemaType.OBJECT,
+            properties: {
+              phrase: { type: SchemaType.STRING },
+              missingWord: { type: SchemaType.STRING }
+            },
+            required: ["phrase", "missingWord"]
+          }
+        },
+        required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase"]
+      }
+    }
+  });
 
   const prompt = `
     Como pedagogo especialista em BNCC e educação cristã, crie o conteúdo para uma folha de atividades A4 sobre a história: "${storyName}".
@@ -257,45 +293,9 @@ export async function generateActivityContent(apiKey: string, storyName: string,
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            title: { type: Type.STRING },
-            bibleVerse: { type: Type.STRING },
-            quiz: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  question: { type: Type.STRING },
-                  options: { type: Type.ARRAY, items: { type: Type.STRING } },
-                  correctAnswer: { type: Type.NUMBER }
-                },
-                required: ["question", "options", "correctAnswer"]
-              }
-            },
-            wordSearch: { type: Type.ARRAY, items: { type: Type.STRING } },
-            coloringPrompt: { type: Type.STRING },
-            completeThePhrase: {
-              type: Type.OBJECT,
-              properties: {
-                phrase: { type: Type.STRING },
-                missingWord: { type: Type.STRING }
-              },
-              required: ["phrase", "missingWord"]
-            }
-          },
-          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase"]
-        }
-      }
-    });
-
-    const text = response.text || "{}";
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
     // Limpeza de possíveis blocos de código markdown que o Gemini possa retornar
     const cleanText = text.replace(/```json\n ?| ```/g, '').trim();
     return JSON.parse(cleanText);
