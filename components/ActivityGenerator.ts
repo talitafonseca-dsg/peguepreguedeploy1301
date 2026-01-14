@@ -113,14 +113,14 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
     const splitVerse = doc.splitTextToSize(`"${verseText}"`, 150);
     doc.text(splitVerse, pageWidth / 2, cursorY + 20, { align: "center" }); // Tuned position
 
-    cursorY += titleHeight + 6; // Reduced spacing
+    cursorY += titleHeight + 10; // Increased spacing
 
     // 3. Quiz Section
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
+    doc.setFontSize(15);
     doc.setTextColor(124, 58, 237); // Purple Header
     doc.text("1. Responda:", margin, cursorY);
-    cursorY += 6; // Reduced spacing
+    cursorY += 10; // Increased spacing
 
     // Fallback Quiz Data (More engaging)
     const FALLBACK_QUIZ = [
@@ -140,18 +140,18 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         const options = Array.isArray(q.options) ? q.options : [];
 
         // Calculate needed height
-        doc.setFontSize(11); // Increased font size for measurement
+        doc.setFontSize(12); // Larger font size for options
         let optionsHeight = 0;
         options.forEach(opt => {
-            const lines = doc.splitTextToSize(opt, pageWidth - (margin * 2) - 15);
-            optionsHeight += (lines.length * 6) + 3; // Increased spacing
+            const lines = doc.splitTextToSize(opt, pageWidth - (margin * 2) - 20);
+            optionsHeight += (lines.length * 8) + 6; // More line spacing
         });
 
-        doc.setFontSize(12); // Increased font size for question title
-        const qTitleLines = doc.splitTextToSize(`${idx + 1}) ${q.question}`, 160);
-        const qTitleHeight = qTitleLines.length * 6; // Increased spacing
+        doc.setFontSize(13); // Larger font size for question title
+        const qTitleLines = doc.splitTextToSize(`${idx + 1}) ${q.question}`, 155);
+        const qTitleHeight = qTitleLines.length * 8; // More line spacing
 
-        const totalHeight = qTitleHeight + optionsHeight + 10; // Padding
+        const totalHeight = qTitleHeight + optionsHeight + 18; // More padding
 
         // Draw Card
         doc.setFillColor(255, 255, 255);
@@ -160,49 +160,49 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
 
         // Draw Question
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(12); // Larger Question Font
+        doc.setFontSize(13); // Larger Question Font
         doc.setTextColor(51, 65, 85); // Slate-700
-        doc.text(qTitleLines, margin + 5, cursorY + 8);
+        doc.text(qTitleLines, margin + 8, cursorY + 12);
 
         // Draw Options
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(11); // Larger Option Font
-        let currentY = cursorY + 8 + qTitleHeight + 2;
+        doc.setFontSize(12); // Larger Option Font
+        let currentY = cursorY + 14 + qTitleHeight + 4;
 
         options.forEach((opt) => {
-            doc.setDrawColor(203, 213, 225);
-            doc.rect(margin + 5, currentY - 4, 4, 4); // Larger Checkbox
+            doc.setDrawColor(180, 180, 180);
+            doc.rect(margin + 8, currentY - 4, 5, 5); // Larger Checkbox
 
-            const splitOpt = doc.splitTextToSize(opt, pageWidth - (margin * 2) - 15);
-            doc.text(splitOpt, margin + 14, currentY);
-            currentY += (splitOpt.length * 6) + 3;
+            const splitOpt = doc.splitTextToSize(opt, pageWidth - (margin * 2) - 22);
+            doc.text(splitOpt, margin + 18, currentY);
+            currentY += (splitOpt.length * 8) + 6; // More spacing between options
         });
 
-        cursorY += totalHeight + 6;
+        cursorY += totalHeight + 10; // More spacing after quiz
     });
 
-    cursorY += 2; // Minimal spacing
+    cursorY += 8; // More spacing before next section
 
     // 4. Complete Phrase
     if (activity.completeThePhrase && cursorY < pageHeight - 60) {
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
+        doc.setFontSize(15);
         doc.setTextColor(124, 58, 237);
         doc.text("2. Complete a frase:", margin, cursorY);
-        cursorY += 10;
+        cursorY += 14; // More spacing
 
-        // Yellow Card
+        // Yellow Card - Larger height for better readability
         doc.setFillColor(254, 252, 232); // Yellow-50
         doc.setDrawColor(253, 224, 71); // Yellow-300
-        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 20, 3, 3, 'FD');
+        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 28, 3, 3, 'FD');
 
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
+        doc.setFontSize(13); // Larger font
         doc.setTextColor(161, 98, 7); // Yellow-800
-        const splitPhrase = doc.splitTextToSize(activity.completeThePhrase.phrase || "", 150);
-        doc.text(splitPhrase, pageWidth / 2, cursorY + 11, { align: "center" });
+        const splitPhrase = doc.splitTextToSize(activity.completeThePhrase.phrase || "", 145);
+        doc.text(splitPhrase, pageWidth / 2, cursorY + 14, { align: "center" });
 
-        cursorY += 30;
+        cursorY += 38; // More spacing after
     }
 
     // 5. Word Search (Explicitly on New Page)
