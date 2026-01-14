@@ -126,30 +126,31 @@ export async function generateSceneImage(
   // Define o estilo visual baseado na escolha do usuário
   let stylePrompt = "";
   if (style === IllustrationStyle.STYLE_2D) {
-    stylePrompt = `MANDATORY ART STYLE - 2D STICKER (MUST BE IDENTICAL IN ALL IMAGES):
-- Flat 2D cartoon illustration (NOT 3D, NOT realistic, NOT painterly)
-- Thick white outline around EVERYTHING like a sticker/decal
-- Bright saturated colors with simple flat fills
-- Big cute eyes on characters, friendly expressions
-- Simple shapes, minimal detail
-- Chibi/cute proportions (larger heads)
-- Pure white background ONLY
-- THIS EXACT STYLE MUST BE USED - NO VARIATION ALLOWED`;
+    stylePrompt = `PREMIUM 2D STICKER ILLUSTRATION STYLE:
+- High quality digital sticker art with thick white outline around everything
+- Rich, vibrant saturated colors with beautiful gradients and soft shading
+- Semi-realistic proportions (NOT chibi, NOT flat)
+- Detailed rendering with depth and dimension like professional children's book art
+- Characters with expressive faces and detailed clothing textures
+- Soft volumetric lighting creating depth
+- Pure white background
+- Professional illustration quality like Disney storybook art`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
-    stylePrompt = `MANDATORY ART STYLE - COLORING PAGE (MUST BE IDENTICAL IN ALL IMAGES):
+    stylePrompt = `COLORING PAGE STYLE:
 - Black outlines ONLY on pure white background
-- NO color, NO shading, NO grayscale fills
+- NO color, NO shading, NO grayscale
 - Thick clean lines suitable for children to color
-- Simple shapes with large areas to fill
-- THIS EXACT STYLE MUST BE USED - NO VARIATION ALLOWED`;
+- Simple shapes with large areas to fill`;
   } else {
-    stylePrompt = `MANDATORY ART STYLE - 3D PIXAR (MUST BE IDENTICAL IN ALL IMAGES):
-- 3D rendered cartoon characters like Pixar/Disney movies
-- Soft volumetric lighting
-- Cute appealing designs with smooth surfaces
-- Warm color palette
-- Pure white background ONLY
-- THIS EXACT STYLE MUST BE USED - NO VARIATION ALLOWED`;
+    stylePrompt = `PREMIUM 3D PIXAR STYLE ILLUSTRATION:
+- High quality 3D rendered characters like Pixar/Disney movies
+- Rich volumetric lighting with soft shadows and depth
+- Detailed textures on clothing and environments
+- Semi-realistic proportions with appealing character designs
+- Warm, cinematic color palette
+- Thick white sticker outline around characters
+- Pure white background
+- Professional animation studio quality`;
   }
 
   // Variação de ângulo para evitar imagens repetidas no refresh
