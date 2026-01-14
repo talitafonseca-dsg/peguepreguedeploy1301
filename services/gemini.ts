@@ -136,11 +136,18 @@ export async function generateSceneImage(
 - Pure white background
 - Professional illustration quality like Disney storybook art`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
-    stylePrompt = `COLORING PAGE STYLE:
-- Black outlines ONLY on pure white background
-- NO color, NO shading, NO grayscale
-- Thick clean lines suitable for children to color
-- Simple shapes with large areas to fill`;
+    stylePrompt = `STRICT COLORING PAGE STYLE - BLACK LINES ONLY:
+- ABSOLUTELY NO COLORS - Only black ink lines on pure white paper
+- NO shading, NO gradients, NO grayscale, NO gray tones
+- NO yellow, NO orange, NO any color - ONLY BLACK AND WHITE
+- Thick clean black outlines (like a coloring book page)
+- All areas must be white (empty) for children to color in
+- Simple clear shapes with large areas to fill with crayons
+- Line art style like traditional coloring books
+- DO NOT add any colored rays, glows, or effects
+- Sun rays, light beams, clouds must be ONLY black outlines, NO fill
+- Every single element must be unfilled white with black border
+- This is a PRINTABLE COLORING PAGE for children - 100% black lines on white`;
   } else {
     stylePrompt = `PREMIUM 3D PIXAR STYLE ILLUSTRATION:
 - High quality 3D rendered characters like Pixar/Disney movies
