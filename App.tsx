@@ -396,6 +396,28 @@ const App: React.FC = () => {
             </button>
 
             <button
+              onClick={async () => {
+                const newPassword = prompt("Digite sua nova senha (mínimo 6 caracteres):");
+                if (newPassword) {
+                  if (newPassword.length < 6) {
+                    alert("A senha deve ter pelo menos 6 caracteres.");
+                    return;
+                  }
+                  const { error } = await supabase.auth.updateUser({ password: newPassword });
+                  if (error) {
+                    alert("Erro ao alterar senha: " + error.message);
+                  } else {
+                    alert("✅ Senha alterada com sucesso!");
+                  }
+                }
+              }}
+              title="Alterar Senha"
+              className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all font-bold"
+            >
+              <span className="text-lg">🔒</span>
+            </button>
+
+            <button
               onClick={() => setDarkMode(!darkMode)}
               className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-all text-lg shadow-sm border-2 border-slate-200 dark:border-slate-700"
             >

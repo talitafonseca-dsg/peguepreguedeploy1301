@@ -76,6 +76,7 @@ serve(async (req) => {
         }
 
         if (profiles && profiles.length > 0) {
+            // Usuário já existe, apenas atualizar o perfil
             const { error: updateError } = await supabase
                 .from('profiles')
                 .update({
@@ -92,9 +93,61 @@ serve(async (req) => {
             console.log(`Profile updated for ${email}: ${purchaseStatus}`);
             return new Response(JSON.stringify({ message: "Profile updated successfully" }), { status: 200 });
         } else {
-            console.warn(`User with email ${email} not found. Purchase logged but not applied.`);
-            // Aqui poderíamos salvar em uma tabela 'pending_purchases' se necessário
-            return new Response(JSON.stringify({ message: "User not found, update skipped" }), { status: 200 });
+            // Usuário NÃO existe - Criar automaticamente com senha padrão
+            console.log(`User with email ${email} not found. Creating user automatically...`);
+
+            const DEFAULT_PASSWORD = "123456";
+
+            // 1. Criar o usuário no Supabase Auth usando Admin API
+            const { data: newUser, error: createUserError } = await supabase.auth.admin.createUser({
+                email: email,
+                password: DEFAULT_PASSWORD,
+                email_confirm: true, // Marcar email como confirmado automaticamente
+            });
+
+            if (createUserError) {
+                console.error(`Error creating user ${email}:`, createUserError);
+                throw createUserError;
+            }
+
+            console.log(`User created successfully: ${email} (ID: ${newUser.user?.id})`);
+
+            // 2. Criar o perfil do usuário com os dados da compra
+            const { error: insertProfileError } = await supabase
+                .from('profiles')
+                .insert({
+                    id: newUser.user?.id,
+                    email: email,
+                    purchase_status: purchaseStatus,
+                    purchase_platform: 'assiny',
+                    purchase_transaction_id: transactionId,
+                    purchase_date: new Date().toISOString()
+                });
+
+            if (insertProfileError) {
+                console.error(`Error creating profile for ${email}:`, insertProfileError);
+                // Tentar atualizar caso o perfil já exista (trigger automático pode ter criado)
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update({
+                        purchase_status: purchaseStatus,
+                        purchase_platform: 'assiny',
+                        purchase_transaction_id: transactionId,
+                        purchase_date: new Date().toISOString()
+                    })
+                    .eq('id', newUser.user?.id);
+
+                if (updateError) {
+                    throw updateError;
+                }
+            }
+
+            console.log(`Profile created/updated for new user ${email}: ${purchaseStatus}`);
+            return new Response(JSON.stringify({
+                message: "User created and profile configured successfully",
+                email: email,
+                userId: newUser.user?.id
+            }), { status: 200 });
         }
 
     } catch (err: any) {

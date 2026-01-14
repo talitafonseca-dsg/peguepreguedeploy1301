@@ -2,6 +2,15 @@
 
 Sua integração já está codificada! Agora siga estes passos para colocar no ar.
 
+## ✨ Funcionalidade de Criação Automática de Usuário
+
+Quando uma compra é aprovada na Assiny, o sistema **cria automaticamente** uma conta para o cliente:
+- **Email**: O email informado na compra
+- **Senha padrão**: `123456`
+- **Acesso**: Liberado imediatamente após a compra
+
+> **Importante**: Recomende aos clientes que alterem a senha após o primeiro login!
+
 ## 1. Atualizar Banco de Dados (Supabase)
 
 Acesse o **SQL Editor** no painel do Supabase e execute o seguinte comando para criar as colunas de controle de compra:
