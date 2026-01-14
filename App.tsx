@@ -69,6 +69,9 @@ const App: React.FC = () => {
       setSession(session);
       if (session) checkUserProfile(session.user.id);
       else setLoadingAuth(false);
+    }).catch((err) => {
+      console.error("Auth initialization error:", err);
+      setLoadingAuth(false);
     });
 
     const {
@@ -265,7 +268,7 @@ const App: React.FC = () => {
 
   if (loadingAuth) {
     return (
-      <div className="min-h-center flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
       </div>
     );
@@ -292,7 +295,7 @@ const App: React.FC = () => {
 
   if (loadingAuth) {
     return (
-      <div className="min-h-center flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
       </div>
     );
