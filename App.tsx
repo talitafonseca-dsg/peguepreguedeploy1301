@@ -11,6 +11,7 @@ import { supabase } from './services/supabase';
 import { LoginScreen } from './components/LoginScreen';
 import { ApiKeyScreen } from './components/ApiKeyScreen';
 import { PurchaseScreen } from './components/PurchaseScreen';
+import { ChangePasswordModal } from './components/ChangePasswordModal';
 import { Session } from '@supabase/supabase-js';
 
 const App: React.FC = () => {
@@ -35,6 +36,7 @@ const App: React.FC = () => {
   const [ageGroup, setAgeGroup] = useState<AgeGroup>(AgeGroup.GROUP_5_6);
   const [style, setStyle] = useState<IllustrationStyle>(IllustrationStyle.STYLE_2D);
   const [darkMode, setDarkMode] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingActivity, setIsGeneratingActivity] = useState(false);
@@ -396,21 +398,7 @@ const App: React.FC = () => {
             </button>
 
             <button
-              onClick={async () => {
-                const newPassword = prompt("Digite sua nova senha (mínimo 6 caracteres):");
-                if (newPassword) {
-                  if (newPassword.length < 6) {
-                    alert("A senha deve ter pelo menos 6 caracteres.");
-                    return;
-                  }
-                  const { error } = await supabase.auth.updateUser({ password: newPassword });
-                  if (error) {
-                    alert("Erro ao alterar senha: " + error.message);
-                  } else {
-                    alert("✅ Senha alterada com sucesso!");
-                  }
-                }
-              }}
+              onClick={() => setShowPasswordModal(true)}
               title="Alterar Senha"
               className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all font-bold"
             >
@@ -813,6 +801,12 @@ const App: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Modal de Alteração de Senha */}
+      <ChangePasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+      />
     </div >
   );
 };
