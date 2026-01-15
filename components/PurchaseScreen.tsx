@@ -1,5 +1,6 @@
 import React from 'react';
 import { ICONS } from '../constants';
+import { supabase } from '../services/supabase';
 
 interface PurchaseScreenProps {
     userEmail: string;
@@ -81,6 +82,13 @@ export const PurchaseScreen: React.FC<PurchaseScreenProps> = ({ userEmail, onRef
                 <p className="mt-8 text-xs text-slate-400 dark:text-slate-500 font-bold max-w-sm mx-auto">
                     Ao comprar, use o MESMO email ({userEmail}) no checkout para liberar seu acesso automaticamente.
                 </p>
+
+                <button
+                    onClick={() => supabase.auth.signOut()}
+                    className="mt-6 text-red-500 hover:text-red-700 text-sm font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
+                >
+                    🚪 Sair da conta
+                </button>
 
             </div>
         </div>
