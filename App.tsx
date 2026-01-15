@@ -69,7 +69,7 @@ const App: React.FC = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session) checkUserProfile(session.user.id);
+      if (session) checkUserProfile(session.user.id, session.user.email);
       else setLoadingAuth(false);
     }).catch((err) => {
       console.error("Auth initialization error:", err);
@@ -80,7 +80,7 @@ const App: React.FC = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (session) checkUserProfile(session.user.id);
+      if (session) checkUserProfile(session.user.id, session.user.email);
       else {
         setUserApiKey(null);
         setLoadingAuth(false);
@@ -90,13 +90,36 @@ const App: React.FC = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkUserProfile = async (userId: string) => {
+  const checkUserProfile = async (userId: string, userEmail?: string) => {
     try {
-      const { data, error } = await supabase
+      // Primeiro tenta buscar por ID
+      let { data, error } = await supabase
         .from('profiles')
         .select('gemini_api_key, purchase_status')
         .eq('id', userId)
         .single();
+
+      // Se não encontrou por ID e temos email, tenta buscar por email
+      if ((!data || error) && userEmail) {
+        console.log('Profile not found by ID, trying by email:', userEmail);
+        const emailResult = await supabase
+          .from('profiles')
+          .select('id, gemini_api_key, purchase_status')
+          .eq('email', userEmail.toLowerCase())
+          .single();
+
+        if (emailResult.data) {
+          data = emailResult.data;
+          // Atualiza o ID do profile para sincronizar com auth.users
+          if (emailResult.data.id !== userId) {
+            console.log('Syncing profile ID from', emailResult.data.id, 'to', userId);
+            await supabase
+              .from('profiles')
+              .update({ id: userId })
+              .eq('email', userEmail.toLowerCase());
+          }
+        }
+      }
 
       setPurchaseStatus(data?.purchase_status || 'pending');
 
