@@ -428,6 +428,16 @@ const App: React.FC = () => {
               <span className="text-lg">🔒</span>
             </button>
 
+            <a
+              href="https://wa.me/5531999982884?text=Preciso%20de%20suporte%20para%20o%20Pegue%20%26%20Pregue"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Suporte via WhatsApp"
+              className="p-2.5 rounded-2xl bg-green-500 hover:bg-green-600 border-2 border-green-600 text-white transition-all font-bold"
+            >
+              <span className="text-lg">💬</span>
+            </a>
+
             <button
               onClick={() => setDarkMode(!darkMode)}
               className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-all text-lg shadow-sm border-2 border-slate-200 dark:border-slate-700"
