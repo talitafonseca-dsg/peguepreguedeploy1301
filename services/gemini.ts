@@ -198,7 +198,7 @@ STRICT RULES:
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image-preview",
+      model: "gemini-2.5-flash-image",
       contents: { parts: [{ text: finalPrompt }] },
       config: {
         responseModalities: ["image", "text"],
