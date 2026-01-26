@@ -75,6 +75,10 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
     - SE ${languageName} FOR "Español", USE TEXTO EM ESPANHOL.
     - O idioma de resposta é ${languageName}.
     
+    LANGUAGE ENFORCEMENT:
+    - You MUST output the JSON values in ${languageName}.
+    - Do NOT output in Portuguese unless the requested language is Portuguese.
+    
     Retorne estritamente um JSON válido.
   `;
 
@@ -140,18 +144,16 @@ export async function generateSceneImage(
 - Pure white background
 - Professional illustration quality like Disney storybook art`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
-    stylePrompt = `STRICT COLORING PAGE STYLE - BLACK LINES ONLY:
-- ABSOLUTELY NO COLORS - Only black ink lines on pure white paper
-- NO shading, NO gradients, NO grayscale, NO gray tones
-- NO yellow, NO orange, NO any color - ONLY BLACK AND WHITE
-- Thick clean black outlines (like a coloring book page)
-- All areas must be white (empty) for children to color in
-- Simple clear shapes with large areas to fill with crayons
-- Line art style like traditional coloring books
-- DO NOT add any colored rays, glows, or effects
-- Sun rays, light beams, clouds must be ONLY black outlines, NO fill
-- Every single element must be unfilled white with black border
-- This is a PRINTABLE COLORING PAGE for children - 100% black lines on white`;
+    stylePrompt = `STRICT BLACK AND WHITE COLORING PAGE FOR KIDS:
+- ABSOLUTELY NO COLORS. ONLY BLACK LINES ON WHITE BACKGROUND.
+- DO NOT use grayscale, DO NOT use shading, DO NOT use gradients.
+- PURE BLACK OUTLINES ONLY.
+- Thick, clean, continuous lines suitable for crayons.
+- Characters and objects must be EMPTY (WHITE) to be colored in.
+- NO fill, NO texture, NO cross-hatching.
+- Simple, clear shapes.
+- 100% Monochrome.
+- This is a PRINTABLE COLORING BOOK PAGE.`;
   } else {
     stylePrompt = `PREMIUM 3D PIXAR STYLE ILLUSTRATION:
 - High quality 3D rendered characters like Pixar/Disney movies
@@ -194,7 +196,8 @@ STRICT RULES:
 - NO wings on humans
 - Friendly, child-appropriate content only
 - Pure white background, no complex scenery
-- MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES`;
+- MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES
+${style === IllustrationStyle.COLORING_PAGE ? "- REMEMBER: BLACK LINES ONLY. NO COLOR AT ALL." : ""}`;
 
   const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 

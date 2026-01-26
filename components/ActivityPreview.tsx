@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { ActivityContent } from '../types';
+import { ActivityContent, LanguageCode } from '../types';
 import { ICONS } from '../constants';
+import { translations } from '../translations';
 
 interface ActivityPreviewProps {
     activity: ActivityContent;
@@ -9,6 +10,7 @@ interface ActivityPreviewProps {
     onDownload: () => void;
     onClose: () => void;
     isDownloading: boolean;
+    lang: LanguageCode;
 }
 
 export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
@@ -16,8 +18,11 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
     coloringImageUrl,
     onDownload,
     onClose,
-    isDownloading
+    isDownloading,
+    lang = 'pt' // Default to pt if not provided
 }) => {
+    const t = translations[lang] || translations['pt'];
+
     return (
         <div className="w-full max-w-4xl mx-auto mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
 
@@ -26,7 +31,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                 {/* Header Section */}
                 <div className="bg-purple-100 dark:bg-purple-900/30 p-8 border-b border-purple-200 dark:border-purple-800 flex flex-col md:flex-row items-center justify-between gap-6">
                     <h3 className="text-3xl font-black text-purple-800 dark:text-purple-200 flex items-center gap-3">
-                        <span className="text-4xl">📝</span> Prévia da Atividade
+                        <span className="text-4xl">📝</span> {t.previewActivity}
                     </h3>
 
                     <button
@@ -35,7 +40,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                         className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-lg shadow-purple-200 dark:shadow-none transition-transform hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isDownloading ? <span className="animate-spin text-xl">⏳</span> : <ICONS.Download className="w-6 h-6" />}
-                        <span>Baixar PDF da Atividade</span>
+                        <span>{t.downloadActivityBtn}</span>
                     </button>
                 </div>
 
@@ -44,10 +49,10 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                     <div className="bg-white text-slate-900 w-full max-w-[210mm] shadow-xl p-8 md:p-16 rounded-xl border border-slate-200">
                         {/* Page Header */}
                         <div className="border-b-4 border-purple-500 pb-6 mb-10 text-center">
-                            <h1 className="text-4xl font-black text-purple-600 mb-4 uppercase tracking-tight">Atividades Bíblicas</h1>
+                            <h1 className="text-4xl font-black text-purple-600 mb-4 uppercase tracking-tight">{t.activityTitle}</h1>
                             <div className="flex flex-col sm:flex-row justify-between text-base text-slate-400 mt-6 border-t-2 border-slate-100 pt-4 font-mono">
-                                <span>Nome: ___________________________________</span>
-                                <span>Data: ___/___/___</span>
+                                <span>{t.nameLabel} ___________________________________</span>
+                                <span>{t.dateLabel} ___/___/___</span>
                             </div>
                         </div>
 
@@ -61,13 +66,13 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                         <div className="mb-12">
                             <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                 <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">1</span>
-                                Responda:
+                                {t.activity1}
                             </h3>
                             <div className="space-y-8">
                                 {((activity.quiz && activity.quiz.length > 0) ? activity.quiz : [
                                     {
-                                        question: "Qual o principal ensinamento de fé desta história?",
-                                        options: ["Confiar sempre em Deus", "Desistir quando for difícil", "Fazer tudo sozinho"]
+                                        question: t.fallbackQuestion,
+                                        options: [t.fallbackOption1, t.fallbackOption2, t.fallbackOption3]
                                     }
                                 ]).slice(0, 1).map((q, idx) => (
                                     <div key={idx} className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -90,7 +95,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                     <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">2</span>
-                                    Complete a frase:
+                                    {t.activity2}
                                 </h3>
                                 <div className="bg-yellow-50 p-8 rounded-2xl border-2 border-yellow-200 border-dashed font-bold text-2xl text-center text-yellow-800 leading-relaxed">
                                     {activity.completeThePhrase.phrase}
@@ -102,10 +107,10 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                         <div className="mb-12">
                             <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                 <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">3</span>
-                                Caça-Palavras:
+                                {t.activity3}
                             </h3>
                             <div className="bg-slate-100 p-8 rounded-3xl text-center">
-                                <p className="text-base font-bold text-slate-600 mb-6 uppercase tracking-wider">Encontre: <span className="text-purple-600">{activity.wordSearch?.filter(w => w.length <= 10).slice(0, 8).join(", ")}</span></p>
+                                <p className="text-base font-bold text-slate-600 mb-6 uppercase tracking-wider">{t.wordSearchFind} <span className="text-purple-600">{activity.wordSearch?.filter(w => w.length <= 10).slice(0, 8).join(", ")}</span></p>
                                 {/* Simplified visual representation */}
                                 <div className="inline-grid grid-cols-10 gap-2 font-mono text-lg font-bold opacity-40 select-none pointer-events-none mix-blend-multiply">
                                     {Array.from({ length: 80 }).map((_, i) => (
@@ -121,7 +126,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                     <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">4</span>
-                                    Desembaralhe as Palavras:
+                                    {t.activity4}
                                 </h3>
                                 <div className="grid gap-4">
                                     {activity.scrambleWords.map((item, idx) => (
@@ -130,7 +135,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                                                 <span className="text-orange-800 font-bold text-xl tracking-widest uppercase">
                                                     {item.word.split('').sort(() => 0.5 - Math.random()).join('  ')}
                                                 </span>
-                                                <span className="text-xs text-orange-400 font-bold uppercase mt-1">Dica: {item.hint}</span>
+                                                <span className="text-xs text-orange-400 font-bold uppercase mt-1">{t.scrambleHint} {item.hint}</span>
                                             </div>
                                             <div className="w-32 h-10 border-b-2 border-orange-300"></div>
                                         </div>
@@ -144,7 +149,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                     <span className="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-blue-200 shadow-lg">5</span>
-                                    Ligue as Colunas:
+                                    {t.activity5}
                                 </h3>
                                 <div className="bg-blue-50 p-6 rounded-3xl border-2 border-blue-200">
                                     <div className="flex justify-between items-start gap-8">
@@ -172,7 +177,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                     <span className="bg-green-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-green-200 shadow-lg">6</span>
-                                    Verdadeiro ou Falso:
+                                    {t.activity6}
                                 </h3>
                                 <div className="bg-green-50 p-6 rounded-3xl border-2 border-green-200 space-y-4">
                                     {activity.trueOrFalse.map((item, idx) => (
@@ -180,8 +185,8 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                                             <span className="font-bold text-green-700">{idx + 1}.</span>
                                             <p className="flex-1 text-slate-700 font-medium">{item.statement}</p>
                                             <div className="flex gap-2">
-                                                <span className="w-10 h-10 border-2 border-green-300 rounded-lg flex items-center justify-center font-bold text-green-600">V</span>
-                                                <span className="w-10 h-10 border-2 border-red-300 rounded-lg flex items-center justify-center font-bold text-red-600">F</span>
+                                                <span className="w-10 h-10 border-2 border-green-300 rounded-lg flex items-center justify-center font-bold text-green-600">{t.trueAbbr}</span>
+                                                <span className="w-10 h-10 border-2 border-red-300 rounded-lg flex items-center justify-center font-bold text-red-600">{t.falseAbbr}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -194,7 +199,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                     <span className="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">7</span>
-                                    Versículo para Memorizar:
+                                    {t.activity7}
                                 </h3>
                                 <div className="bg-white border-2 border-purple-400 p-4 rounded-2xl flex items-center gap-4">
                                     <div className="bg-purple-500 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold">★</div>
@@ -208,7 +213,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             <div className="mt-8">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
                                     <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">8</span>
-                                    Para Colorir:
+                                    {t.coloringTitle}
                                 </h3>
                                 <div className="border-4 border-dashed border-slate-300 rounded-3xl p-6 flex justify-center bg-white">
                                     <img src={coloringImageUrl} alt="Para colorir" className="max-w-full h-auto shadow-2xl rounded-xl transform rotate-1 hover:rotate-0 transition-transform duration-500" />

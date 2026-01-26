@@ -115,6 +115,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
 
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
+    doc.setTextColor(100, 100, 100);
     doc.text(`${t.nameLabel} _________________________________`, margin + 10, 39);
     doc.text(`${t.dateLabel} ____/____/____`, pageWidth - margin - 50, 39);
 
@@ -153,8 +154,8 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
     // Fallback Quiz Data (More engaging)
     const FALLBACK_QUIZ = [
         {
-            question: "Qual o principal ensinamento de fé desta história?",
-            options: ["Confiar sempre em Deus", "Desistir quando for difícil", "Fazer tudo sozinho", "Fugir dos problemas"]
+            question: t.fallbackQuestion,
+            options: [t.fallbackOption1, t.fallbackOption2, t.fallbackOption3, t.fallbackOption4]
         }
     ];
 
@@ -288,7 +289,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.text(`${t.wordSearchFind} ${placedWords.join(", ")}`, pageWidth / 2, listY, { align: "center", maxWidth: pageWidth - (margin * 3) });
 
     } else {
-        doc.text("Indisponível", margin + 5, cursorY + 10);
+        doc.text(t.unavailable, margin + 5, cursorY + 10);
     }
 
     // 6. Unscramble Words (After Word Search)
@@ -446,14 +447,14 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
             doc.setFont("helvetica", "bold");
             doc.setFontSize(10);
             doc.setTextColor(34, 197, 94);
-            doc.text("V", pageWidth - margin - 23, itemY + 10, { align: "center" });
+            doc.text(t.trueAbbr, pageWidth - margin - 23, itemY + 10, { align: "center" });
 
             // F button (red)
             doc.setFillColor(255, 255, 255);
             doc.setDrawColor(239, 68, 68); // Red-500
             doc.roundedRect(pageWidth - margin - 15, itemY + 2, 10, 10, 2, 2, 'FD');
             doc.setTextColor(239, 68, 68);
-            doc.text("F", pageWidth - margin - 10, itemY + 10, { align: "center" });
+            doc.text(t.falseAbbr, pageWidth - margin - 10, itemY + 10, { align: "center" });
 
             itemY += cardHeight + 4;
         });
@@ -531,7 +532,9 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text("Pegue & Pregue - www.peguepregue.online", pageWidth / 2, pageHeight - 10, { align: "center" });
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`${t.title || "Pegue & Pregue"} - www.peguepregue.online`, pageWidth / 2, pageHeight - 10, { align: "center" });
     }
 
     const fileName = activity.title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '_');

@@ -47,9 +47,20 @@ const App: React.FC = () => {
   const [currentGenerationPhase, setCurrentGenerationPhase] = useState('');
   const [scenes, setScenes] = useState<StoryScene[]>([]);
   const [characterDescription, setCharacterDescription] = useState('');
+  const [generatedTitle, setGeneratedTitle] = useState<string | null>(null);
   const [generationProgress, setGenerationProgress] = useState(0);
 
   const t = translations[lang];
+
+  const getLogoPath = () => {
+    switch (lang) {
+      case 'en': return '/logo_en.png';
+      case 'es': return '/logo_es.png';
+      case 'fr': return '/logo_fr.png';
+      case 'it': return '/logo_it.png';
+      default: return '/logo.png';
+    }
+  };
 
   // Translation maps for enums
   const ageGroupLabels: Record<AgeGroup, string> = {
@@ -166,6 +177,7 @@ const App: React.FC = () => {
     try {
       const result: BibleStory = await generateStoryStructure(userApiKey, finalStory, ageGroup, lang);
       setScenes(result.scenes);
+      setGeneratedTitle(result.title);
       setCharacterDescription(result.characterDescription);
       setGenerationProgress(20);
 
@@ -227,7 +239,7 @@ const App: React.FC = () => {
   };
 
   const handleDownloadPDF = async () => {
-    const title = customStory.trim() || selectedStory;
+    const title = generatedTitle || customStory.trim() || selectedStory;
     const validScenes = scenes.filter(s => !!s.imageUrl);
     if (validScenes.length < scenes.length) {
       if (!confirm("Algumas imagens falharam na geração. Deseja baixar o PDF assim mesmo?")) {
@@ -379,91 +391,93 @@ const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Header Redesigned */}
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 mr-4 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 truncate max-w-[150px]">{session.user.email}</span>
+
+            {/* Account Settings Group */}
+            <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-2xl p-1.5 border-2 border-slate-200 dark:border-slate-700 mr-2">
+              <button
+                onClick={() => {
+                  if (confirm("Deseja alterar e atualizar sua Chave API?")) {
+                    setUserApiKey(null);
+                  }
+                }}
+                title={t.headerKey}
+                className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all font-bold"
+              >
+                <span className="text-lg">🔑</span>
+              </button>
+
+              <div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1"></div>
+
+              <button
+                onClick={() => setShowPasswordModal(true)}
+                title={t.headerPass}
+                className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all font-bold"
+              >
+                <span className="text-lg">🔒</span>
+              </button>
+
+              <div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1"></div>
+
+              <button
+                onClick={() => supabase.auth.signOut()}
+                title={t.headerLogout}
+                className="p-2 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-400 hover:text-red-500 transition-all font-bold"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
             </div>
 
-            <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl gap-1 border-2 border-slate-200 dark:border-slate-700 shadow-inner">
+            {/* Language Selector (Compressed) */}
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl gap-1 border-2 border-slate-200 dark:border-slate-700">
               {LANGUAGES.map((l) => (
                 <button
                   key={l.code}
                   onClick={() => setLang(l.code)}
                   title={l.label}
-                  className={`w-11 h-11 flex flex-col items-center justify-center rounded-xl transition-all ${lang === l.code
-                    ? 'bg-white dark:bg-slate-700 shadow-md text-purple-600 dark:text-purple-400 scale-105 z-10 border border-slate-100 dark:border-slate-600'
-                    : 'text-slate-400 dark:text-slate-500 hover:bg-white/50 dark:hover:bg-slate-800'
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${lang === l.code
+                    ? 'bg-white dark:bg-slate-700 shadow-sm opacity-100'
+                    : 'opacity-50 hover:opacity-100'
                     }`}
                 >
                   <img
                     src={`https://flagcdn.com/w40/${l.countryCode}.png`}
                     alt={l.label}
-                    className="w-6 h-auto drop-shadow-sm rounded-[2px]"
+                    className="w-5 h-auto rounded-[2px]"
                   />
-                  <span className={`text-[9px] font-black uppercase mt-0.5 tracking-tighter ${lang === l.code ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                    {l.code}
-                  </span>
                 </button>
               ))}
             </div>
 
-            <button
-              onClick={() => {
-                if (confirm("Deseja alterar e atualizar sua Chave API?")) {
-                  setUserApiKey(null);
-                }
-              }}
-              title="Alterar Chave API"
-              className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all font-bold"
-            >
-              <span className="text-lg">🔑</span>
-            </button>
-
-            <button
-              onClick={() => setShowPasswordModal(true)}
-              title="Alterar Senha"
-              className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all font-bold"
-            >
-              <span className="text-lg">🔒</span>
-            </button>
-
             <a
-              href="https://wa.me/5531999982884?text=Preciso%20de%20suporte%20para%20o%20Pegue%20%26%20Pregue"
+              href="https://wa.me/5531999982884"
               target="_blank"
               rel="noopener noreferrer"
-              title="Suporte via WhatsApp"
-              className="p-2.5 rounded-2xl bg-green-500 hover:bg-green-600 border-2 border-green-600 text-white transition-all font-bold"
+              className="p-2.5 rounded-2xl bg-green-500 hover:bg-green-600 text-white transition-all shadow-lg hover:shadow-green-300/50"
             >
               <span className="text-lg">💬</span>
             </a>
 
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-all text-lg shadow-sm border-2 border-slate-200 dark:border-slate-700"
+              className="p-2.5 rounded-2xl bg-yellow-400/20 text-yellow-600 hover:bg-yellow-400 hover:text-white transition-all"
             >
               {darkMode ? '☀️' : '🌙'}
-            </button>
-
-            <button
-              onClick={() => supabase.auth.signOut()}
-              title="Sair"
-              className="p-2.5 rounded-2xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 text-red-500 border-2 border-red-100 dark:border-red-900"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
             </button>
 
             {scenes.length > 0 && !isGenerating && (
               <button
                 onClick={handleDownloadPDF}
-                className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-2xl font-black flex items-center gap-2 shadow-lg shadow-emerald-200 dark:shadow-none transition-all transform hover:scale-105 active:scale-95 border-b-4 border-emerald-700"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all ml-2"
               >
-                <ICONS.Download />
-                <span className="hidden sm:inline text-sm">PDF</span>
+                <ICONS.Download className="w-5 h-5" />
+                <span className="hidden sm:inline">PDF</span>
               </button>
             )}
+
           </div>
         </div>
       </header>
@@ -649,6 +663,7 @@ const App: React.FC = () => {
                 onClick={() => {
                   setScenes([]);
                   setCustomStory('');
+                  setGeneratedTitle(null);
                   setActivityData(null);
                   setActivityColoringImage(null);
                   setShowActivityPreview(false);
@@ -803,6 +818,7 @@ const App: React.FC = () => {
             onDownload={handleDownloadActivityPDF}
             onClose={() => setShowActivityPreview(false)}
             isDownloading={isGeneratingActivity}
+            lang={lang}
           />
         </div>
       )}
