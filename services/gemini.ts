@@ -22,7 +22,11 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
     
     REGRAS IMPORTANTES:
     
-    1. ESTRUTURA: Divida a história em 6 a 8 cenas narrativas claras e cronológicas que cubram TODOS os pontos importantes da história bíblica.
+    1. ESTRUTURA: Analise a complexidade da história "${storyName}" e divida em 10 a 12 cenas narrativas claras e cronológicas.
+       - Histórias longas/complexas (Criação, Êxodo, Vida de José): USE 12 CENAS para cobrir toda a narrativa.
+       - Histórias médias (Davi e Golias, Daniel, Jonas): USE 10-11 CENAS.
+       - Histórias curtas (Parábolas simples): USE 10 CENAS mínimo para aprofundar os detalhes.
+       - IMPORTANTE: A história deve ficar COMPLETA, sem cortar partes importantes.
     
     2. FIDELIDADE BÍBLICA: O narrativeText de cada cena DEVE:
        - Ser FIEL às escrituras sagradas.
@@ -278,13 +282,27 @@ export async function generateActivityContent(apiKey: string, storyName: string,
        - PROIBIDO perguntas genéricas como "Onde está na bíblia?" ou "O que aprendemos?".
        - Deve ser uma pergunta sobre um EVENTO ou AÇÃO específica do personagem.
        - Deve ter 4 (QUATRO) opções de resposta.
-    - "wordSearch": Array com 10 a 15 palavras-chave DA HISTÓRIA (todas em UPPERCASE, sem acentos, sem espaços, máx 12 letras).
-    - "coloringPrompt": Prompt em INGLÊS para gerar um desenho de colorir (black and white outlines, for kids) sobre a cena principal.
+    - "wordSearch": Array com EXATAMENTE 8 palavras-chave DA HISTÓRIA (todas em UPPERCASE, sem acentos, sem espaços, MÁXIMO 8 LETRAS CADA - palavras curtas!).
+    - "coloringPrompt": Prompt DETALHADO em INGLÊS para gerar um desenho de colorir sobre a cena principal.
+       - IMPORTANTE: O prompt DEVE especificar claramente cada personagem (ex: "a man named Adam" ou "a woman named Eve").
+       - CRÍTICO: Todos os personagens devem ter ANATOMIA HUMANA CORRETA - rostos humanos normais, proporções corretas, sem híbridos, sem distorções.
+       - Se houver crianças, especifique "cute human children with normal human faces and bodies".
+       - Se houver multidão, especifique "group of people with distinct human features".
+       - OBRIGATÓRIO incluir no final: "professional illustration, clean line art, pure black outlines on white background, NO shading, NO fills, NO solid black areas, simple elegant strokes, high quality coloring book style, cute chibi style, all characters must have proper human anatomy"
     - "completeThePhrase": Objeto com "phrase" e "missingWord".
        - A frase deve ser um VERSÍCULO CHAVE ou LIÇÃO MORAL da história.
        - A frase NÃO pode ser simples demais.
        - Indique a palavra que falta com '_______'.
        - exemplo: { "phrase": "Pela _______, Noé construiu a arca para salvar sua família.", "missingWord": "fé" }
+    - "scrambleWords": Array com 3 objetos.
+       - "word": A palavra correta (ex: "ARCA").
+       - "hint": Uma dica curta (ex: "Barco grande").
+    - "matchColumns": Array com 4 objetos para atividade de ligar colunas.
+       - "left": Personagem ou início da frase (ex: "Daniel").
+       - "right": Ação ou final da frase (ex: "orou a Deus").
+    - "trueOrFalse": Array com 4 objetos para atividade verdadeiro/falso.
+       - "statement": Afirmação sobre a história (ex: "Daniel foi jogado na cova dos leões.").
+       - "isTrue": true ou false.
 
     Retorne APENAS o JSON válido, sem markdown.
     exemplo:
@@ -292,9 +310,26 @@ export async function generateActivityContent(apiKey: string, storyName: string,
       "title": "Daniel na Cova dos Leões",
       "bibleVerse": "O meu Deus enviou o seu anjo, e fechou a boca dos leões. (Daniel 6:22)",
       "quiz": [{ "question": "Qual atitude de Daniel fez o rei Dario assinar o decreto?", "options": ["Sua fidelidade a Deus", "Sua desobediência", "Sua riqueza"], "correctAnswer": 0 }],
-      "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "PROTECAO", "DARIO", "COVA"],
-      "coloringPrompt": "Daniel praying in the lions den, cute lions sleeping, simple black and white outlines, coloring page style for kids",
-      "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" }
+      "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "COVA"],
+      "coloringPrompt": "A man named Daniel kneeling and praying peacefully, surrounded by friendly cute lions sleeping around him, an angel protecting them, clean line art, pure black outlines on white background, NO shading, NO fills, NO solid black areas, simple elegant strokes, coloring book style for children, cute kawaii style",
+      "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" },
+      "scrambleWords": [
+        { "word": "LEOES", "hint": "Animais selvagens" },
+        { "word": "ANJO", "hint": "Mensageiro de Deus" },
+        { "word": "REI", "hint": "Governante" }
+      ],
+      "matchColumns": [
+        { "left": "Daniel", "right": "orou a Deus" },
+        { "left": "Rei Dario", "right": "ficou triste" },
+        { "left": "Os leões", "right": "não atacaram" },
+        { "left": "O anjo", "right": "fechou as bocas" }
+      ],
+      "trueOrFalse": [
+        { "statement": "Daniel foi jogado na cova dos leões.", "isTrue": true },
+        { "statement": "Daniel parou de orar por medo.", "isTrue": false },
+        { "statement": "O rei Dario queria salvar Daniel.", "isTrue": true },
+        { "statement": "Os leões devoraram Daniel.", "isTrue": false }
+      ]
     }
 
     IMPORTANTE SOBRE O IDIOMA:
@@ -336,9 +371,42 @@ export async function generateActivityContent(apiKey: string, storyName: string,
                 missingWord: { type: Type.STRING }
               },
               required: ["phrase", "missingWord"]
+            },
+            scrambleWords: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  word: { type: Type.STRING },
+                  hint: { type: Type.STRING }
+                },
+                required: ["word", "hint"]
+              }
+            },
+            matchColumns: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  left: { type: Type.STRING },
+                  right: { type: Type.STRING }
+                },
+                required: ["left", "right"]
+              }
+            },
+            trueOrFalse: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  statement: { type: Type.STRING },
+                  isTrue: { type: Type.BOOLEAN }
+                },
+                required: ["statement", "isTrue"]
+              }
             }
           },
-          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase"]
+          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase", "scrambleWords", "matchColumns", "trueOrFalse"]
         }
       }
     });

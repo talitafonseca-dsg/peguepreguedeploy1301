@@ -10,7 +10,7 @@ const API_KEY = 'AIzaSyC-wlxIkjt-IhojF1pRcvOxqe9gXMt_NFY';
 async function testGeminiConnection() {
     console.log('🔍 Iniciando diagnóstico da API Gemini...\n');
 
-    if (API_KEY === 'COLE_SUA_CHAVE_AQUI') {
+    if (API_KEY === 'AIzaSyC-wlxIkjt-IhojF1pRcvOxqe9gXMt_NFY') {
         console.error('❌ ERRO: Você precisa colar sua chave API na linha 7 deste arquivo!');
         return;
     }

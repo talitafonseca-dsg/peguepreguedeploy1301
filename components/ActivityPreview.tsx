@@ -105,7 +105,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                                 Caça-Palavras:
                             </h3>
                             <div className="bg-slate-100 p-8 rounded-3xl text-center">
-                                <p className="text-base font-bold text-slate-600 mb-6 uppercase tracking-wider">Encontre: <span className="text-purple-600">{activity.wordSearch?.join(", ")}</span></p>
+                                <p className="text-base font-bold text-slate-600 mb-6 uppercase tracking-wider">Encontre: <span className="text-purple-600">{activity.wordSearch?.filter(w => w.length <= 10).slice(0, 8).join(", ")}</span></p>
                                 {/* Simplified visual representation */}
                                 <div className="inline-grid grid-cols-10 gap-2 font-mono text-lg font-bold opacity-40 select-none pointer-events-none mix-blend-multiply">
                                     {Array.from({ length: 80 }).map((_, i) => (
@@ -116,11 +116,98 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             </div>
                         </div>
 
+                        {/* Scramble Words Preview */}
+                        {activity.scrambleWords && activity.scrambleWords.length > 0 && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">4</span>
+                                    Desembaralhe as Palavras:
+                                </h3>
+                                <div className="grid gap-4">
+                                    {activity.scrambleWords.map((item, idx) => (
+                                        <div key={idx} className="bg-orange-50 p-4 rounded-2xl border border-orange-100 flex items-center justify-between">
+                                            <div className="flex flex-col">
+                                                <span className="text-orange-800 font-bold text-xl tracking-widest uppercase">
+                                                    {item.word.split('').sort(() => 0.5 - Math.random()).join('  ')}
+                                                </span>
+                                                <span className="text-xs text-orange-400 font-bold uppercase mt-1">Dica: {item.hint}</span>
+                                            </div>
+                                            <div className="w-32 h-10 border-b-2 border-orange-300"></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Match Columns Preview */}
+                        {activity.matchColumns && activity.matchColumns.length > 0 && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-blue-200 shadow-lg">5</span>
+                                    Ligue as Colunas:
+                                </h3>
+                                <div className="bg-blue-50 p-6 rounded-3xl border-2 border-blue-200">
+                                    <div className="flex justify-between items-start gap-8">
+                                        <div className="flex-1 space-y-4">
+                                            {activity.matchColumns.map((item, idx) => (
+                                                <div key={idx} className="bg-white p-3 rounded-xl shadow-sm border border-blue-100 font-bold text-blue-800">
+                                                    {String.fromCharCode(65 + idx)}. {item.left}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex-1 space-y-4">
+                                            {[...activity.matchColumns].sort(() => Math.random() - 0.5).map((item, idx) => (
+                                                <div key={idx} className="bg-white p-3 rounded-xl shadow-sm border border-blue-100 font-bold text-blue-600">
+                                                    {idx + 1}. {item.right}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* True or False Preview */}
+                        {activity.trueOrFalse && activity.trueOrFalse.length > 0 && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-green-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-green-200 shadow-lg">6</span>
+                                    Verdadeiro ou Falso:
+                                </h3>
+                                <div className="bg-green-50 p-6 rounded-3xl border-2 border-green-200 space-y-4">
+                                    {activity.trueOrFalse.map((item, idx) => (
+                                        <div key={idx} className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-green-100">
+                                            <span className="font-bold text-green-700">{idx + 1}.</span>
+                                            <p className="flex-1 text-slate-700 font-medium">{item.statement}</p>
+                                            <div className="flex gap-2">
+                                                <span className="w-10 h-10 border-2 border-green-300 rounded-lg flex items-center justify-center font-bold text-green-600">V</span>
+                                                <span className="w-10 h-10 border-2 border-red-300 rounded-lg flex items-center justify-center font-bold text-red-600">F</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Verse to Memorize Preview */}
+                        {activity.bibleVerse && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">7</span>
+                                    Versículo para Memorizar:
+                                </h3>
+                                <div className="bg-white border-2 border-purple-400 p-4 rounded-2xl flex items-center gap-4">
+                                    <div className="bg-purple-500 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold">★</div>
+                                    <p className="text-purple-800 italic font-medium text-lg flex-1">{activity.bibleVerse}</p>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Coloring Image Preview */}
                         {coloringImageUrl && (
                             <div className="mt-8">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
-                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">4</span>
+                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">8</span>
                                     Para Colorir:
                                 </h3>
                                 <div className="border-4 border-dashed border-slate-300 rounded-3xl p-6 flex justify-center bg-white">

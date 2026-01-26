@@ -58,6 +58,18 @@ export interface ActivityContent {
     phrase: string;
     missingWord: string;
   };
+  scrambleWords: {
+    word: string;
+    hint: string;
+  }[];
+  matchColumns: {
+    left: string;
+    right: string;
+  }[];
+  trueOrFalse: {
+    statement: string;
+    isTrue: boolean;
+  }[];
 }
 
 export interface GenerationState {
