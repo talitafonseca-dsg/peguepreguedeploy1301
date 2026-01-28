@@ -52,15 +52,7 @@ const App: React.FC = () => {
 
   const t = translations[lang];
 
-  const getLogoPath = () => {
-    switch (lang) {
-      case 'en': return '/logo_en.png';
-      case 'es': return '/logo_es.png';
-      case 'fr': return '/logo_fr.png';
-      case 'it': return '/logo_it.png';
-      default: return '/logo.png';
-    }
-  };
+
 
   // Translation maps for enums
   const ageGroupLabels: Record<AgeGroup, string> = {

@@ -269,7 +269,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         const startX = (pageWidth - gridPixelWidth) / 2;
         const startY = cursorY + 10;
 
-        doc.setFont("courier", "bold");
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(71, 85, 105);
 
@@ -327,7 +327,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
             // Scramble logic
             const scrambled = item.word.split('').sort(() => 0.5 - Math.random()).join('   ');
 
-            doc.setFont("courier", "bold");
+            doc.setFont("helvetica", "bold");
             // Dynamic font size based on word length
             const wordLen = item.word.length;
             const fontSize = wordLen > 8 ? 12 : wordLen > 6 ? 14 : 16;
@@ -447,14 +447,14 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
             doc.setFont("helvetica", "bold");
             doc.setFontSize(10);
             doc.setTextColor(34, 197, 94);
-            doc.text(t.trueAbbr, pageWidth - margin - 23, itemY + 10, { align: "center" });
+            doc.text(t.trueAbbr, pageWidth - margin - 23, itemY + 7, { align: "center", baseline: "middle" });
 
             // F button (red)
             doc.setFillColor(255, 255, 255);
             doc.setDrawColor(239, 68, 68); // Red-500
             doc.roundedRect(pageWidth - margin - 15, itemY + 2, 10, 10, 2, 2, 'FD');
             doc.setTextColor(239, 68, 68);
-            doc.text(t.falseAbbr, pageWidth - margin - 10, itemY + 10, { align: "center" });
+            doc.text(t.falseAbbr, pageWidth - margin - 10, itemY + 7, { align: "center", baseline: "middle" });
 
             itemY += cardHeight + 4;
         });
@@ -476,22 +476,16 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setLineWidth(0.5);
         doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 25, 4, 4, 'FD');
 
-        // Scroll/parchment icon (simple rectangle with curled ends)
-        doc.setFillColor(168, 85, 247); // Purple-500
-        doc.roundedRect(margin + 8, cursorY + 7, 10, 12, 2, 2, 'F');
-        // Scroll curls (small circles at top and bottom)
-        doc.setFillColor(139, 92, 246); // Purple-400
-        doc.circle(margin + 13, cursorY + 7, 1.5, 'F');
-        doc.circle(margin + 13, cursorY + 19, 1.5, 'F');
+
 
         // Verse text
         doc.setFont("helvetica", "italic");
         doc.setFontSize(10);
         doc.setTextColor(88, 28, 135); // Purple-800
-        const verseText = doc.splitTextToSize(activity.bibleVerse, pageWidth - (margin * 2) - 30);
-        doc.text(verseText[0], margin + 22, cursorY + 10);
+        const verseText = doc.splitTextToSize(activity.bibleVerse, pageWidth - (margin * 2) - 20); // Less padding needed
+        doc.text(verseText[0], margin + 10, cursorY + 10);
         if (verseText[1]) {
-            doc.text(verseText[1], margin + 22, cursorY + 18);
+            doc.text(verseText[1], margin + 10, cursorY + 18);
         }
 
         cursorY += 30;

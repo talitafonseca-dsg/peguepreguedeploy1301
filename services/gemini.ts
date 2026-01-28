@@ -46,20 +46,26 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
        - Exemplo "Frutos do Espírito": Cada cena deve ilustrar um ou dois frutos com exemplos visuais claros ou metáforas bíblicas.
        - O texto deve ser EXPLICATIVO e DIDÁTICO, falando diretamente sobre o conceito.
 
-    4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL): 
-       - Se for Narrativa: Defina o protagonista com DETALHES VISUAIS ESPECÍFICOS e FIXOS para garantir consistência em todas as imagens.
-       - Exemplo: "Gideon, jovem hebreu, 30 anos, barba curta castanha, cabelo castanho encaracolado, túnica bege simples, sinto de couro marrom, sandálias gastas".
+    4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL - CRÍTICO): 
+       - O CAMPO "characterDescription" DEVE SER DETALHADO E FIXO.
+       - VOCÊ DEVE DEFINIR A IDADE APRENTE DO PERSONAGEM (Ex: "30 anos", "60 anos", "criança de 8 anos").
+       - A IDADE DEVE SER MANTIDA EM TODAS AS CENAS. PROIBIDO MUDAR A IDADE.
+       - Se for Narrativa: Defina o protagonista com DETALHES VISUAIS ESPECÍFICOS.
+       - Exemplo: "Gideon, homem de 30 anos (MATENHA ESSA IDADE), barba curta castanha, cabelo castanho encaracolado, túnica bege simples, cinto de couro marrom, sandálias gastas, corpo forte de guerreiro".
        - Se for Doutrina: Defina um personagem representativo fixo com os mesmos detalhes.
     
     5. PRECISÃO HISTÓRICA: Garanta vestimentas da época e cenários autênticos do Oriente Médio antigo.
     
-    6. PROMPTS DE IMAGEM (CRÍTICO - FIDELIDADE BÍBLICA):
+    6. PROMPTS DE IMAGEM (CRÍTICO - FIDELIDADE BÍBLICA E CONSISTÊNCIA):
        - O imagePrompt DEVE ilustrar EXATAMENTE o que está descrito no narrativeText daquela cena.
-       - Exemplo Jonas: Se o texto diz "Jonas orou no ventre do peixe", o prompt deve ser "Jonas inside the belly of a large fish, praying on his knees, dark interior with soft light" - NÃO mostre ele sendo engolido.
-       - Exemplo Daniel: Se o texto diz "Daniel orava na cova", mostre ele orando pacificamente com leões dormindo ao redor - NÃO mostre leões atacando.
+       - IMPORTANTE: NÃO repita a descrição física completa do personagem no prompt da cena, pois usaremos a "characterDescription" separadamente.
+       - MAS, garanta que a ação e a emoção sejam descritas.
+       - Exemplo Jonas: Se o texto diz "Jonas orou no ventre do peixe", o prompt deve ser "Jonas praying on his knees, dark interior with soft light, expression of faith" - (A aparência dele virá do characterDescription).
+       - Exemplo Daniel: Se o texto diz "Daniel orava na cova", mostre ele orando pacificamente - NÃO mostre leões atacando.
        - NUNCA mostre momentos de violência ou medo excessivo.
+       - DICA DE CONSISTÊNCIA: Se o personagem é adulto, NUNCA use palavras como "boy", "child", "kid", "little" no imagePrompt, a menos que seja outro personagem.
        - Mostre o MOMENTO DE FÉ/MILAGRE, não o momento de perigo.
-       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição (Ex: "Close up of a golden shinning Belt of Truth on a tunic").
+       - Se for Doutrina/Simbolismo: O prompt deve focar no OBJETO ou SÍMBOLO da lição.
        - VARIAR OS ENQUADRAMENTOS: Use "Wide shot", "Close up", "Low angle".
        - CENA COMPLETA: Descreva o ambiente e ação.
        - NÃO inclua números repetitivos.
