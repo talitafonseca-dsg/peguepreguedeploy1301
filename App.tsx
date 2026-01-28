@@ -37,6 +37,7 @@ const App: React.FC = () => {
   const [style, setStyle] = useState<IllustrationStyle>(IllustrationStyle.STYLE_2D);
   const [darkMode, setDarkMode] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingActivity, setIsGeneratingActivity] = useState(false);
@@ -383,8 +384,8 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Header Redesigned */}
-          <div className="flex items-center gap-3">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-3">
 
             {/* Account Settings Group */}
             <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-2xl p-1.5 border-2 border-slate-200 dark:border-slate-700 mr-2">
@@ -471,8 +472,65 @@ const App: React.FC = () => {
             )}
 
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 focus:outline-none"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+
+
+          {/* Mobile Menu Overlay */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4 p-4 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 border-slate-100 dark:border-slate-700 animate-in slide-in-from-top-5">
+              <div className="flex flex-col gap-4">
+
+                {/* Account Actions */}
+                <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 p-3 rounded-2xl">
+                  <div className="text-sm font-bold text-slate-500 dark:text-slate-400 px-2">Conta</div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => { if (confirm("Alterar chave?")) setUserApiKey(null); }} className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">🔑</button>
+                    <button onClick={() => setShowPasswordModal(true)} className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">🔒</button>
+                    <button onClick={() => supabase.auth.signOut()} className="p-2 bg-red-50 text-red-500 rounded-xl shadow-sm">🚪</button>
+                  </div>
+                </div>
+
+                {/* Language */}
+                <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 p-3 rounded-2xl">
+                  <div className="text-sm font-bold text-slate-500 dark:text-slate-400 px-2">Idioma</div>
+                  <div className="flex gap-2">
+                    {LANGUAGES.map((l) => (
+                      <button key={l.code} onClick={() => setLang(l.code)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${lang === l.code ? 'bg-white shadow-sm' : 'opacity-50'}`}>
+                        <img src={`https://flagcdn.com/w40/${l.countryCode}.png`} className="w-5" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tools */}
+                <div className="grid grid-cols-2 gap-3">
+                  <a href="https://wa.me/5531999982884" target="_blank" className="flex items-center justify-center gap-2 bg-green-500 text-white p-3 rounded-2xl font-bold">
+                    <span>💬</span> Suporte
+                  </a>
+                  <button onClick={() => setDarkMode(!darkMode)} className="flex items-center justify-center gap-2 bg-yellow-400/20 text-yellow-600 p-3 rounded-2xl font-bold">
+                    {darkMode ? '☀️ Claro' : '🌙 Escuro'}
+                  </button>
+                </div>
+
+                {scenes.length > 0 && !isGenerating && (
+                  <button onClick={handleDownloadPDF} className="w-full bg-emerald-500 text-white p-4 rounded-2xl font-bold flex items-center justify-center gap-2">
+                    <ICONS.Download className="w-5 h-5" /> Baixar PDF
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      </header>
+      </header >
 
       <main className="max-w-5xl mx-auto px-4">
         {scenes.length === 0 && !isGenerating ? (
@@ -802,18 +860,20 @@ const App: React.FC = () => {
       </main>
 
       {/* Activity Preview Section - Rendered before footer */}
-      {showActivityPreview && activityData && (
-        <div id="activity-preview-section" className="w-full max-w-6xl mx-auto px-4 mb-24 mt-20">
-          <ActivityPreview
-            activity={activityData}
-            coloringImageUrl={activityColoringImage}
-            onDownload={handleDownloadActivityPDF}
-            onClose={() => setShowActivityPreview(false)}
-            isDownloading={isGeneratingActivity}
-            lang={lang}
-          />
-        </div>
-      )}
+      {
+        showActivityPreview && activityData && (
+          <div id="activity-preview-section" className="w-full max-w-6xl mx-auto px-4 mb-24 mt-20">
+            <ActivityPreview
+              activity={activityData}
+              coloringImageUrl={activityColoringImage}
+              onDownload={handleDownloadActivityPDF}
+              onClose={() => setShowActivityPreview(false)}
+              isDownloading={isGeneratingActivity}
+              lang={lang}
+            />
+          </div>
+        )
+      }
 
       {/* Footer */}
       <footer className="mt-32 text-center px-6 max-w-4xl mx-auto pt-16 border-t-4 border-dotted border-slate-200 dark:border-slate-800">
