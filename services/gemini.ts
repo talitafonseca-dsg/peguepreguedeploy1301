@@ -45,6 +45,9 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
        - Exemplo "Armadura de Deus": Cena 1=Paulo apresentando, Cena 2=Cinto da Verdade (foco visual no cinto), Cena 3=Couraça (foco na couraça), etc.
        - Exemplo "Frutos do Espírito": Cada cena deve ilustrar um ou dois frutos com exemplos visuais claros ou metáforas bíblicas.
        - O texto deve ser EXPLICATIVO e DIDÁTICO, falando diretamente sobre o conceito.
+       - CRÍTICO: PROIBIDO INVENTAR PERSONAGENS OUVINTES (Ex: Nada de "Rabi fictício ensinando na escola", nada de "Criança moderna ouvindo").
+       - Se for uma Parábola de Jesus (Ex: Bom Samaritano), narre a parábola DIRETAMENTE ou mostre Jesus ensinando seus Discípulos/Multidão.
+       - Fidelidade ESCRITURAL é a prioridade máxima. Não adicione "molduras narrativas" que não existem na Bíblia.
 
     4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL - CRÍTICO): 
        - O CAMPO "characterDescription" DEVE SER DETALHADO E FIXO.
@@ -160,7 +163,28 @@ export async function generateSceneImage(
 - Simple, clear shapes.
 - 100% Monochrome.
 - This is a PRINTABLE COLORING BOOK PAGE.`;
+  } else if (style === IllustrationStyle.STYLE_CUTE) {
+    stylePrompt = `CUTE KAWAII / CHIBI STICKER STYLE (HISTÓRIAS NA LUVA):
+- ADORABLE, CUTE, ROUND CHARACTERS (Chibi/Kawaii aesthetic)
+- **UNIFORM EYE STYLE FOR EVERYONE**: ALL characters (main, secondary, crowd) MUST have the EXACT SAME eyes:
+- **EYE STYLE**: Large, round, BLACK OVAL eyes with a small white highlight.
+- **CRITICAL OVERRIDE**: IGNORE any eye color description in the character text. ALL EYES MUST BE BLACK.
+- DO NOT use realistic eyes. DO NOT use colored irises.
+- **COLORS MUST BE VIBRANT AND HIGHLY SATURATED**: Use bright primary colors (Red, Blue, Yellow, Green). AVOID pastel or washed-out tones.
+- THICK WHITE OUTLINES around all characters and main objects (Sticker effect)
+- Flat lighting with soft cell shading (Vector art style)
+- Simplified anatomy (Big heads, small bodies, cute proportions)
+- Pure white background
+
+CRITICAL FOR CONSISTENCY (MUITO IMPORTANTE):
+- **ABSOLUTELY NO TEXT, NO LETTERS, NO SPEECH BUBBLES**.
+- 1. IF CHARACTER HAS A BEARD, THE CHIBI MUST HAVE A BEARD.
+- 2. HAIR COLOR AND STYLE MUST MATCH THE DESCRIPTION EXACTLY.
+- 3. CLOTHING COLORS MUST MATCH THE DESCRIPTION EXACTLY.
+- 4. Do not make adults look like babies. Make them "Adult Chibis".
+- KEEP THE SAME "CUTE DESIGN" IN EVERY SINGLE IMAGE.`;
   } else {
+    // Default or STYLE_3D
     stylePrompt = `PREMIUM 3D PIXAR STYLE ILLUSTRATION:
 - High quality 3D rendered characters like Pixar/Disney movies
 - Rich volumetric lighting with soft shadows and depth
@@ -198,7 +222,7 @@ ${variationInstruction}
 
 STRICT RULES:
 - NO text or letters anywhere in the image
-- NO halos on any character
+- ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads. (CRITICAL)
 - NO wings on humans
 - Friendly, child-appropriate content only
 - Pure white background, no complex scenery
