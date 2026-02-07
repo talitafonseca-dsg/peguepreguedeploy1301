@@ -172,6 +172,8 @@ export async function generateSceneImage(
 - NO fill, NO texture, NO cross-hatching.
 - Simple, clear shapes.
 - 100% Monochrome.
+- NO TEXT, NO LETTERS, NO SPEECH BUBBLES inside the illustration.
+- NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads.
 - This is a PRINTABLE COLORING BOOK PAGE.`;
   } else if (style === IllustrationStyle.STYLE_CUTE) {
     stylePrompt = `CUTE KAWAII / CHIBI STICKER STYLE (HISTÓRIAS NA LUVA):
@@ -231,8 +233,8 @@ BIBLICAL ACCURACY RULES:
 ${variationInstruction}
 
 STRICT RULES:
-- NO text or letters anywhere in the image
-- ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads. (CRITICAL)
+- CRITICAL: NO TEXT, NO LETTERS, NO NUMBERS, NO SPEECH BUBBLES anywhere in the image.
+- CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads. (Even for holy figures).
 - NO wings on humans
 - Friendly, child-appropriate content only
 - Pure white background, no complex scenery
