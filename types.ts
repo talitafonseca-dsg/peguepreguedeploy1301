@@ -8,6 +8,7 @@ export enum AgeGroup {
 
 export enum IllustrationStyle {
   STYLE_2D = '2D Premium (Vibrante)',
+  STYLE_2D_NO_BORDER = '2D Sem Borda',
   STYLE_3D = '3D Suave (Disney Style)',
   STYLE_CUTE = 'Fofinho (Luva)',
   COLORING_PAGE = 'Página de Colorir (P&B)'

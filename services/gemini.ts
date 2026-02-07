@@ -152,6 +152,16 @@ export async function generateSceneImage(
 - Soft volumetric lighting creating depth
 - Pure white background
 - Professional illustration quality like Disney storybook art`;
+  } else if (style === IllustrationStyle.STYLE_2D_NO_BORDER) {
+    stylePrompt = `PREMIUM 2D ILLUSTRATION STYLE (NO BORDERS):
+- High quality digital illustration art (NOT sticker style, NO white outlines)
+- Rich, vibrant saturated colors with beautiful gradients and soft shading
+- Semi-realistic proportions (NOT chibi, NOT flat)
+- Detailed rendering with depth and dimension like professional children's book art
+- Characters with expressive faces and detailed clothing textures
+- Soft volumetric lighting creating depth
+- Pure white background for easy integration
+- Professional illustration quality like Disney storybook art`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
     stylePrompt = `STRICT BLACK AND WHITE COLORING PAGE FOR KIDS:
 - ABSOLUTELY NO COLORS. ONLY BLACK LINES ON WHITE BACKGROUND.

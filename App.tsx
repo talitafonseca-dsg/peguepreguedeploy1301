@@ -65,6 +65,7 @@ const App: React.FC = () => {
 
   const styleLabels: Record<IllustrationStyle, string> = {
     [IllustrationStyle.STYLE_2D]: t.style2D,
+    [IllustrationStyle.STYLE_2D_NO_BORDER]: t.style2DNoBorder,
     [IllustrationStyle.STYLE_3D]: t.style3D,
     [IllustrationStyle.STYLE_CUTE]: t.styleCute,
     [IllustrationStyle.COLORING_PAGE]: t.styleColoring,
