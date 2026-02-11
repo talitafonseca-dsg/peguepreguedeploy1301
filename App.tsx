@@ -28,7 +28,11 @@ const App: React.FC = () => {
 
   const [userApiKey, setUserApiKey] = useState<string | null>(null);
   const [purchaseStatus, setPurchaseStatus] = useState<string | null>(null);
+  const [purchaseDate, setPurchaseDate] = useState<Date | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isEligibleForDemo, setIsEligibleForDemo] = useState(false);
+  const [demoRemainingDays, setDemoRemainingDays] = useState<number | null>(null);
 
   const [lang, setLang] = useState<LanguageCode>('pt');
   const [selectedStory, setSelectedStory] = useState(BIBLE_STORIES[0]);
@@ -101,7 +105,7 @@ const App: React.FC = () => {
       // Primeiro tenta buscar por ID
       let { data, error } = await supabase
         .from('profiles')
-        .select('gemini_api_key, purchase_status')
+        .select('gemini_api_key, purchase_status, purchase_date')
         .eq('id', userId)
         .single();
 
@@ -110,7 +114,7 @@ const App: React.FC = () => {
         console.log('Profile not found by ID, trying by email:', userEmail);
         const emailResult = await supabase
           .from('profiles')
-          .select('id, gemini_api_key, purchase_status')
+          .select('id, gemini_api_key, purchase_status, purchase_date')
           .eq('email', userEmail.toLowerCase())
           .single();
 
@@ -129,8 +133,25 @@ const App: React.FC = () => {
 
       setPurchaseStatus(data?.purchase_status || 'pending');
 
+      if (data?.purchase_date) {
+        const pDate = new Date(data.purchase_date);
+        setPurchaseDate(pDate);
+
+        const now = new Date();
+        const diffDays = Math.ceil((now.getTime() - pDate.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 10) {
+          setIsEligibleForDemo(true);
+          setDemoRemainingDays(Math.max(0, 10 - diffDays));
+        } else {
+          setIsEligibleForDemo(false);
+          setDemoRemainingDays(0);
+        }
+      }
+
       if (data?.gemini_api_key) {
         setUserApiKey(data.gemini_api_key);
+        setIsDemoMode(false);
       } else {
         setUserApiKey(null);
       }
@@ -158,56 +179,101 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
-  const handleStartGeneration = async () => {
-    if (!userApiKey) {
-      alert("Erro: Chave de API não encontrada.");
-      return;
-    }
+  const handleGenerate = async () => {
+    if (!userApiKey && !isDemoMode) return;
 
-    const finalStory = customStory.trim() || selectedStory;
+    const storyToGenerate = customStory.trim() !== '' ? customStory : selectedStory;
+    if (!storyToGenerate) return;
+
     setIsGenerating(true);
-    setGenerationProgress(5);
-    setCurrentGenerationPhase(t.studyScript);
+    setGenerationProgress(0);
+    setScenes([]);
+    setGeneratedTitle(null);
+    setShowActivityPreview(false);
 
     try {
-      const result: BibleStory = await generateStoryStructure(userApiKey, finalStory, ageGroup, lang);
-      setScenes(result.scenes);
-      setGeneratedTitle(result.title);
-      setCharacterDescription(result.characterDescription);
-      setGenerationProgress(20);
+      setCurrentGenerationPhase(t.creatingStory);
+      const supabaseToken = (await supabase.auth.getSession()).data.session?.access_token;
 
-      const updatedScenes = [...result.scenes];
-      for (let i = 0; i < updatedScenes.length; i++) {
-        setCurrentGenerationPhase(t.illustratingScene.replace('{0}', (i + 1).toString()).replace('{1}', updatedScenes.length.toString()));
-        try {
-          const imageUrl = await generateSceneImage(
-            userApiKey,
-            updatedScenes[i].imagePrompt,
-            result.characterDescription,
-            style
-          );
-          updatedScenes[i] = { ...updatedScenes[i], imageUrl, error: undefined };
-        } catch (err) {
-          console.error(`Error generating image for scene ${i + 1}:`, err);
-          updatedScenes[i] = { ...updatedScenes[i], error: 'Error' };
-        }
-        setScenes([...updatedScenes]);
-        setGenerationProgress(20 + ((i + 1) / updatedScenes.length) * 80);
+      const structure = await generateStoryStructure(
+        userApiKey,
+        storyToGenerate,
+        ageGroup,
+        lang,
+        isDemoMode ? supabaseToken : undefined
+      );
+
+      setGeneratedTitle(structure.title);
+      setCharacterDescription(structure.characterDescription);
+
+      const storyScenes: StoryScene[] = [];
+      const totalSteps = structure.scenes.length;
+
+      for (let i = 0; i < structure.scenes.length; i++) {
+        const scene = structure.scenes[i];
+        setCurrentGenerationPhase(`${t.creatingImage} ${i + 1}/${totalSteps}`);
+
+        const imageUrl = await generateSceneImage(
+          userApiKey,
+          scene.imagePrompt,
+          structure.characterDescription,
+          style,
+          0,
+          false,
+          isDemoMode ? supabaseToken : undefined
+        );
+
+        const fullScene = { ...scene, imageUrl };
+        storyScenes.push(fullScene);
+        setScenes([...storyScenes]);
+        setGenerationProgress(((i + 1) / totalSteps) * 100);
       }
-    } catch (err: any) {
-      const errorMessage = err?.message || String(err);
-      alert(`Erro detalhado: ${errorMessage}\n\nVerifique se sua chave API está correta e tem permissões.`);
-      console.error("Erro completo:", err);
-      setIsGenerating(false);
+    } catch (error: any) {
+      alert(error.message);
     } finally {
       setIsGenerating(false);
-      setGenerationProgress(0);
       setCurrentGenerationPhase('');
     }
   };
 
+  const handleGenerateActivity = async () => {
+    if (!userApiKey && !isDemoMode) return;
+    if (!generatedTitle) return;
+
+    setIsGeneratingActivity(true);
+    try {
+      const supabaseToken = (await supabase.auth.getSession()).data.session?.access_token;
+      const data = await generateActivityContent(
+        userApiKey,
+        generatedTitle,
+        ageGroup,
+        lang,
+        isDemoMode ? supabaseToken : undefined
+      );
+
+      setActivityData(data);
+
+      // Gera a imagem de colorir separadamente
+      const coloringImg = await generateSceneImage(
+        userApiKey,
+        data.coloringPrompt,
+        characterDescription,
+        IllustrationStyle.COLORING_PAGE,
+        0,
+        false,
+        isDemoMode ? supabaseToken : undefined
+      );
+      setActivityColoringImage(coloringImg);
+      setShowActivityPreview(true);
+    } catch (error: any) {
+      alert("Erro ao gerar atividade: " + error.message);
+    } finally {
+      setIsGeneratingActivity(false);
+    }
+  };
+
   const handleRefreshScene = async (index: number) => {
-    if (!userApiKey) return;
+    if (!userApiKey && !isDemoMode) return;
 
     const updatedScenes = [...scenes];
     const originalImage = updatedScenes[index].imageUrl;
@@ -216,13 +282,15 @@ const App: React.FC = () => {
     setScenes([...updatedScenes]);
 
     try {
+      const supabaseToken = (await supabase.auth.getSession()).data.session?.access_token;
       const imageUrl = await generateSceneImage(
         userApiKey,
         updatedScenes[index].imagePrompt,
         characterDescription,
         style,
         0, // retryCount
-        true // isVariation - Force different angle
+        true, // isVariation - Force different angle
+        isDemoMode ? supabaseToken : undefined
       );
       updatedScenes[index] = { ...updatedScenes[index], imageUrl, loading: false, error: undefined };
       setScenes([...updatedScenes]);
@@ -242,48 +310,6 @@ const App: React.FC = () => {
       }
     }
     await createPrintablePDF(title, scenes, lang);
-  };
-
-  const handleGenerateActivity = async () => {
-    if (!userApiKey) return;
-    const title = customStory.trim() || selectedStory;
-
-    setIsGeneratingActivity(true);
-    try {
-      // 1. Generate Content
-      let activityContent;
-      try {
-        activityContent = await generateActivityContent(userApiKey, title, ageGroup, lang);
-      } catch (e: any) {
-        throw new Error(`Erro na IA de Texto: ${e.message}`);
-      }
-
-      // 2. Generate Coloring Image
-      let coloringImageUrl = null;
-      try {
-        coloringImageUrl = await generateSceneImage(
-          userApiKey,
-          activityContent.coloringPrompt,
-          "", // No character desc needed
-          IllustrationStyle.COLORING_PAGE,
-          0,
-          false
-        );
-      } catch (e) {
-        console.error("Error generating coloring image", e);
-      }
-
-      // Set Data for Preview
-      setActivityData(activityContent);
-      setActivityColoringImage(coloringImageUrl);
-      setShowActivityPreview(true);
-
-    } catch (err: any) {
-      console.error("Error generating activity:", err);
-      alert(err.message || "Erro desconhecido ao gerar atividade.");
-    } finally {
-      setIsGeneratingActivity(false);
-    }
   };
 
   const handleDownloadActivityPDF = async () => {
@@ -347,8 +373,14 @@ const App: React.FC = () => {
     );
   }
 
-  if (!userApiKey) {
-    return <ApiKeyScreen onKeySaved={handleKeySaved} />;
+  if (!userApiKey && !isDemoMode) {
+    return (
+      <ApiKeyScreen
+        onKeySaved={handleKeySaved}
+        onDemoMode={() => setIsDemoMode(true)}
+        isEligibleForDemo={isEligibleForDemo}
+      />
+    );
   }
 
   return (
@@ -368,6 +400,12 @@ const App: React.FC = () => {
 
       {/* Header */}
       <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-b-4 border-yellow-400 dark:border-yellow-600 py-3 px-4 mb-8 sticky top-0 z-50 shadow-xl">
+        {isDemoMode && (
+          <div className="max-w-5xl mx-auto mb-2 bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest py-1 px-4 rounded-full flex items-center justify-between animate-pulse">
+            <span>✨ Modo Cortesia Ativado ({demoRemainingDays} dias restantes)</span>
+            <button onClick={() => setIsDemoMode(false)} className="underline hover:no-underline">Configurar minha chave</button>
+          </div>
+        )}
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.location.reload()}>
             <img
@@ -651,7 +689,7 @@ const App: React.FC = () => {
             {/* Generate Button Section */}
             <div className="flex flex-col items-center">
               <button
-                onClick={handleStartGeneration}
+                onClick={handleGenerate}
                 disabled={isGenerating}
                 className="group relative bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-6 px-16 rounded-[2.5rem] font-black text-2xl shadow-2xl shadow-purple-200 dark:shadow-none transition-all transform hover:-translate-y-2 active:scale-95 disabled:opacity-50 overflow-hidden border-b-8 border-blue-800"
               >

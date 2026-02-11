@@ -148,7 +148,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
     doc.setFont("helvetica", "bold");
     doc.setFontSize(15);
     doc.setTextColor(124, 58, 237); // Purple Header
-    doc.text(t.activity1, margin, cursorY);
+    doc.text(`1. ${t.activity1}`, margin, cursorY);
     cursorY += 10; // Increased spacing
 
     // Fallback Quiz Data (More engaging)
@@ -221,7 +221,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "bold");
         doc.setFontSize(15);
         doc.setTextColor(124, 58, 237);
-        doc.text(t.activity2, margin, cursorY);
+        doc.text(`2. ${t.activity2}`, margin, cursorY);
         cursorY += 14; // More spacing
 
         // Yellow Card - Larger height for better readability
@@ -247,7 +247,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(124, 58, 237);
-    doc.text(t.activity3, margin, cursorY);
+    doc.text(`3. ${t.activity3}`, margin, cursorY);
     cursorY += 10;
 
     // Filter words: max 10 chars, max 8 words for guaranteed placement
@@ -308,7 +308,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(124, 58, 237);
-        doc.text(t.activity4, margin, cursorY);
+        doc.text(`4. ${t.activity4}`, margin, cursorY);
         cursorY += 8;
 
         const boxHeight = (scrambleWords.length * 20) + 10;
@@ -361,7 +361,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(37, 99, 235); // Blue-600
-        doc.text(t.activity5, margin, cursorY);
+        doc.text(`5. ${t.activity5}`, margin, cursorY);
         cursorY += 12;
 
         // Main container - white with light border
@@ -420,7 +420,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(22, 163, 74); // Green-600
-        doc.text(t.activity6, margin, cursorY);
+        doc.text(`6. ${t.activity6}`, margin, cursorY);
         cursorY += 12;
 
         let itemY = cursorY;
@@ -462,31 +462,357 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         cursorY = itemY + 10;  // Standardized spacing
     }
 
-    // 9. Verse to Memorize (compact activity)
-    if (activity.bibleVerse && cursorY < pageHeight - 40) {
+    // 9. Who Said It? (Quote Matching)
+    const whoSaidIt = activity.whoSaidIt && Array.isArray(activity.whoSaidIt) ? activity.whoSaidIt : [];
+    if (whoSaidIt.length > 0) {
+        if (cursorY + (whoSaidIt.length * 22) + 20 > pageHeight - 15) {
+            doc.addPage();
+            cursorY = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(234, 88, 12); // Orange-600
+        doc.text(`7. ${t.activityWhoSaid}`, margin, cursorY);
+        cursorY += 8;
+
+        // Draw character bank box
+        doc.setFillColor(255, 247, 237); // Orange-50
+        doc.setDrawColor(253, 186, 116); // Orange-300
+        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 12, 3, 3, 'FD');
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(194, 65, 12); // Orange-800
+        const charNames = whoSaidIt.map(w => w.character).join("   •   ");
+        doc.text(charNames, pageWidth / 2, cursorY + 8, { align: "center" });
+        cursorY += 20;
+
+        // Draw quotes
+        whoSaidIt.forEach((item, idx) => {
+            // Speech bubble style
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(253, 186, 116); // Orange-300
+            doc.roundedRect(margin + 10, cursorY, pageWidth - (margin * 2) - 10, 18, 4, 4, 'FD');
+
+            // Triangle tail
+            doc.triangle(
+                margin + 10, cursorY + 5,
+                margin + 2, cursorY + 9,
+                margin + 10, cursorY + 13,
+                'FD'
+            );
+
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(10);
+            doc.setTextColor(67, 20, 7); // Orange-950
+            const quoteText = doc.splitTextToSize(`"${item.quote}"`, pageWidth - (margin * 2) - 30);
+            doc.text(quoteText[0], margin + 20, cursorY + 11);
+
+            // Line for answer
+            doc.setDrawColor(194, 65, 12); // Orange-800
+            doc.line(pageWidth - margin - 60, cursorY + 14, pageWidth - margin - 5, cursorY + 14);
+            doc.setFontSize(8);
+            doc.setTextColor(154, 52, 18); // Orange-700
+            doc.text(t.nameLabel.replace(':', ''), pageWidth - margin - 60, cursorY + 17);
+
+            cursorY += 24;
+        });
+
+        cursorY += 10;
+    }
+
+    // 10. Order Events (Timeline)
+    const orderEvents = activity.orderEvents && Array.isArray(activity.orderEvents) ? activity.orderEvents : [];
+    if (orderEvents.length > 0) {
+        if (cursorY + (orderEvents.length * 18) + 20 > pageHeight - 15) {
+            doc.addPage();
+            cursorY = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(13, 148, 136); // Teal-600
+        doc.text(`8. ${t.activityOrder}`, margin, cursorY);
+        cursorY += 10;
+
+        // Shuffle for PDF
+        const pdfEvents = [...orderEvents].sort(() => Math.random() - 0.5);
+
+        pdfEvents.forEach((item, idx) => {
+            // Number box
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(20, 184, 166); // Teal-500
+            doc.setLineWidth(0.5);
+            doc.roundedRect(margin, cursorY, 12, 12, 2, 2, 'FD');
+
+            // Event text
+            doc.setFillColor(240, 253, 250); // Teal-50
+            doc.setDrawColor(204, 251, 241); // Teal-100
+            doc.roundedRect(margin + 18, cursorY, pageWidth - (margin * 2) - 18, 12, 2, 2, 'FD');
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(15, 118, 110); // Teal-800
+            const eventText = doc.splitTextToSize(item.event, pageWidth - (margin * 2) - 25);
+            doc.text(eventText[0], margin + 22, cursorY + 8);
+
+            cursorY += 16;
+        });
+
+        cursorY += 10;
+    }
+
+    // 11. Character Card (Cartão do Herói)
+    if (activity.characterCard) {
+        doc.addPage();
+        cursorY = 20;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(239, 68, 68); // Red-500
+        doc.text(`9. ${t.activityCharacter}`, margin, cursorY);
+        cursorY += 10;
+
+        // Card Container
+        // Card Container - Increased Height
+        const cardHeight = 135; // Was 120
+        const cardWidth = 140;
+        const cardX = (pageWidth - cardWidth) / 2;
+
+        doc.setDrawColor(30, 41, 59); // Slate-800
+        doc.setLineWidth(1);
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(cardX, cursorY, cardWidth, cardHeight, 4, 4, 'FD');
+
+        // Header
+        doc.setFillColor(30, 41, 59); // Slate-800
+        doc.roundedRect(cardX, cursorY, cardWidth, 20, 4, 4, 'F');
+        // Fix corners
+        doc.rect(cardX, cursorY + 10, cardWidth, 10, 'F'); // Square bottom of header
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(255, 255, 255);
+        doc.text(activity.characterCard.name.toUpperCase(), pageWidth / 2, cursorY + 13, { align: "center" });
+
+        // Title
+        doc.setFontSize(10);
+        doc.setTextColor(250, 204, 21); // Yellow-400
+        doc.text(activity.characterCard.title.toUpperCase(), pageWidth / 2, cursorY + 25, { align: "center" });
+
+        // Portrait Box
+        const contentY = cursorY + 30;
+        doc.setDrawColor(203, 213, 225); // Slate-300
+        doc.setLineWidth(0.5);
+        doc.setLineDashPattern([3, 3], 0);
+        doc.rect(cardX + 25, contentY, 90, 65); // Bigger photo area
+        doc.setLineDashPattern([], 0);
+
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184); // Slate-400
+        doc.text(t.newsDraw || "DESENHE O HERÓI", pageWidth / 2, contentY + 32, { align: "center" });
+
+        // Attributes (Compressed to give space for photo)
+        let attrY = contentY + 70; // Moved down
+        const attrs = [
+            { label: t.attrFaith, val: activity.characterCard.attributes.faith, color: [59, 130, 246] },
+            { label: t.attrCourage, val: activity.characterCard.attributes.courage, color: [239, 68, 68] },
+            { label: t.attrWisdom, val: activity.characterCard.attributes.wisdom, color: [168, 85, 247] }
+        ];
+
+        attrs.forEach(attr => {
+            doc.setFontSize(8); // Smaller font
+            doc.setTextColor(71, 85, 105);
+            doc.text(attr.label.toUpperCase(), cardX + 10, attrY + 2);
+
+            // Bar bg
+            doc.setFillColor(241, 245, 249);
+            doc.roundedRect(cardX + 35, attrY - 2, 85, 5, 2, 2, 'F'); // Wider bar
+
+            // Bar fill
+            doc.setFillColor(attr.color[0], attr.color[1], attr.color[2]);
+            const fillWidth = (attr.val / 10) * 85;
+            doc.roundedRect(cardX + 35, attrY - 2, fillWidth, 5, 2, 2, 'F');
+
+            doc.setFontSize(8);
+            doc.text(attr.val * 10 + "%", cardX + 120, attrY + 2);
+
+            attrY += 8; // Tighter spacing
+        });
+
+        cursorY += cardHeight + 10;
+    }
+
+    // 10. Secret Message (Decifre o Código) - MOVED HERE to follow Hero Card
+    if (activity.secretPhrase) {
+        if (cursorY + 60 > pageHeight - 15) { // If it doesn't fit with Hero Card
+            doc.addPage();
+            cursorY = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(79, 70, 229); // Indigo-600
+        doc.text(`10. ${t.activitySecret}`, margin, cursorY);
+        cursorY += 8;
+
+        // Draw Key Box
+        doc.setDrawColor(199, 210, 254);
+        doc.setFillColor(238, 242, 255);
+        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 25, 3, 3, 'FD');
+
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+        const codeMap = new Map<string, number>();
+        alphabet.forEach((char, i) => codeMap.set(char, i + 1));
+
+        doc.setFontSize(8);
+        doc.setTextColor(67, 56, 202);
+        let keyX = margin + 5;
+        let keyY = cursorY + 6;
+
+        alphabet.forEach((char, i) => {
+            if (i === 13) { keyX = margin + 5; keyY += 12; }
+            doc.text(`${char}=${i + 1}`, keyX, keyY);
+            keyX += 13;
+        });
+
+        cursorY += 35;
+
+        const phrase = activity.secretPhrase.toUpperCase();
+        let pX = margin;
+
+        phrase.split('').forEach((char) => {
+            if (char === ' ') {
+                pX += 10;
+            } else {
+                doc.setDrawColor(99, 102, 241);
+                doc.rect(pX, cursorY, 10, 10);
+                doc.setFontSize(7);
+                doc.setTextColor(100, 100, 100);
+                const code = codeMap.get(char) || "?";
+                doc.text(`${code}`, pX + 5, cursorY + 14, { align: "center" });
+                pX += 12;
+                if (pX > pageWidth - margin - 15) {
+                    pX = margin;
+                    cursorY += 18;
+                }
+            }
+        });
+
+        cursorY += 25;
+    }
+
+    // 11. News Flash (Notícia Urgente) - START NEW PAGE
+    if (activity.newsFlash) {
+        doc.addPage();
+        cursorY = 20;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(87, 83, 78); // Stone-600
+        doc.text(`11. ${t.activityNews}`, margin, cursorY);
+        cursorY += 10;
+
+        const paperHeight = 85; // Reduced slightly to fit more
+        doc.setDrawColor(168, 162, 158);
+        doc.setLineWidth(0.5);
+        doc.setFillColor(250, 250, 249);
+        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), paperHeight, 2, 2, 'FD');
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.8);
+        doc.line(margin + 5, cursorY + 12, pageWidth - margin - 5, cursorY + 12);
+
+        doc.setFont("times", "bold");
+        doc.setFontSize(18);
+        doc.setTextColor(28, 25, 23);
+        doc.text(activity.newsFlash.title.toUpperCase(), pageWidth / 2, cursorY + 9, { align: "center" });
+
+        doc.setFontSize(14);
+        doc.text(`"${activity.newsFlash.headline}"`, pageWidth / 2, cursorY + 22, { align: "center" });
+
+        const contentY = cursorY + 28;
+        doc.setDrawColor(214, 211, 209);
+        doc.rect(margin + 10, contentY + 2, 50, 35);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(168, 162, 158);
+        doc.text(t.newsDraw || "FOTO", margin + 35, contentY + 18, { align: "center" });
+
+        const lineX = margin + 65;
+        const lineW = pageWidth - lineX - margin - 10;
+        let lineY = contentY + 8;
+        doc.setLineWidth(0.5);
+        for (let i = 0; i < 4; i++) {
+            doc.line(lineX, lineY, lineX + lineW, lineY);
+            lineY += 8;
+        }
+
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "italic");
+        doc.setTextColor(120, 113, 108);
+        const instruct = doc.splitTextToSize(activity.newsFlash.instructions, pageWidth - (margin * 2) - 20);
+        doc.text(instruct, margin + 10, cursorY + paperHeight - 5);
+
+        cursorY += paperHeight + 15;
+    }
+
+    // 12. Family Questions - FOLLOWS News Flash
+    const familyQuestions = activity.familyQuestions && Array.isArray(activity.familyQuestions) ? activity.familyQuestions : [];
+    if (familyQuestions.length > 0) {
+        if (cursorY + (familyQuestions.length * 15) > pageHeight - 40) {
+            doc.addPage();
+            cursorY = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(219, 39, 119); // Pink-600
+        doc.text(`12. ${t.activityFamily}`, margin, cursorY);
+        cursorY += 10;
+
+        familyQuestions.forEach((q) => {
+            doc.setFillColor(253, 242, 248);
+            doc.setDrawColor(252, 231, 243);
+            doc.circle(margin + 5, cursorY + 4, 4, 'FD');
+            doc.setTextColor(219, 39, 119);
+            doc.setFontSize(8);
+            doc.text("?", margin + 5, cursorY + 5, { align: "center" });
+
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(10);
+            doc.setTextColor(131, 24, 67);
+            const qLines = doc.splitTextToSize(q, pageWidth - (margin * 2) - 15);
+            doc.text(qLines, margin + 12, cursorY + 5);
+            cursorY += (qLines.length * 5) + 6;
+        });
+
+        cursorY += 10;
+    }
+
+    // 13. Verse to Memorize - FOLLOWS Family Questions
+    if (activity.bibleVerse) {
+        if (cursorY + 30 > pageHeight - 15) {
+            doc.addPage();
+            cursorY = 20;
+        }
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(168, 85, 247); // Purple-500
-        doc.text(t.activity7, margin, cursorY);
-        cursorY += 10;
+        doc.text(`13. ${t.activity7}`, margin, cursorY);
+        cursorY += 8;
 
-        // Decorative card with verse
         doc.setFillColor(255, 255, 255);
-        doc.setDrawColor(168, 85, 247); // Purple-500
+        doc.setDrawColor(168, 85, 247);
         doc.setLineWidth(0.5);
-        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 25, 4, 4, 'FD');
+        doc.roundedRect(margin, cursorY, pageWidth - (margin * 2), 22, 4, 4, 'FD');
 
-
-
-        // Verse text
         doc.setFont("helvetica", "italic");
         doc.setFontSize(10);
-        doc.setTextColor(88, 28, 135); // Purple-800
-        const verseText = doc.splitTextToSize(activity.bibleVerse, pageWidth - (margin * 2) - 20); // Less padding needed
-        doc.text(verseText[0], margin + 10, cursorY + 10);
-        if (verseText[1]) {
-            doc.text(verseText[1], margin + 10, cursorY + 18);
-        }
+        doc.setTextColor(88, 28, 135);
+        const verseText = doc.splitTextToSize(activity.bibleVerse, pageWidth - (margin * 2) - 20);
+        doc.text(verseText, margin + 10, cursorY + 8);
 
         cursorY += 30;
     }
@@ -502,12 +828,12 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(255, 255, 255);
-        doc.text(t.coloringTitle, pageWidth / 2, 13, { align: "center" });
+        doc.text(`14. ${t.coloringTitle}`, pageWidth / 2, 13, { align: "center" });
 
-        const imgWidth = 170;
-        const imgHeight = (imgWidth * 4) / 3;
+        const imgWidth = 180;
+        const imgHeight = (imgWidth * 4) / 3; // ~240
         const x = (pageWidth - imgWidth) / 2;
-        const y = 40;
+        const y = 30; // Position higher
 
         // Dashed Border Frame
         doc.setDrawColor(200, 200, 200);
@@ -524,8 +850,6 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
     for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(150, 150, 150);
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
         doc.text(`${t.title || "Pegue & Pregue"} - www.peguepregue.online`, pageWidth / 2, pageHeight - 10, { align: "center" });

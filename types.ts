@@ -72,6 +72,31 @@ export interface ActivityContent {
     statement: string;
     isTrue: boolean;
   }[];
+  whoSaidIt?: {
+    character: string;
+    quote: string;
+  }[];
+  orderEvents?: {
+    event: string;
+    order: number;
+  }[];
+  secretPhrase?: string;
+  familyQuestions?: string[];
+  characterCard?: {
+    name: string;
+    title: string;
+    attributes: {
+      faith: number;
+      courage: number;
+      wisdom: number;
+    };
+    description: string;
+  };
+  newsFlash?: {
+    title: string;
+    headline: string;
+    instructions: string;
+  };
 }
 
 export interface GenerationState {

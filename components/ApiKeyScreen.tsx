@@ -3,9 +3,11 @@ import { supabase } from '../services/supabase';
 
 interface ApiKeyScreenProps {
     onKeySaved: (key: string) => void;
+    onDemoMode: () => void;
+    isEligibleForDemo: boolean;
 }
 
-export const ApiKeyScreen: React.FC<ApiKeyScreenProps> = ({ onKeySaved }) => {
+export const ApiKeyScreen: React.FC<ApiKeyScreenProps> = ({ onKeySaved, onDemoMode, isEligibleForDemo }) => {
     const [key, setKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -98,6 +100,24 @@ export const ApiKeyScreen: React.FC<ApiKeyScreenProps> = ({ onKeySaved }) => {
                         </svg>
                         💬 Precisa de ajuda? Suporte via WhatsApp
                     </a>
+
+                    {isEligibleForDemo && (
+                        <div className="bg-purple-50 dark:bg-purple-900/30 p-5 rounded-2xl border-2 border-purple-100 dark:border-purple-800 text-center">
+                            <p className="text-sm font-bold text-purple-700 dark:text-purple-300 mb-3">
+                                ✨ Você tem 10 dias de acesso cortesia!
+                            </p>
+                            <button
+                                type="button"
+                                onClick={onDemoMode}
+                                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-black transition-all transform hover:scale-105 shadow-lg"
+                            >
+                                Começar em Modo Cortesia
+                            </button>
+                            <p className="text-[10px] text-purple-400 mt-2">
+                                Limite de 3 histórias por dia. Gerado pela nossa chave.
+                            </p>
+                        </div>
+                    )}
 
                     <button
                         type="button"

@@ -94,7 +94,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                         {activity.completeThePhrase && (
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
-                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">2</span>
+                                    <span className="bg-emerald-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-emerald-200 shadow-lg">2</span>
                                     {t.activity2}
                                 </h3>
                                 <div className="bg-yellow-50 p-8 rounded-2xl border-2 border-yellow-200 border-dashed font-bold text-2xl text-center text-yellow-800 leading-relaxed">
@@ -148,7 +148,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                         {activity.matchColumns && activity.matchColumns.length > 0 && (
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
-                                    <span className="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-blue-200 shadow-lg">5</span>
+                                    <span className="bg-amber-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-amber-200 shadow-lg">5</span>
                                     {t.activity5}
                                 </h3>
                                 <div className="bg-blue-50 p-6 rounded-3xl border-2 border-blue-200">
@@ -194,11 +194,201 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             </div>
                         )}
 
-                        {/* Verse to Memorize Preview */}
+                        {/* 9. Who Said It Preview */}
+                        {activity.whoSaidIt && activity.whoSaidIt.length > 0 && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-orange-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-orange-200 shadow-lg">7</span>
+                                    {t.activityWhoSaid}
+                                </h3>
+                                <div className="grid gap-6">
+                                    {activity.whoSaidIt.map((item, idx) => (
+                                        <div key={idx} className="flex flex-col md:flex-row items-center gap-4">
+                                            {/* Quote Bubble */}
+                                            <div className="flex-1 bg-white p-6 rounded-3xl rounded-tl-none border-2 border-orange-200 shadow-sm relative">
+                                                <div className="absolute top-0 -left-2 w-4 h-4 bg-white border-l-2 border-t-2 border-orange-200 transform -rotate-45"></div>
+                                                <p className="text-slate-700 italic text-lg font-medium">"{item.quote}"</p>
+                                            </div>
+                                            {/* Character Label */}
+                                            <div className="w-full md:w-48 bg-orange-100 p-4 rounded-2xl text-center border border-orange-200">
+                                                <span className="text-orange-800 font-bold text-sm uppercase tracking-wide opacity-50">?</span>
+                                                {/* <p className="text-orange-900 font-bold">{item.character}</p> - Hidden for preview/quiz effect */}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="mt-4 p-4 bg-slate-100 rounded-2xl text-center">
+                                        <p className="text-sm text-slate-500 font-bold uppercase tracking-wider">{t.wordSearchFind}: <span className="text-slate-800">{activity.whoSaidIt.map(i => i.character).join(", ")}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 10. Order Events Preview */}
+                        {activity.orderEvents && activity.orderEvents.length > 0 && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-teal-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-teal-200 shadow-lg">8</span>
+                                    {t.activityOrder}
+                                </h3>
+                                <div className="space-y-4">
+                                    {[...activity.orderEvents].sort(() => Math.random() - 0.5).map((item, idx) => (
+                                        <div key={idx} className="flex items-center gap-4 bg-teal-50 p-4 rounded-2xl border border-teal-100">
+                                            <div className="w-12 h-12 bg-white rounded-xl border-2 border-teal-200 text-teal-300 font-bold flex items-center justify-center text-2xl shadow-inner">
+                                            </div>
+                                            <p className="flex-1 text-slate-700 font-bold text-lg">{item.event}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 11. Character Card Preview */}
+                        {activity.characterCard && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-red-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-red-200 shadow-lg">9</span>
+                                    {t.activityCharacter}
+                                </h3>
+                                <div className="bg-white p-6 rounded-3xl border-4 border-slate-800 shadow-2xl max-w-sm mx-auto transform rotate-1">
+                                    {/* Card Header */}
+                                    <div className="bg-slate-800 text-white p-3 rounded-t-xl text-center">
+                                        <h4 className="text-xl font-black uppercase tracking-widest">{activity.characterCard.name}</h4>
+                                        <p className="text-xs text-yellow-400 font-bold uppercase">{activity.characterCard.title}</p>
+                                    </div>
+
+                                    {/* Image Placeholder */}
+                                    <div className="bg-slate-200 h-48 rounded-lg my-4 flex items-center justify-center border-2 border-slate-300 border-dashed">
+                                        <span className="text-slate-400 font-bold uppercase text-sm">Desenhe o Herói</span>
+                                    </div>
+
+                                    {/* Attributes */}
+                                    <div className="space-y-3 mb-4">
+                                        {[
+                                            { label: t.attrFaith, val: activity.characterCard.attributes.faith, color: "bg-blue-500" },
+                                            { label: t.attrCourage, val: activity.characterCard.attributes.courage, color: "bg-red-500" },
+                                            { label: t.attrWisdom, val: activity.characterCard.attributes.wisdom, color: "bg-purple-500" }
+                                        ].map((attr, idx) => (
+                                            <div key={idx} className="flex items-center gap-2">
+                                                <span className="text-xs font-bold w-16 text-slate-600 uppercase">{attr.label}</span>
+                                                <div className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                                    <div className={`h-full ${attr.color}`} style={{ width: `${attr.val * 10}%` }}></div>
+                                                </div>
+                                                <span className="text-xs font-bold text-slate-800">{attr.val * 10}%</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-sm text-yellow-900 font-medium leading-tight">
+                                        {activity.characterCard.description}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 10. Secret Message Preview (MOVED) */}
+                        {activity.secretPhrase && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-indigo-200 shadow-lg">10</span>
+                                    {t.activitySecret}
+                                </h3>
+                                <div className="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
+                                    {/* Key */}
+                                    <div className="flex flex-wrap gap-2 justify-center mb-8 bg-white p-4 rounded-xl border border-indigo-100">
+                                        {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Z'].map(char => (
+                                            <div key={char} className="flex flex-col items-center">
+                                                <span className="text-xs text-indigo-400 font-bold mb-1">{char}</span>
+                                                <div className="w-6 h-6 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 text-xs shadow-sm">
+                                                    ★
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Puzzle */}
+                                    <div className="flex flex-wrap gap-3 justify-center">
+                                        {activity.secretPhrase.split('').map((char, idx) => (
+                                            char === ' ' ? <div key={idx} className="w-8"></div> :
+                                                <div key={idx} className="flex flex-col items-center gap-2">
+                                                    <div className="w-10 h-10 bg-white rounded-xl border-2 border-indigo-200 flex items-center justify-center text-indigo-500 shadow-sm">
+                                                        ★
+                                                    </div>
+                                                    <div className="w-8 h-0.5 bg-indigo-300"></div>
+                                                </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-8 text-center">
+                                        <p className="text-sm text-indigo-400 font-bold uppercase tracking-wider bg-white inline-block px-4 py-2 rounded-full border border-indigo-100">
+                                            {t.wordSearchFind}: <span className="text-indigo-800">{activity.secretPhrase}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 11. News Flash Preview */}
+                        {activity.newsFlash && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-stone-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-stone-200 shadow-lg">11</span>
+                                    {t.activityNews}
+                                </h3>
+                                <div className="bg-stone-100 p-6 rounded-xl border border-stone-300 shadow-xl max-w-md mx-auto">
+                                    <div className="border-b-4 border-black pb-2 mb-4 text-center">
+                                        <h4 className="font-serif text-3xl font-black uppercase text-stone-900 tracking-tighter">{activity.newsFlash.title}</h4>
+                                        <div className="flex justify-between text-[10px] uppercase font-bold text-stone-500 mt-1 border-t border-black pt-1">
+                                            <span>Edição Especial</span>
+                                            <span>Preço: 1 Denário</span>
+                                        </div>
+                                    </div>
+
+                                    <h5 className="font-serif text-2xl font-bold leading-tight text-stone-800 mb-4 text-center">
+                                        "{activity.newsFlash.headline}"
+                                    </h5>
+
+                                    <div className="flex gap-4">
+                                        <div className="w-1/2 h-32 bg-white border-2 border-stone-300 flex items-center justify-center text-center p-2">
+                                            <span className="text-xs text-stone-400 font-bold uppercase">{t.newsDraw}</span>
+                                        </div>
+                                        <div className="w-1/2 flex flex-col gap-2">
+                                            <div className="h-1 bg-stone-300 w-full"></div>
+                                            <div className="h-1 bg-stone-300 w-full"></div>
+                                            <div className="h-1 bg-stone-300 w-full"></div>
+                                            <div className="h-1 bg-stone-300 w-full"></div>
+                                            <div className="h-1 bg-stone-300 w-3/4"></div>
+                                            <p className="text-[10px] text-stone-500 mt-2 leading-tight italic">{activity.newsFlash.instructions}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 12. Family Questions Preview */}
+                        {activity.familyQuestions && activity.familyQuestions.length > 0 && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-pink-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-pink-200 shadow-lg">12</span>
+                                    {t.activityFamily}
+                                </h3>
+                                <div className="space-y-4">
+                                    {activity.familyQuestions.map((q, idx) => (
+                                        <div key={idx} className="bg-pink-50 p-6 rounded-2xl border border-pink-100 flex gap-4 items-start">
+                                            <div className="w-8 h-8 bg-white text-pink-500 rounded-full flex items-center justify-center font-bold shadow-sm shrink-0 mt-0.5">
+                                                ?
+                                            </div>
+                                            <p className="text-slate-700 font-medium text-lg leading-relaxed">{q}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 13. Verse to Memorize Preview */}
                         {activity.bibleVerse && (
                             <div className="mb-12">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
-                                    <span className="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">7</span>
+                                    <span className="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">13</span>
                                     {t.activity7}
                                 </h3>
                                 <div className="bg-white border-2 border-purple-400 p-4 rounded-2xl flex items-center gap-4">
@@ -212,7 +402,7 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                         {coloringImageUrl && (
                             <div className="mt-8">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
-                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">8</span>
+                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">14</span>
                                     {t.coloringTitle}
                                 </h3>
                                 <div className="border-4 border-dashed border-slate-300 rounded-3xl p-6 flex justify-center bg-white">

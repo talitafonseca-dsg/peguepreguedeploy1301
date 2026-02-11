@@ -9,11 +9,18 @@ const langMap: Record<LanguageCode, string> = {
   it: 'Italiano'
 };
 
+const SUPABASE_URL = "https://tywhhliyawmuivreuvgj.supabase.co";
+
 /**
  * GERA A ESTRUTURA DA HISTÓRIA (TEXTO E PROMPTS)
  */
-export async function generateStoryStructure(apiKey: string, storyName: string, age: AgeGroup, lang: LanguageCode): Promise<BibleStory> {
-  const ai = new GoogleGenAI({ apiKey });
+export async function generateStoryStructure(
+  apiKey: string | null,
+  storyName: string,
+  age: AgeGroup,
+  lang: LanguageCode,
+  supabaseToken?: string
+): Promise<BibleStory> {
   const languageName = langMap[lang];
 
   const prompt = `
@@ -92,7 +99,7 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const payload = {
       model: "gemini-2.0-flash",
       contents: prompt,
       config: {
@@ -118,9 +125,34 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
           required: ["title", "characterDescription", "scenes"]
         }
       }
-    });
+    };
 
-    return JSON.parse(response.text || "{}");
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent(payload);
+      return JSON.parse(response.text || "{}");
+    } else if (supabaseToken) {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseToken}`
+        },
+        body: JSON.stringify({ type: "story", payload })
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Erro no servidor de cortesia");
+      }
+
+      const result = await response.json();
+      const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+      const cleanText = text.replace(/```json\n?|```/g, '').trim();
+      return JSON.parse(cleanText);
+    } else {
+      throw new Error("API Key ou Token de Cortesia não fornecido.");
+    }
   } catch (error: any) {
     console.error("Erro ao gerar estrutura da história:", error);
     throw new Error(`Falha ao gerar história: ${error.message}`);
@@ -131,15 +163,14 @@ export async function generateStoryStructure(apiKey: string, storyName: string, 
  * GERA A IMAGEM DE CADA CENA
  */
 export async function generateSceneImage(
-  apiKey: string,
+  apiKey: string | null,
   scenePrompt: string,
   characterDesc: string,
   style: IllustrationStyle,
   retryCount = 0,
-  isVariation = false
+  isVariation = false,
+  supabaseToken?: string
 ): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey });
-
   // Define o estilo visual baseado na escolha do usuário
   let stylePrompt = "";
   if (style === IllustrationStyle.STYLE_2D) {
@@ -163,49 +194,48 @@ export async function generateSceneImage(
 - Pure white background for easy integration
 - Professional illustration quality like Disney storybook art`;
   } else if (style === IllustrationStyle.COLORING_PAGE) {
-    stylePrompt = `STRICT BLACK AND WHITE COLORING PAGE FOR KIDS:
+    stylePrompt = `Disney animation style, modern 3D animated character line art, Pixar-inspired design.
+- Expressive eyes, professional clean line art, high quality coloring book aesthetic.
 - ABSOLUTELY NO COLORS. ONLY BLACK LINES ON WHITE BACKGROUND.
 - DO NOT use grayscale, DO NOT use shading, DO NOT use gradients.
 - PURE BLACK OUTLINES ONLY.
 - Thick, clean, continuous lines suitable for crayons.
 - Characters and objects must be EMPTY (WHITE) to be colored in.
 - NO fill, NO texture, NO cross-hatching.
-- Simple, clear shapes.
-- 100% Monochrome.
 - NO TEXT, NO LETTERS, NO SPEECH BUBBLES inside the illustration.
 - NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads.
-- This is a PRINTABLE COLORING BOOK PAGE.`;
+- This is a PRINTABLE COLORING BOOK PAGE (Disney Style).`;
   } else if (style === IllustrationStyle.STYLE_CUTE) {
-    stylePrompt = `CUTE KAWAII / CHIBI STICKER STYLE (HISTÓRIAS NA LUVA):
-- ADORABLE, CUTE, ROUND CHARACTERS (Chibi/Kawaii aesthetic)
-- **UNIFORM EYE STYLE FOR EVERYONE**: ALL characters (main, secondary, crowd) MUST have the EXACT SAME eyes:
-- **EYE STYLE**: Large, round, BLACK OVAL eyes with a small white highlight.
-- **CRITICAL OVERRIDE**: IGNORE any eye color description in the character text. ALL EYES MUST BE BLACK.
-- DO NOT use realistic eyes. DO NOT use colored irises.
-- **COLORS MUST BE VIBRANT AND HIGHLY SATURATED**: Use bright primary colors (Red, Blue, Yellow, Green). AVOID pastel or washed-out tones.
-- THICK WHITE OUTLINES around all characters and main objects (Sticker effect)
-- Flat lighting with soft cell shading (Vector art style)
-- Simplified anatomy (Big heads, small bodies, cute proportions)
-- Pure white background
+    stylePrompt = `CUTE KAWAII / CHIBI STICKER STYLE(HISTÓRIAS NA LUVA):
+    - ADORABLE, CUTE, ROUND CHARACTERS(Chibi / Kawaii aesthetic)
+      - ** UNIFORM EYE STYLE FOR EVERYONE **: ALL characters(main, secondary, crowd) MUST have the EXACT SAME eyes:
+- ** EYE STYLE **: Large, round, BLACK OVAL eyes with a small white highlight.
+- ** CRITICAL OVERRIDE **: IGNORE any eye color description in the character text.ALL EYES MUST BE BLACK.
+- DO NOT use realistic eyes.DO NOT use colored irises.
+- ** COLORS MUST BE VIBRANT AND HIGHLY SATURATED **: Use bright primary colors(Red, Blue, Yellow, Green).AVOID pastel or washed - out tones.
+- THICK WHITE OUTLINES around all characters and main objects(Sticker effect)
+      - Flat lighting with soft cell shading(Vector art style)
+        - Simplified anatomy(Big heads, small bodies, cute proportions)
+          - Pure white background
 
-CRITICAL FOR CONSISTENCY (MUITO IMPORTANTE):
-- **ABSOLUTELY NO TEXT, NO LETTERS, NO SPEECH BUBBLES**.
+CRITICAL FOR CONSISTENCY(MUITO IMPORTANTE):
+- ** ABSOLUTELY NO TEXT, NO LETTERS, NO SPEECH BUBBLES **.
 - 1. IF CHARACTER HAS A BEARD, THE CHIBI MUST HAVE A BEARD.
 - 2. HAIR COLOR AND STYLE MUST MATCH THE DESCRIPTION EXACTLY.
 - 3. CLOTHING COLORS MUST MATCH THE DESCRIPTION EXACTLY.
-- 4. Do not make adults look like babies. Make them "Adult Chibis".
+- 4. Do not make adults look like babies.Make them "Adult Chibis".
 - KEEP THE SAME "CUTE DESIGN" IN EVERY SINGLE IMAGE.`;
   } else {
     // Default or STYLE_3D
     stylePrompt = `PREMIUM 3D PIXAR STYLE ILLUSTRATION:
-- High quality 3D rendered characters like Pixar/Disney movies
-- Rich volumetric lighting with soft shadows and depth
-- Detailed textures on clothing and environments
-- Semi-realistic proportions with appealing character designs
-- Warm, cinematic color palette
-- Thick white sticker outline around characters
-- Pure white background
-- Professional animation studio quality`;
+    - High quality 3D rendered characters like Pixar / Disney movies
+      - Rich volumetric lighting with soft shadows and depth
+        - Detailed textures on clothing and environments
+          - Semi - realistic proportions with appealing character designs
+            - Warm, cinematic color palette
+              - Thick white sticker outline around characters
+                - Pure white background
+                  - Professional animation studio quality`;
   }
 
   // Variação de ângulo para evitar imagens repetidas no refresh
@@ -218,74 +248,98 @@ CRITICAL FOR CONSISTENCY (MUITO IMPORTANTE):
 
 ${stylePrompt}
 
-SCENE: ${scenePrompt}
+    SCENE: ${scenePrompt}
 
-MAIN CHARACTER (MUST LOOK IDENTICAL IN EVERY IMAGE):
+MAIN CHARACTER(MUST LOOK IDENTICAL IN EVERY IMAGE):
 ${characterDesc}
-- The character MUST have the EXACT same face, hair, clothes, and body type in EVERY scene
-- DO NOT change the character's appearance
+    - The character MUST have the EXACT same face, hair, clothes, and body type in EVERY scene
+      - DO NOT change the character's appearance
 
 BIBLICAL ACCURACY RULES:
-- NEVER show God as a human figure or old man with beard
-- Represent God's presence as: golden light rays from above, glowing clouds, or voice (no visible figure)
-- Show biblical events ACCURATELY as described in scripture
-- Characters wear authentic ancient Middle Eastern clothing
+    - NEVER show God as a human figure or old man with beard
+    - Represent God's presence as: golden light rays from above, glowing clouds, or voice (no visible figure)
+      - Show biblical events ACCURATELY as described in scripture
+        - Characters wear authentic ancient Middle Eastern clothing
 ${variationInstruction}
 
 STRICT RULES:
-- CRITICAL: NO TEXT, NO LETTERS, NO NUMBERS, NO SPEECH BUBBLES anywhere in the image.
+    - CRITICAL: NO TEXT, NO LETTERS, NO NUMBERS, NO SPEECH BUBBLES anywhere in the image.
 - CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads. (Even for holy figures).
 - NO wings on humans
-- Friendly, child-appropriate content only
-- Pure white background, no complex scenery
-- MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES
-${style === IllustrationStyle.COLORING_PAGE ? "- REMEMBER: BLACK LINES ONLY. NO COLOR AT ALL." : ""}`;
+      - Friendly, child - appropriate content only
+        - Pure white background, no complex scenery
+          - MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES
+${style === IllustrationStyle.COLORING_PAGE ? "- REMEMBER: BLACK LINES ONLY. NO COLOR AT ALL." : ""} `;
 
   const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
-  if (isDev) console.log(`[Imagem] Gerando cena (tentativa ${retryCount + 1}):`, scenePrompt.substring(0, 100) + '...');
+  if (isDev) console.log(`[Imagem] Gerando cena(tentativa ${retryCount + 1}): `, scenePrompt.substring(0, 100) + '...');
 
   try {
-    const response = await ai.models.generateContent({
+    const payload = {
       model: "gemini-2.5-flash-image",
       contents: { parts: [{ text: finalPrompt }] },
       config: {
         responseModalities: ["image", "text"],
         imageConfig: { aspectRatio: "3:4" }
-      } as any
-    });
-
-    if (isDev) console.log('[Imagem] Resposta recebida, verificando partes...');
-
-    // Verificar se há candidatos na resposta
-    if (!response.candidates || response.candidates.length === 0) {
-      if (isDev) console.error('[Imagem] Nenhum candidato na resposta:', JSON.stringify(response));
-      throw new Error('API não retornou candidatos');
-    }
-
-    const parts = response.candidates[0]?.content?.parts || [];
-    if (isDev) console.log(`[Imagem] Encontradas ${parts.length} partes na resposta`);
-
-    for (const part of parts) {
-      if ((part as any).inlineData) {
-        const inlineData = (part as any).inlineData;
-        if (isDev) console.log('[Imagem] Imagem gerada com sucesso!');
-        return `data:${inlineData.mimeType || 'image/png'};base64,${inlineData.data}`;
       }
-    }
+    };
 
-    // Se não encontrou imagem, verificar se há texto com erro
-    for (const part of parts) {
-      if ((part as any).text) {
-        if (isDev) console.log('[Imagem] API retornou texto ao invés de imagem:', (part as any).text);
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent(payload as any);
+
+      if (isDev) console.log('[Imagem] Resposta recebida, verificando partes...');
+
+      // Verificar se há candidatos na resposta
+      if (!response.candidates || response.candidates.length === 0) {
+        if (isDev) console.error('[Imagem] Nenhum candidato na resposta:', JSON.stringify(response));
+        throw new Error('API não retornou candidatos');
       }
+
+      const parts = response.candidates[0]?.content?.parts || [];
+      if (isDev) console.log(`[Imagem] Encontradas ${parts.length} partes na resposta`);
+
+      for (const part of parts) {
+        if ((part as any).inlineData) {
+          const inlineData = (part as any).inlineData;
+          if (isDev) console.log('[Imagem] Imagem gerada com sucesso!');
+          return `data:${inlineData.mimeType || 'image/png'};base64,${inlineData.data}`;
+        }
+      }
+    } else if (supabaseToken) {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseToken}`
+        },
+        body: JSON.stringify({ type: "image", payload })
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Erro no servidor de imagens");
+      }
+
+      const result = await response.json();
+      const parts = result.candidates?.[0]?.content?.parts || [];
+
+      for (const part of parts) {
+        if (part.inlineData) {
+          return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+        }
+      }
+    } else {
+      throw new Error("API Key ou Token de Cortesia não fornecido.");
     }
 
+    // Se não encontrou imagem no loop de partes (para o caso de apiKey)
     // Retry até 2 vezes se não conseguiu gerar
     if (retryCount < 2) {
-      if (isDev) console.log(`[Imagem] Retentando geração (${retryCount + 1}/3)...`);
+      if (isDev) console.log(`[Imagem] Retentando geração(${retryCount + 1}/3)...`);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Aguarda 1s antes de retentar
-      return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
+      return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1, isVariation, supabaseToken);
     }
   } catch (error: any) {
     if (isDev) console.error('[Imagem] Erro na geração:', error?.message || error);
@@ -297,9 +351,9 @@ ${style === IllustrationStyle.COLORING_PAGE ? "- REMEMBER: BLACK LINES ONLY. NO 
     }
 
     if (retryCount < 2) {
-      if (isDev) console.log(`[Imagem] Retentando após erro (${retryCount + 1}/3)...`);
+      if (isDev) console.log(`[Imagem] Retentando após erro(${retryCount + 1}/3)...`);
       await new Promise(resolve => setTimeout(resolve, 1500));
-      return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1);
+      return generateSceneImage(apiKey, scenePrompt, characterDesc, style, retryCount + 1, isVariation, supabaseToken);
     }
     throw error;
   }
@@ -310,8 +364,13 @@ ${style === IllustrationStyle.COLORING_PAGE ? "- REMEMBER: BLACK LINES ONLY. NO 
 /**
  * GERA CONTEÚDO PARA ATIVIDADE EDUCATIVA (BNCC)
  */
-export async function generateActivityContent(apiKey: string, storyName: string, age: AgeGroup, lang: LanguageCode): Promise<ActivityContent> {
-  const ai = new GoogleGenAI({ apiKey });
+export async function generateActivityContent(
+  apiKey: string | null,
+  storyName: string,
+  age: AgeGroup,
+  lang: LanguageCode,
+  supabaseToken?: string
+): Promise<ActivityContent> {
   const languageName = langMap[lang];
 
   const prompt = `
@@ -319,73 +378,67 @@ export async function generateActivityContent(apiKey: string, storyName: string,
     Público Alvo: Crianças de ${age}.
     Idioma: ${languageName}.
     
-    Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo (NENHUM CAMPO PODE SER NULL):
-    1. title: Título da atividade (ex: "Aprendendo com [Nome da História]").
-    - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história (com referência). NÃO use Salmos genéricos.
-    - "quiz": Array com EXATAMENTE 1 (UMA) pergunta de múltipla escolha.
+    Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo(NENHUM CAMPO PODE SER NULL):
+    1. title: Título da atividade(ex: "Aprendendo com [Nome da História]").
+    - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história(com referência).NÃO use Salmos genéricos.
+    - "quiz": Array com EXATAMENTE 1(QUATRO) pergunta de múltipla escolha.
        - A pergunta deve ser DESAFIADORA e TEMÁTICA, testando a compreensão da história.
        - PROIBIDO perguntas genéricas como "Onde está na bíblia?" ou "O que aprendemos?".
        - Deve ser uma pergunta sobre um EVENTO ou AÇÃO específica do personagem.
-       - Deve ter 4 (QUATRO) opções de resposta.
-    - "wordSearch": Array com EXATAMENTE 8 palavras-chave DA HISTÓRIA (todas em UPPERCASE, sem acentos, sem espaços, MÁXIMO 8 LETRAS CADA - palavras curtas!).
+       - Deve ter 4(QUATRO) opções de resposta.
+    - "wordSearch": Array com EXATAMENTE 8 palavras - chave DA HISTÓRIA(todas em UPPERCASE, sem acentos, sem espaços, MÁXIMO 8 LETRAS CADA - palavras curtas!).
     - "coloringPrompt": Prompt DETALHADO em INGLÊS para gerar um desenho de colorir sobre a cena principal.
-       - IMPORTANTE: O prompt DEVE especificar claramente cada personagem (ex: "a man named Adam" ou "a woman named Eve").
+       - IMPORTANTE: O prompt DEVE especificar claramente cada personagem(ex: "a man named Adam" ou "a woman named Eve").
        - CRÍTICO: Todos os personagens devem ter ANATOMIA HUMANA CORRETA - rostos humanos normais, proporções corretas, sem híbridos, sem distorções.
        - Se houver crianças, especifique "cute human children with normal human faces and bodies".
        - Se houver multidão, especifique "group of people with distinct human features".
-       - OBRIGATÓRIO incluir no final: "professional illustration, clean line art, pure black outlines on white background, NO shading, NO fills, NO solid black areas, simple elegant strokes, high quality coloring book style, cute chibi style, all characters must have proper human anatomy"
+       - OBRIGATÓRIO incluir no final: "Disney animation style, modern 3D animated character line art, expressive eyes, Pixar-like character design, professional clean line art, high quality coloring book illustration, pure black outlines on white background, NO shading, NO fills, NO solid black areas, clean elegant strokes, perfect human anatomy"
     - "completeThePhrase": Objeto com "phrase" e "missingWord".
        - A frase deve ser um VERSÍCULO CHAVE ou LIÇÃO MORAL da história.
        - A frase NÃO pode ser simples demais.
        - Indique a palavra que falta com '_______'.
        - exemplo: { "phrase": "Pela _______, Noé construiu a arca para salvar sua família.", "missingWord": "fé" }
     - "scrambleWords": Array com 3 objetos.
-       - "word": A palavra correta (ex: "ARCA").
-       - "hint": Uma dica curta (ex: "Barco grande").
+       - "word": A palavra correta(ex: "ARCA").
+       - "hint": Uma dica curta(ex: "Barco grande").
     - "matchColumns": Array com 4 objetos para atividade de ligar colunas.
-       - "left": Personagem ou início da frase (ex: "Daniel").
-       - "right": Ação ou final da frase (ex: "orou a Deus").
-    - "trueOrFalse": Array com 4 objetos para atividade verdadeiro/falso.
-       - "statement": Afirmação sobre a história (ex: "Daniel foi jogado na cova dos leões.").
+       - "left": Personagem ou início da frase(ex: "Daniel").
+       - "right": Ação ou final da frase(ex: "orou a Deus").
+    - "trueOrFalse": Array com 4 objetos para atividade verdadeiro / falso.
+       - "statement": Afirmação sobre a história(ex: "Daniel foi jogado na cova dos leões.").
        - "isTrue": true ou false.
+    - "whoSaidIt": Array com 3 ou 4 objetos.
+       - "character": Nome do personagem(ex: "Jesus").
+       - "quote": Uma fala marcante ou resumo do que ele disse(ex: "Lázaro, vem para fora!").
+       - REGRA CRÍTICA: Os personagens DEVEM SER DIFERENTES.
+       - NUNCA retorne "Jesus" para as 3 opções.Tente variar(Ex: Jesus, Pedro, Maria, Narrador).
+       - Se a história for um monólogo, use o "Narrador" ou pessoas que fizeram perguntas.
+       - Mínimo de 2 personagens distintos obrigatórios.
+    - "orderEvents": Array com 4 ou 5 objetos.
+       - "event": Um acontecimento da história.
+       - "order": A ordem cronológica correta(1 a 5).
+       - IMPORTANTE: Retorne os eventos JÁ NA ORDEM CORRETA no JSON.Nós vamos embaralhar no front - end.
+    - "secretPhrase": Uma frase curta para ser decifrada.
+       - A frase deve ser em CAIXA ALTA.
+    - "familyQuestions": Array com 3 perguntas para discussão em família.
+    - "characterCard": Objeto com dados para o card do herói.
+       - "name": Nome do personagem principal.
+       - "title": Um título impacto / heroico(ex: "O Matador de Gigantes", "O Profeta de @Fogo").
+       - "description": Breve descrição das qualidades dele(máx 2 linhas).
+       - "attributes": Objeto com níveis de 1 a 10(seja generoso!):
+          - "faith": Nível de Fé.
+          - "courage": Nível de Coragem.
+          - "wisdom": Nível de Sabedoria.
+    - "newsFlash": Objeto para a atividade de jornal.
+       - "title": Nome de umjornal da época ou temático(ex: "Diário de Jericó", "Jornal do Deserto").
+       - "headline": Uma manchete bombástica sobre o evento principal(ex: "MURALHAS CAEM MISTERIOSAMENTE!").
+       - "instructions": Instrução para a criança desenhar e escrever(ex: "Desenhe o momento da queda e entreviste uma testemunha.").
 
     Retorne APENAS o JSON válido, sem markdown.
-    exemplo:
-    {
-      "title": "Daniel na Cova dos Leões",
-      "bibleVerse": "O meu Deus enviou o seu anjo, e fechou a boca dos leões. (Daniel 6:22)",
-      "quiz": [{ "question": "Qual atitude de Daniel fez o rei Dario assinar o decreto?", "options": ["Sua fidelidade a Deus", "Sua desobediência", "Sua riqueza"], "correctAnswer": 0 }],
-      "wordSearch": ["DANIEL", "LEOES", "ANJO", "REI", "ORACAO", "DEUS", "FE", "COVA"],
-      "coloringPrompt": "A man named Daniel kneeling and praying peacefully, surrounded by friendly cute lions sleeping around him, an angel protecting them, clean line art, pure black outlines on white background, NO shading, NO fills, NO solid black areas, simple elegant strokes, coloring book style for children, cute kawaii style",
-      "completeThePhrase": { "phrase": "O meu Deus enviou o seu _______.", "missingWord": "anjo" },
-      "scrambleWords": [
-        { "word": "LEOES", "hint": "Animais selvagens" },
-        { "word": "ANJO", "hint": "Mensageiro de Deus" },
-        { "word": "REI", "hint": "Governante" }
-      ],
-      "matchColumns": [
-        { "left": "Daniel", "right": "orou a Deus" },
-        { "left": "Rei Dario", "right": "ficou triste" },
-        { "left": "Os leões", "right": "não atacaram" },
-        { "left": "O anjo", "right": "fechou as bocas" }
-      ],
-      "trueOrFalse": [
-        { "statement": "Daniel foi jogado na cova dos leões.", "isTrue": true },
-        { "statement": "Daniel parou de orar por medo.", "isTrue": false },
-        { "statement": "O rei Dario queria salvar Daniel.", "isTrue": true },
-        { "statement": "Os leões devoraram Daniel.", "isTrue": false }
-      ]
-    }
-
-    IMPORTANTE SOBRE O IDIOMA:
-    - TODO o conteúdo gerado (perguntas, opções, versículos, títulos e palavras-chave) DEVE ESTAR EM ${languageName}.
-    - Se ${languageName} for Inglês, o quiz e o versículo DEVEM ser em Inglês.
-    - Se ${languageName} for Espanhol, o quiz e o versículo DEVEM ser em Espanhol.
-    - O campo "coloringPrompt" DEVE ser sempre em INGLÊS (pois é para o modelo de imagem).
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const payload = {
       model: "gemini-2.0-flash",
       contents: prompt,
       config: {
@@ -449,19 +502,98 @@ export async function generateActivityContent(apiKey: string, storyName: string,
                 },
                 required: ["statement", "isTrue"]
               }
+            },
+            whoSaidIt: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  character: { type: Type.STRING },
+                  quote: { type: Type.STRING }
+                },
+                required: ["character", "quote"]
+              }
+            },
+            orderEvents: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  event: { type: Type.STRING },
+                  order: { type: Type.NUMBER }
+                },
+                required: ["event", "order"]
+              }
+            },
+            secretPhrase: { type: Type.STRING },
+            familyQuestions: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING }
+            },
+            characterCard: {
+              type: Type.OBJECT,
+              properties: {
+                name: { type: Type.STRING },
+                title: { type: Type.STRING },
+                description: { type: Type.STRING },
+                attributes: {
+                  type: Type.OBJECT,
+                  properties: {
+                    faith: { type: Type.NUMBER },
+                    courage: { type: Type.NUMBER },
+                    wisdom: { type: Type.NUMBER }
+                  },
+                  required: ["faith", "courage", "wisdom"]
+                }
+              },
+              required: ["name", "title", "description", "attributes"]
+            },
+            newsFlash: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING },
+                headline: { type: Type.STRING },
+                instructions: { type: Type.STRING }
+              },
+              required: ["title", "headline", "instructions"]
             }
           },
-          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase", "scrambleWords", "matchColumns", "trueOrFalse"]
+          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase", "scrambleWords", "matchColumns", "trueOrFalse", "whoSaidIt", "orderEvents", "secretPhrase", "familyQuestions", "characterCard", "newsFlash"]
         }
       }
-    });
+    };
 
-    const text = response.text || "{}";
-    // Limpeza de possíveis blocos de código markdown que o Gemini possa retornar
-    const cleanText = text.replace(/```json\n ?| ```/g, '').trim();
+    let text = "{}";
+
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent(payload);
+      text = response.text || "{}";
+    } else if (supabaseToken) {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseToken}`
+        },
+        body: JSON.stringify({ type: "activity", payload })
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Erro no servidor de atividades");
+      }
+
+      const result = await response.json();
+      text = result.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+    } else {
+      throw new Error("API Key ou Token de Cortesia não fornecido.");
+    }
+
+    const cleanText = text.replace(/```json\n?|```/g, '').trim();
     return JSON.parse(cleanText);
   } catch (error: any) {
     console.error("Erro ao gerar atividade:", error);
-    throw new Error(`Falha ao gerar atividade: ${error.message} `);
+    throw new Error(`Falha ao gerar atividade: ${error.message}`);
   }
 }
