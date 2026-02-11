@@ -80,6 +80,7 @@ export const translations: Record<LanguageCode, any> = {
     attrWisdom: "Sabedoria",
     newsDraw: "Desenhe a foto aqui",
     newsWrite: "Escreva sua reportagem aqui...",
+    activityMaze: "Labirinto Bíblico:",
   },
   en: {
     title: "Teach & Tell",
@@ -159,6 +160,7 @@ export const translations: Record<LanguageCode, any> = {
     attrWisdom: "Wisdom",
     newsDraw: "Draw the photo here",
     newsWrite: "Write your report here...",
+    activityMaze: "Bible Maze:",
   },
   es: {
     title: "Enseña y Cuenta",
@@ -238,6 +240,7 @@ export const translations: Record<LanguageCode, any> = {
     attrWisdom: "Sabiduría",
     newsDraw: "Dibuja la foto aquí",
     newsWrite: "Escribe tu reporte aquí...",
+    activityMaze: "Laberinto Bíblico:",
   },
   fr: {
     title: "Raconte et Enseigne",
@@ -317,6 +320,7 @@ export const translations: Record<LanguageCode, any> = {
     attrWisdom: "Sagesse",
     newsDraw: "Dessine la photo ici",
     newsWrite: "Écris ton rapport ici...",
+    activityMaze: "Labyrinthe Biblique :",
   },
   it: {
     title: "Racconta e Insegna",
@@ -396,5 +400,6 @@ export const translations: Record<LanguageCode, any> = {
     attrWisdom: "Saggezza",
     newsDraw: "Disegna la foto qui",
     newsWrite: "Scrivi il tuo rapporto qui...",
-  }
+    activityMaze: "Labirinto Biblico:",
+  },
 };

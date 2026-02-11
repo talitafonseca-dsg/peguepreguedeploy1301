@@ -97,6 +97,11 @@ export interface ActivityContent {
     headline: string;
     instructions: string;
   };
+  maze?: {
+    startPrompt: string;
+    endPrompt: string;
+    instructions: string;
+  };
 }
 
 export interface GenerationState {

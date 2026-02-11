@@ -11,6 +11,8 @@ interface ActivityPreviewProps {
     onClose: () => void;
     isDownloading: boolean;
     lang: LanguageCode;
+    mazeStartImage?: string | null;
+    mazeEndImage?: string | null;
 }
 
 export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
@@ -19,7 +21,9 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
     onDownload,
     onClose,
     isDownloading,
-    lang = 'pt' // Default to pt if not provided
+    lang = 'pt', // Default to pt if not provided
+    mazeStartImage,
+    mazeEndImage
 }) => {
     const t = translations[lang] || translations['pt'];
 
@@ -398,11 +402,62 @@ export const ActivityPreview: React.FC<ActivityPreviewProps> = ({
                             </div>
                         )}
 
-                        {/* Coloring Image Preview */}
+                        {/* 14. Labirinto Preview */}
+                        {activity.maze && (
+                            <div className="mb-12">
+                                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
+                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">14</span>
+                                    {t.activityMaze}
+                                </h3>
+                                <div className="bg-white border-4 border-slate-200 rounded-[2rem] p-8 shadow-inner overflow-hidden">
+                                    <p className="text-center font-bold text-purple-700 mb-8 text-xl uppercase tracking-wide">
+                                        ✨ {activity.maze.instructions} ✨
+                                    </p>
+
+                                    <div className="flex flex-col items-center gap-8">
+                                        {/* Maze Visual Placeholder with Start/End Images - Vertical Aspect */}
+                                        <div className="relative w-full aspect-[2/3] max-w-[400px] border-2 border-slate-100 rounded-3xl p-4 flex items-center justify-center bg-slate-50">
+                                            {/* Start Image */}
+                                            <div className="absolute -top-4 -left-4 w-32 h-32 bg-white border-2 border-slate-200 rounded-2xl shadow-lg p-2 z-10 rotate-[-5deg] flex flex-col items-center">
+                                                <div className="w-full h-full bg-slate-50 rounded-xl flex items-center justify-center border border-dashed border-slate-300 overflow-hidden">
+                                                    {(activity as any).mazeStartImage ?
+                                                        <img src={(activity as any).mazeStartImage} className="w-full h-full object-contain" /> :
+                                                        <span className="text-[10px] text-slate-400 font-bold uppercase text-center">Início (A)</span>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            {/* End Image */}
+                                            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-white border-2 border-slate-200 rounded-2xl shadow-lg p-2 z-10 rotate-[5deg] flex flex-col items-center">
+                                                <div className="w-full h-full bg-slate-50 rounded-xl flex items-center justify-center border border-dashed border-slate-300 overflow-hidden">
+                                                    {(activity as any).mazeEndImage ?
+                                                        <img src={(activity as any).mazeEndImage} className="w-full h-full object-contain" /> :
+                                                        <span className="text-[10px] text-slate-400 font-bold uppercase text-center">Fim (B)</span>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            {/* Maze Grid Simulation Extreme Vertical */}
+                                            <div className="grid grid-cols-20 grid-rows-30 gap-[1px] w-full h-full opacity-20">
+                                                {Array.from({ length: 20 * 30 }).map((_, i) => (
+                                                    <div key={i} className="border-[0.5px] border-slate-300 rounded-sm bg-white"></div>
+                                                ))}
+                                            </div>
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <p className="font-mono text-slate-300 font-black text-4xl transform rotate-[-15deg] select-none">LABIRINTO</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="text-center text-slate-400 mt-8 text-sm font-bold uppercase tracking-widest">(Visualização simplificada - O labirinto completo está no PDF)</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Coloring Image Preview (previously 16, now 15) */}
                         {coloringImageUrl && (
                             <div className="mt-8">
                                 <h3 className="text-2xl font-black mb-6 flex items-center gap-3 text-slate-800">
-                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">14</span>
+                                    <span className="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-purple-200 shadow-lg">15</span>
                                     {t.coloringTitle}
                                 </h3>
                                 <div className="border-4 border-dashed border-slate-300 rounded-3xl p-6 flex justify-center bg-white">

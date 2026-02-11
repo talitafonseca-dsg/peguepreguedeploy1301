@@ -1,0 +1,1305 @@
+{
+    "labirintos": [
+        {
+            "id": "maze_easy_01",
+            "name": "Labirinto Fácil - Tipo 1",
+            "difficulty": "facil",
+            "age_range": "3-6",
+            "grid_size": {
+                "rows": 7,
+                "cols": 7
+            },
+            "cell_size": 60,
+            "start": {
+                "row": 0,
+                "col": 0
+            },
+            "end": {
+                "row": 6,
+                "col": 6
+            },
+            "walls": [
+                {
+                    "row": 0,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 0,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 0,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 6,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 1,
+                    "direction": "right"
+                },
+                {
+                    "row": 3,
+                    "col": 3,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 5,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 0,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 4,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 4,
+                    "col": 6,
+                    "direction": "right"
+                },
+                {
+                    "row": 5,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 5,
+                    "col": 5,
+                    "direction": "bottom"
+                }
+            ],
+            "correct_path": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    0
+                ],
+                [
+                    2,
+                    1
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    3,
+                    2
+                ],
+                [
+                    3,
+                    3
+                ],
+                [
+                    3,
+                    4
+                ],
+                [
+                    4,
+                    4
+                ],
+                [
+                    5,
+                    4
+                ],
+                [
+                    5,
+                    5
+                ],
+                [
+                    5,
+                    6
+                ],
+                [
+                    6,
+                    6
+                ]
+            ],
+            "theme_positions": [
+                {
+                    "row": 2,
+                    "col": 1,
+                    "type": "obstacle"
+                },
+                {
+                    "row": 3,
+                    "col": 3,
+                    "type": "helper"
+                },
+                {
+                    "row": 5,
+                    "col": 5,
+                    "type": "reward"
+                }
+            ]
+        },
+        {
+            "id": "maze_easy_02",
+            "name": "Labirinto Fácil - Tipo 2",
+            "difficulty": "facil",
+            "age_range": "3-6",
+            "grid_size": {
+                "rows": 7,
+                "cols": 7
+            },
+            "cell_size": 60,
+            "start": {
+                "row": 0,
+                "col": 0
+            },
+            "end": {
+                "row": 6,
+                "col": 6
+            },
+            "walls": [
+                {
+                    "row": 0,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 2,
+                    "direction": "right"
+                }
+            ],
+            "correct_path": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    1,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    3,
+                    2
+                ],
+                [
+                    3,
+                    3
+                ],
+                [
+                    4,
+                    3
+                ],
+                [
+                    4,
+                    4
+                ],
+                [
+                    5,
+                    4
+                ],
+                [
+                    6,
+                    4
+                ],
+                [
+                    6,
+                    5
+                ],
+                [
+                    6,
+                    6
+                ]
+            ],
+            "theme_positions": [
+                {
+                    "row": 2,
+                    "col": 2,
+                    "type": "obstacle"
+                },
+                {
+                    "row": 4,
+                    "col": 3,
+                    "type": "helper"
+                },
+                {
+                    "row": 6,
+                    "col": 5,
+                    "type": "reward"
+                }
+            ]
+        },
+        {
+            "id": "maze_medium_01",
+            "name": "Labirinto Médio - Tipo 1",
+            "difficulty": "medio",
+            "age_range": "7-9",
+            "grid_size": {
+                "rows": 10,
+                "cols": 10
+            },
+            "cell_size": 50,
+            "start": {
+                "row": 0,
+                "col": 0
+            },
+            "end": {
+                "row": 9,
+                "col": 9
+            },
+            "walls": [
+                {
+                    "row": 0,
+                    "col": 0,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 0,
+                    "col": 1,
+                    "direction": "right"
+                },
+                {
+                    "row": 0,
+                    "col": 3,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 0,
+                    "col": 5,
+                    "direction": "right"
+                },
+                {
+                    "row": 0,
+                    "col": 7,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 0,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 6,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 8,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 7,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 3,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 3,
+                    "col": 6,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 8,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 4,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 4,
+                    "col": 7,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 5,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 5,
+                    "col": 6,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 8,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 6,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 6,
+                    "col": 7,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 7,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 7,
+                    "col": 6,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 8,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 8,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 8,
+                    "col": 7,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 9,
+                    "direction": "bottom"
+                }
+            ],
+            "correct_path": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    0
+                ],
+                [
+                    2,
+                    1
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    3,
+                    2
+                ],
+                [
+                    3,
+                    3
+                ],
+                [
+                    4,
+                    3
+                ],
+                [
+                    4,
+                    4
+                ],
+                [
+                    5,
+                    4
+                ],
+                [
+                    5,
+                    5
+                ],
+                [
+                    6,
+                    5
+                ],
+                [
+                    6,
+                    6
+                ],
+                [
+                    7,
+                    6
+                ],
+                [
+                    7,
+                    7
+                ],
+                [
+                    7,
+                    8
+                ],
+                [
+                    8,
+                    8
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    9,
+                    9
+                ]
+            ],
+            "theme_positions": [
+                {
+                    "row": 2,
+                    "col": 2,
+                    "type": "obstacle"
+                },
+                {
+                    "row": 4,
+                    "col": 4,
+                    "type": "helper"
+                },
+                {
+                    "row": 6,
+                    "col": 6,
+                    "type": "challenge"
+                },
+                {
+                    "row": 8,
+                    "col": 8,
+                    "type": "reward"
+                }
+            ]
+        },
+        {
+            "id": "maze_medium_02",
+            "name": "Labirinto Médio - Tipo 2",
+            "difficulty": "medio",
+            "age_range": "7-9",
+            "grid_size": {
+                "rows": 10,
+                "cols": 10
+            },
+            "cell_size": 50,
+            "start": {
+                "row": 0,
+                "col": 0
+            },
+            "end": {
+                "row": 9,
+                "col": 9
+            },
+            "walls": [
+                {
+                    "row": 0,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 0,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 3,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 7,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 1,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 6,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 5,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 0,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 4,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 8,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 1,
+                    "direction": "right"
+                },
+                {
+                    "row": 5,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 7,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 6,
+                    "col": 5,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 8,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 7,
+                    "col": 3,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 6,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 8,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 7,
+                    "direction": "bottom"
+                }
+            ],
+            "correct_path": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    1,
+                    2
+                ],
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    4
+                ],
+                [
+                    3,
+                    4
+                ],
+                [
+                    3,
+                    5
+                ],
+                [
+                    4,
+                    5
+                ],
+                [
+                    4,
+                    6
+                ],
+                [
+                    5,
+                    6
+                ],
+                [
+                    5,
+                    7
+                ],
+                [
+                    6,
+                    7
+                ],
+                [
+                    6,
+                    8
+                ],
+                [
+                    7,
+                    8
+                ],
+                [
+                    7,
+                    9
+                ],
+                [
+                    8,
+                    9
+                ],
+                [
+                    9,
+                    9
+                ]
+            ],
+            "theme_positions": [
+                {
+                    "row": 2,
+                    "col": 3,
+                    "type": "obstacle"
+                },
+                {
+                    "row": 4,
+                    "col": 5,
+                    "type": "helper"
+                },
+                {
+                    "row": 6,
+                    "col": 7,
+                    "type": "challenge"
+                },
+                {
+                    "row": 8,
+                    "col": 9,
+                    "type": "reward"
+                }
+            ]
+        },
+        {
+            "id": "maze_hard_01",
+            "name": "Labirinto Difícil - Tipo 1",
+            "difficulty": "dificil",
+            "age_range": "10-12",
+            "grid_size": {
+                "rows": 13,
+                "cols": 13
+            },
+            "cell_size": 40,
+            "start": {
+                "row": 0,
+                "col": 0
+            },
+            "end": {
+                "row": 12,
+                "col": 12
+            },
+            "walls": [
+                {
+                    "row": 0,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 0,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 0,
+                    "col": 7,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 1,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 1,
+                    "col": 8,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 3,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 2,
+                    "col": 6,
+                    "direction": "right"
+                },
+                {
+                    "row": 2,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 3,
+                    "col": 7,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 3,
+                    "col": 10,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 4,
+                    "col": 8,
+                    "direction": "right"
+                },
+                {
+                    "row": 4,
+                    "col": 11,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 0,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 5,
+                    "col": 6,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 5,
+                    "col": 9,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 1,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 4,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 6,
+                    "col": 7,
+                    "direction": "right"
+                },
+                {
+                    "row": 6,
+                    "col": 10,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 2,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 5,
+                    "direction": "right"
+                },
+                {
+                    "row": 7,
+                    "col": 8,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 7,
+                    "col": 11,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 0,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 3,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 8,
+                    "col": 6,
+                    "direction": "right"
+                },
+                {
+                    "row": 8,
+                    "col": 9,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 9,
+                    "col": 1,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 9,
+                    "col": 4,
+                    "direction": "right"
+                },
+                {
+                    "row": 9,
+                    "col": 7,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 9,
+                    "col": 10,
+                    "direction": "right"
+                },
+                {
+                    "row": 10,
+                    "col": 2,
+                    "direction": "right"
+                },
+                {
+                    "row": 10,
+                    "col": 5,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 10,
+                    "col": 8,
+                    "direction": "right"
+                },
+                {
+                    "row": 10,
+                    "col": 11,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 11,
+                    "col": 3,
+                    "direction": "right"
+                },
+                {
+                    "row": 11,
+                    "col": 6,
+                    "direction": "bottom"
+                },
+                {
+                    "row": 11,
+                    "col": 9,
+                    "direction": "right"
+                }
+            ],
+            "correct_path": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    0
+                ],
+                [
+                    2,
+                    1
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    3,
+                    2
+                ],
+                [
+                    3,
+                    3
+                ],
+                [
+                    4,
+                    3
+                ],
+                [
+                    4,
+                    4
+                ],
+                [
+                    5,
+                    4
+                ],
+                [
+                    5,
+                    5
+                ],
+                [
+                    6,
+                    5
+                ],
+                [
+                    6,
+                    6
+                ],
+                [
+                    7,
+                    6
+                ],
+                [
+                    7,
+                    7
+                ],
+                [
+                    8,
+                    7
+                ],
+                [
+                    8,
+                    8
+                ],
+                [
+                    9,
+                    8
+                ],
+                [
+                    9,
+                    9
+                ],
+                [
+                    10,
+                    9
+                ],
+                [
+                    10,
+                    10
+                ],
+                [
+                    11,
+                    10
+                ],
+                [
+                    11,
+                    11
+                ],
+                [
+                    11,
+                    12
+                ],
+                [
+                    12,
+                    12
+                ]
+            ],
+            "theme_positions": [
+                {
+                    "row": 3,
+                    "col": 3,
+                    "type": "obstacle"
+                },
+                {
+                    "row": 6,
+                    "col": 6,
+                    "type": "helper"
+                },
+                {
+                    "row": 9,
+                    "col": 9,
+                    "type": "challenge"
+                },
+                {
+                    "row": 11,
+                    "col": 11,
+                    "type": "reward"
+                }
+            ]
+        }
+    ]
+}

@@ -48,6 +48,8 @@ const App: React.FC = () => {
   const [showActivityPreview, setShowActivityPreview] = useState(false);
   const [activityData, setActivityData] = useState<ActivityContent | null>(null);
   const [activityColoringImage, setActivityColoringImage] = useState<string | null>(null);
+  const [mazeStartImage, setMazeStartImage] = useState<string | null>(null);
+  const [mazeEndImage, setMazeEndImage] = useState<string | null>(null);
 
   const [currentGenerationPhase, setCurrentGenerationPhase] = useState('');
   const [scenes, setScenes] = useState<StoryScene[]>([]);
@@ -264,6 +266,34 @@ const App: React.FC = () => {
         isDemoMode ? supabaseToken : undefined
       );
       setActivityColoringImage(coloringImg);
+
+      // Gera imagens do labirinto se disponível
+      if (data.maze) {
+        const [startImg, endImg] = await Promise.all([
+          generateSceneImage(
+            userApiKey,
+            data.maze.startPrompt,
+            characterDescription,
+            IllustrationStyle.COLORING_PAGE,
+            0,
+            false,
+            isDemoMode ? supabaseToken : undefined
+          ),
+          generateSceneImage(
+            userApiKey,
+            data.maze.endPrompt,
+            // If instructions mention Jesus, don't pass the main character (Pedro) description
+            data.maze.instructions.toLowerCase().includes("jesus") ? "" : characterDescription,
+            IllustrationStyle.COLORING_PAGE,
+            0,
+            false,
+            isDemoMode ? supabaseToken : undefined
+          )
+        ]);
+        setMazeStartImage(startImg);
+        setMazeEndImage(endImg);
+      }
+
       setShowActivityPreview(true);
     } catch (error: any) {
       alert("Erro ao gerar atividade: " + error.message);
@@ -316,7 +346,7 @@ const App: React.FC = () => {
     if (!activityData) return;
     setIsGeneratingActivity(true);
     try {
-      await createActivityPDF(activityData, activityColoringImage, lang);
+      await createActivityPDF(activityData, activityColoringImage, lang, mazeStartImage, mazeEndImage);
     } catch (e: any) {
       alert(`Erro ao criar PDF: ${e.message}`);
     } finally {
@@ -910,6 +940,8 @@ const App: React.FC = () => {
               onClose={() => setShowActivityPreview(false)}
               isDownloading={isGeneratingActivity}
               lang={lang}
+              mazeStartImage={mazeStartImage}
+              mazeEndImage={mazeEndImage}
             />
           </div>
         )

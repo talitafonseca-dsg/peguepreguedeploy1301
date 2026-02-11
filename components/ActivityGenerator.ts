@@ -3,6 +3,74 @@ import { jsPDF } from "jspdf";
 import { ActivityContent, LanguageCode } from "../types";
 import { translations } from "../translations";
 
+// Helper to clean AI strings from quotes, parentheses and emojis
+function sanitizeAIString(str: string): string {
+    if (!str) return "";
+    return str
+        .replace(/^['"\(]+/, '') // Remove leading quotes or parentheses
+        .replace(/['"\)]+$/, '') // Remove trailing quotes or parentheses
+        .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '') // Remove emojis
+        .trim();
+}
+
+/**
+ * Maze Generator using Recursive Backtracker Algorithm
+ * Guarantees a solvable, dense and interesting maze
+ */
+function generateMaze(rows: number, cols: number) {
+    const grid = Array(rows).fill(null).map(() =>
+        Array(cols).fill(null).map(() => ({
+            visited: false,
+            walls: { top: true, right: true, bottom: true, left: true }
+        }))
+    );
+
+    const stack: [number, number][] = [];
+    let current: [number, number] = [0, 0];
+    grid[0][0].visited = true;
+
+    do {
+        const [r, c] = current;
+        const neighbors: [number, number, string][] = [];
+
+        // Check Top
+        if (r > 0 && !grid[r - 1][c].visited) neighbors.push([r - 1, c, 'top']);
+        // Check Bottom
+        if (r < rows - 1 && !grid[r + 1][c].visited) neighbors.push([r + 1, c, 'bottom']);
+        // Check Left
+        if (c > 0 && !grid[r][c - 1].visited) neighbors.push([r, c - 1, 'left']);
+        // Check Right
+        if (c < cols - 1 && !grid[r][c + 1].visited) neighbors.push([r, c + 1, 'right']);
+
+        if (neighbors.length > 0) {
+            const [nr, nc, dir] = neighbors[Math.floor(Math.random() * neighbors.length)];
+
+            // Remove walls between current and neighbor
+            if (dir === 'top') {
+                grid[r][c].walls.top = false;
+                grid[nr][nc].walls.bottom = false;
+            } else if (dir === 'bottom') {
+                grid[r][c].walls.bottom = false;
+                grid[nr][nc].walls.top = false;
+            } else if (dir === 'left') {
+                grid[r][c].walls.left = false;
+                grid[nr][nc].walls.right = false;
+            } else if (dir === 'right') {
+                grid[r][c].walls.right = false;
+                grid[nr][nc].walls.left = false;
+            }
+
+            grid[nr][nc].visited = true;
+            stack.push(current);
+            current = [nr, nc];
+        } else if (stack.length > 0) {
+            current = stack.pop()!;
+        }
+    } while (stack.length > 0);
+
+    return grid;
+}
+
 // Robust Word Search Generator - Guarantees 100% word placement
 function generateWordSearchGrid(words: string[], minSize: number = 10): { grid: string[][], placed: boolean, placedWords: string[] } {
     const sortedWords = [...words].sort((a, b) => b.length - a.length);
@@ -76,7 +144,13 @@ function placeWord(grid: string[][], word: string, startX: number, startY: numbe
     }
 }
 
-export async function createActivityPDF(activity: ActivityContent, coloringImageUrl: string | null, lang: LanguageCode) {
+export async function createActivityPDF(
+    activity: ActivityContent,
+    coloringImageUrl: string | null,
+    lang: LanguageCode,
+    mazeStartImage?: string | null,
+    mazeEndImage?: string | null
+) {
     const doc = new jsPDF({
         orientation: "p",
         unit: "mm",
@@ -818,7 +892,96 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
     }
 
 
-    // --- PAGE 3: COLORING ---
+    // 15. Labirinto (Maze)
+    if (activity.maze) {
+        doc.addPage();
+        cursorY = 20;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(124, 58, 237); // Purple-600
+        doc.text(`14. ${sanitizeAIString(t.activityMaze)}`, margin, cursorY);
+        cursorY += 10;
+
+        // Header for maze - Sanitized
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(109, 40, 217); // Purple-700
+        const mazeInstructions = sanitizeAIString(activity.maze.instructions);
+        doc.text(mazeInstructions, margin, cursorY);
+        cursorY += 15;
+
+        // Maze Generation Algorithm Integration
+        const ageGroup = (activity as any).ageGroup || '5-6';
+        let rows = 10;
+        let cols = 10;
+
+        // Dynamic density based on age
+        if (ageGroup === '3-4' || ageGroup === '5-6') {
+            rows = 15; cols = 10;
+        } else if (ageGroup === '7-9') {
+            rows = 25; cols = 18;
+        } else {
+            rows = 40; cols = 28; // Back to Extreme complexity for 10-12
+        }
+
+        const mazeGrid = generateMaze(rows, cols);
+
+        // Calculate cell size - Reduced by 20% (approx 100mm width)
+        const maxMazeWidth = 100;
+        const cellSize = maxMazeWidth / cols;
+        const startX = (pageWidth - (cols * cellSize)) / 2;
+        const startY = cursorY + 45; // Spacing increased to avoid overlap with instruction text
+
+        // Draw Maze Walls - Classic Black style
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.8); // Thinner for complex mazes 35x22
+
+        // Outer Border - OPEN AT START AND END
+        doc.line(startX + cellSize, startY, startX + (cols * cellSize), startY); // Top (skipped start cell)
+        doc.line(startX + (cols * cellSize), startY, startX + (cols * cellSize), startY + (rows * cellSize)); // Right
+        doc.line(startX, startY + (rows * cellSize), startX + (cols - 1) * cellSize, startY + (rows * cellSize)); // Bottom (skipped end cell)
+        doc.line(startX, startY, startX, startY + (rows * cellSize)); // Left
+
+        // Draw Internal Walls
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const cell = mazeGrid[r][c];
+                const x = startX + (c * cellSize);
+                const y = startY + (r * cellSize);
+
+                if (cell.walls.right && !(r === rows - 1 && c === cols - 1)) {
+                    doc.line(x + cellSize, y, x + cellSize, y + cellSize);
+                }
+                if (cell.walls.bottom && !(r === rows - 1 && c === cols - 1)) {
+                    doc.line(x, y + cellSize, x + cellSize, y + cellSize);
+                }
+            }
+        }
+
+        // Thematic Images at Start and End - CLEAN RENDER
+        const imgSize = 30;
+        if (mazeStartImage) {
+            // PETER (A) - Positioned near the open TOP entry
+            doc.addImage(mazeStartImage, "PNG", startX - 2, startY - imgSize - 5, imgSize, imgSize);
+            doc.setFontSize(8);
+            doc.setTextColor(0, 0, 0);
+            doc.text("INÍCIO (A)", startX + cellSize / 2, startY - 2, { align: "center" });
+        }
+        if (mazeEndImage) {
+            // JESUS (B) - Positioned near the open BOTTOM exit
+            const mazeEndX = startX + (cols * cellSize);
+            const mazeEndY = startY + (rows * cellSize);
+            doc.addImage(mazeEndImage, "PNG", mazeEndX - imgSize + 2, mazeEndY + 2, imgSize, imgSize);
+            doc.setFontSize(8);
+            doc.setTextColor(0, 0, 0);
+            doc.text("FIM (B)", mazeEndX - cellSize / 2, mazeEndY + imgSize + 5, { align: "center" });
+        }
+
+        cursorY = startY + (rows * cellSize) + 20;
+    }
+
+    // --- PAGE 3/4: COLORING (re-indexed) ---
     if (coloringImageUrl) {
         doc.addPage();
 
@@ -828,7 +991,7 @@ export async function createActivityPDF(activity: ActivityContent, coloringImage
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setTextColor(255, 255, 255);
-        doc.text(`14. ${t.coloringTitle}`, pageWidth / 2, 13, { align: "center" });
+        doc.text(`15. ${t.coloringTitle}`, pageWidth / 2, 13, { align: "center" });
 
         const imgWidth = 180;
         const imgHeight = (imgWidth * 4) / 3; // ~240

@@ -79,8 +79,8 @@ export async function generateStoryStructure(
        - VARIAR OS ENQUADRAMENTOS: Use "Wide shot", "Close up", "Low angle".
        - CENA COMPLETA: Descreva o ambiente e ação.
        - NÃO inclua números repetitivos.
-       - NÃO inclua anjos/halos (exceto se essenciais ao tema, ex: Anunciação).
-       - Os personagens devem ser humanos normais.
+        - STRICT RULE: NEVER include halos, aureolas, divine glows, radiant rings, or light rays behind characters.
+        - Characters must be human figures without any mystical effects.
        - Se houver Jesus ou multidão, descreva-os.
     
     7. TÍTULO: Deve ser APENAS o nome da história.
@@ -203,7 +203,7 @@ export async function generateSceneImage(
 - Characters and objects must be EMPTY (WHITE) to be colored in.
 - NO fill, NO texture, NO cross-hatching.
 - NO TEXT, NO LETTERS, NO SPEECH BUBBLES inside the illustration.
-- NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads.
+- NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT BEAMS, NO DIVINE GLOW.
 - This is a PRINTABLE COLORING BOOK PAGE (Disney Style).`;
   } else if (style === IllustrationStyle.STYLE_CUTE) {
     stylePrompt = `CUTE KAWAII / CHIBI STICKER STYLE(HISTÓRIAS NA LUVA):
@@ -264,8 +264,8 @@ ${variationInstruction}
 
 STRICT RULES:
     - CRITICAL: NO TEXT, NO LETTERS, NO NUMBERS, NO SPEECH BUBBLES anywhere in the image.
-- CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads. (Even for holy figures).
-- NO wings on humans
+- CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT RAYS, NO DIVINE GLOWS, NO HOLY RADIANCE. (Even for Jesus).
+- NO wings on humans, NO mystical effects.
       - Friendly, child - appropriate content only
         - Pure white background, no complex scenery
           - MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES
@@ -392,7 +392,7 @@ export async function generateActivityContent(
        - CRÍTICO: Todos os personagens devem ter ANATOMIA HUMANA CORRETA - rostos humanos normais, proporções corretas, sem híbridos, sem distorções.
        - Se houver crianças, especifique "cute human children with normal human faces and bodies".
        - Se houver multidão, especifique "group of people with distinct human features".
-       - OBRIGATÓRIO incluir no final: "Disney animation style, modern 3D animated character line art, expressive eyes, Pixar-like character design, professional clean line art, high quality coloring book illustration, pure black outlines on white background, NO shading, NO fills, NO solid black areas, clean elegant strokes, perfect human anatomy"
+        - OBRIGATÓRIO incluir no final: "Disney animation style, modern 3D animated character line art, expressive eyes, Pixar-like character design, professional clean line art, high quality coloring book illustration, pure black outlines on white background, NO shading, NO fills, NO solid black areas, clean elegant strokes, perfect human anatomy, NO HALOS, NO AUREOLAS, NO LIGHT RAYS, NO SUNBURSTS"
     - "completeThePhrase": Objeto com "phrase" e "missingWord".
        - A frase deve ser um VERSÍCULO CHAVE ou LIÇÃO MORAL da história.
        - A frase NÃO pode ser simples demais.
@@ -433,6 +433,11 @@ export async function generateActivityContent(
        - "title": Nome de umjornal da época ou temático(ex: "Diário de Jericó", "Jornal do Deserto").
        - "headline": Uma manchete bombástica sobre o evento principal(ex: "MURALHAS CAEM MISTERIOSAMENTE!").
        - "instructions": Instrução para a criança desenhar e escrever(ex: "Desenhe o momento da queda e entreviste uma testemunha.").
+
+    - "maze": Objeto para a atividade de labirinto.
+        - "startPrompt": Prompt curto em INGLÊS para a imagem de ENTRADA do labirinto (ponto A). Deve ser um personagem ou objeto central da história (ex: "Noah"). MANTENHA o estilo Disney line art.
+        - "endPrompt": Prompt curto em INGLÊS para a imagem de CHEGADA do labirinto (ponto B). Deve ser o destino ou objetivo (ex: "The Ark"). MANTENHA o estilo Disney line art.
+        - "instructions": Uma frase curta de incentivo em ${languageName} (ex: "Ajude Noé a chegar na Arca!").
 
     Retorne APENAS o JSON válido, sem markdown.
   `;
@@ -556,9 +561,18 @@ export async function generateActivityContent(
                 instructions: { type: Type.STRING }
               },
               required: ["title", "headline", "instructions"]
+            },
+            maze: {
+              type: Type.OBJECT,
+              properties: {
+                startPrompt: { type: Type.STRING },
+                endPrompt: { type: Type.STRING },
+                instructions: { type: Type.STRING }
+              },
+              required: ["startPrompt", "endPrompt", "instructions"]
             }
           },
-          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase", "scrambleWords", "matchColumns", "trueOrFalse", "whoSaidIt", "orderEvents", "secretPhrase", "familyQuestions", "characterCard", "newsFlash"]
+          required: ["title", "bibleVerse", "quiz", "wordSearch", "coloringPrompt", "completeThePhrase", "scrambleWords", "matchColumns", "trueOrFalse", "whoSaidIt", "orderEvents", "secretPhrase", "familyQuestions", "characterCard", "newsFlash", "maze"]
         }
       }
     };
