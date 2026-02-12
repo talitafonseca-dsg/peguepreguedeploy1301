@@ -489,7 +489,17 @@ export async function generateActivityContent(
           - "faith": Nível de Fé.
           - "courage": Nível de Coragem.
           - "wisdom": Nível de Sabedoria.
-       - **REGRA PARA HERÓIS DA FÉ / BIOGRAFIAS (CASO D)**: Os níveis de "faith", "courage" e "wisdom" DEVEM ser sempre 10 (100%), pois refletem a força que vem de Cristo. Na "description", sempre mencione que essa força vem de "Somente Cristo" ou "Toda força vem de Jesus".
+         - **REGRA IMPORTANTE PARA OS ATRIBUTOS DO CARTÃO DO HERÓI**:
+           - **SOMENTE JESUS** deve ter TODOS os atributos em 10 (faith=10, courage=10, wisdom=10). Ele é perfeito. Na "description" dele, mencione "Força Total - Somente Nele!".
+           - **TODOS OS OUTROS personagens** (Noé, Moisés, Davi, Daniel, etc.) devem ter atributos VARIADOS e REALISTAS baseados na história bíblica deles. Nenhum humano é perfeito. Exemplos:
+              - Noé: faith=10, courage=7, wisdom=8 (fiel mas enfrentou medo e isolamento).
+              - Davi: faith=9, courage=10, wisdom=6 (corajoso, mas cometeu erros graves de sabedoria).
+              - Moisés: faith=8, courage=7, wisdom=9 (sábio mas hesitante no início, gaguejava).
+              - Jonas: faith=5, courage=3, wisdom=6 (fugiu de Deus, mas aprendeu a lição).
+              - Daniel: faith=10, courage=9, wisdom=10 (fiel e sábio, mas também humano).
+              - Pedro: faith=7, courage=6, wisdom=5 (negou Jesus 3 vezes, mas foi restaurado).
+           - Os valores devem refletir HONESTAMENTE a trajetória bíblica do personagem.
+           - Na "description" de personagens humanos, destaque suas qualidades E suas limitações, mostrando que a verdadeira força vem de Deus apesar das fraquezas humanas.
     - "newsFlash": Objeto para a atividade de jornal.
        - "title": Nome de um jornal da época ou temático(ex: "Diário de Jericó", "O Pregador Mirim").
        - "headline": Uma manchete impactante e apropriada para a história(ex: "MURALHAS CAEM!", "ALEGRIA NO ACAMPAMENTO COM JESUS").
