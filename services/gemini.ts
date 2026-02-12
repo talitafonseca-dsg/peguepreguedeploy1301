@@ -52,12 +52,25 @@ export async function generateStoryStructure(
        
        CASO C: CULTURA NACIONAL (Ex: Carnaval, Festas Juninas, Halloween)
        - Abordagem: "No mundo, mas não do mundo".
-       - Explique a origem ou o conceito da festa de forma simples e RESPEITOSA.
-       - Contraste com a "Luz de Jesus" e como os cristãos aproveitam esse tempo para comunhão, retiros e acampamentos com os irmãos da igreja.
-       - **PROIBIDO**: Dizer que cristãos "celebram" ou "comemoram" Carnaval. Use termos como "aproveitar o feriado com Deus", "retiro espiritual", "acampamento da igreja".
-       - Utilize um tom pedagógico: mostre porque escolhemos o caminho de Deus sem atacar as pessoas que celebram.
-       - Ilustre alternativas cristãs: alegria genuína, paz, adoração, natureza e comunhão no acampamento.
-       - **VESTIMENTAS (CRÍTICO)**: Use roupas MODERNAS e ATUAIS para TODOS os personagens (protagonistas, pais, amigos).
+       - VISÃO: As festas mundanas (Carnaval, etc) oferecem uma alegria passageira e enganosa.
+       - A LIÇÃO deve ensinar que a VERDADEIRA alegria vem somente de Deus e da sua Palavra.
+       - NÃO mostre o personagem principal, nem seus amigos ou familiares "curtindo" a festa. ELES NÃO PARTICIPAM.
+       - CENA VISUAL: O personagem deve estar:
+         1. Em um retiro/acampamento da igreja (longe da festa - MOSTRAR NATUREZA, BARRACAS).
+         2. Ou em casa/apartamento moderno observando da JANELA DE VIDRO (tristeza pela ilusão do mundo).
+         3. Ao fundo (longe): Cenário URBANO MODERNO com asfalto, prédios, carros, luzes de cidade e desfile de carnaval indistinto.
+       - NUNCA descreva o personagem dançando, usando máscaras, fantasias de carnaval ou adereços de festa.
+       - Use termos como "barulho", "ilusão", "alegria que acaba logo" para se referir à festa.
+       - CONTRASTE: Mostre a paz e a luz duradoura de quem está com Jesus.
+       - **VESTIMENTAS (CRÍTICO)**: Use roupas MODERNAS e ATUAIS para TODOS os personagens (jeans, camisetas, tênis), mas discretas e cristãs (sem fantasias).
+       - **AMBIENTAÇÃO (CRÍTICO)**: O cenário DEVE SER MODERNO (Cidades atuais, ruas asfaltadas, casas modernas, carros). NADA DE EDIFICAÇÕES ANTIGAS OU BÍBLICAS.
+       
+       **CRÍTICO PARA FAIXA ETÁRIA 10-12 ANOS (PROFUNDIDADE):**
+       - Se a idade for "10–12 anos", a narrativa DEVE ser mais profunda e educativa.
+       - **EXPLIQUE A ORIGEM HISTÓRICA:** Cite a origem pagã da festa (ex: saturnálias, festas da carne, origem do Halloween) de forma educativa.
+       - Explique TEOLOGICAMENTE por que não participamos (Idolatria, foco na carne vs espírito).
+       - Não use apenas "é perigoso", explique a **RAIZ ESPIRITUAL** e **HISTÓRICA** do problema.
+       - A linguagem deve ser séria e madura, tratando a criança como alguém capaz de entender história e teologia básica.
        
        CASO D: HERÓIS DA FÉ E BIOGRAFIAS (Ex: João Ferreira de Almeida, John Wesley, Lutero)
        - Foco: O agir de Deus através da vida de uma pessoa.
@@ -116,65 +129,91 @@ export async function generateStoryStructure(
     Retorne estritamente um JSON válido.
   `;
 
-  try {
-    const payload = {
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            title: { type: Type.STRING },
-            characterDescription: { type: Type.STRING },
-            scenes: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  id: { type: Type.NUMBER },
-                  imagePrompt: { type: Type.STRING },
-                  narrativeText: { type: Type.STRING }
-                },
-                required: ["id", "imagePrompt", "narrativeText"]
+  // Retry logic loop
+  const maxRetries = 3;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const payload = {
+        model: "gemini-2.0-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              title: { type: Type.STRING },
+              characterDescription: { type: Type.STRING },
+              scenes: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    id: { type: Type.NUMBER },
+                    imagePrompt: { type: Type.STRING },
+                    narrativeText: { type: Type.STRING }
+                  },
+                  required: ["id", "imagePrompt", "narrativeText"]
+                }
               }
-            }
-          },
-          required: ["title", "characterDescription", "scenes"]
+            },
+            required: ["title", "characterDescription", "scenes"]
+          }
         }
+      };
+
+      if (apiKey) {
+        const ai = new GoogleGenAI({ apiKey });
+        const response = await ai.models.generateContent(payload);
+        return JSON.parse(response.text || "{}");
+      } else if (supabaseToken) {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${supabaseToken}`
+          },
+          body: JSON.stringify({ type: "story", payload })
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          // Check for 429 specifically in response status if accessible, or body
+          if (response.status === 429 || (err.error && err.error.includes('429'))) {
+            throw new Error("429 Resource exhausted");
+          }
+          throw new Error(err.error || "Erro no servidor de cortesia");
+        }
+
+        const result = await response.json();
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+        const cleanText = text.replace(/```json\n?|```/g, '').trim();
+        return JSON.parse(cleanText);
+      } else {
+        throw new Error("API Key ou Token de Cortesia não fornecido.");
       }
-    };
-
-    if (apiKey) {
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent(payload);
-      return JSON.parse(response.text || "{}");
-    } else if (supabaseToken) {
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${supabaseToken}`
-        },
-        body: JSON.stringify({ type: "story", payload })
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || "Erro no servidor de cortesia");
+    } catch (error: any) {
+      // Last attempt, throw error
+      if (attempt === maxRetries) {
+        console.error("Erro ao gerar estrutura da história (Max retries):", error);
+        throw new Error(`Falha ao gerar história: ${error.message}`);
       }
 
-      const result = await response.json();
-      const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-      const cleanText = text.replace(/```json\n?|```/g, '').trim();
-      return JSON.parse(cleanText);
-    } else {
-      throw new Error("API Key ou Token de Cortesia não fornecido.");
+      const isRateLimit = error?.message?.includes('429') ||
+        error?.message?.includes('quota') ||
+        error?.message?.includes('Resource exhausted');
+
+      if (isRateLimit) {
+        const delay = (attempt + 1) * 2000;
+        console.log(`[Story] Rate limit check failed. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue; // Retry
+      }
+
+      // If not rate limit, throw immediately
+      throw error;
     }
-  } catch (error: any) {
-    console.error("Erro ao gerar estrutura da história:", error);
-    throw new Error(`Falha ao gerar história: ${error.message}`);
   }
+  throw new Error("Falha desconhecida na geração da história.");
 }
 
 /**
@@ -277,12 +316,15 @@ BIBLICAL ACCURACY RULES:
     - NEVER show God as a human figure or old man with beard
     - Represent God's presence as: golden light rays from above, glowing clouds, or voice (no visible figure)
       - Show biblical events ACCURATELY as described in scripture
-        - Characters wear authentic ancient Middle Eastern clothing
+      - TIME PERIOD CONTEXT (STRICT RULES):
+        - DEFAULT (BIBLICAL STORIES): Characters MUST wear authentic ancient Middle Eastern clothing (robes, tunics, sandals). Settings must be ANCIENT (stone/clay houses, desert, villages, no technology).
+        - EXCEPTION (ONLY FOR MODERN CULTURAL THEMES): IF the scene mentions "Carnival", "School", "Church Camp" OR character has "Jeans/Sneakers" -> Use MODERN CITY backgrounds (paved streets, cars, buildings) and MODERN clothing.
 ${variationInstruction}
 
 STRICT RULES:
     - CRITICAL: NO TEXT, NO LETTERS, NO NUMBERS, NO SPEECH BUBBLES anywhere in the image.
 - CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT RAYS, NO DIVINE GLOWS, NO HOLY RADIANCE. (Even for Jesus).
+- CRITICAL: IF THE SCENE IS ABOUT CARNIVAL/PARTY: The main character must NEVER be dancing, wearing carnival costumes/masks, or mixing with the crowd. They must be observing from a distance (looking reflective/sad for them), or in a separate peaceful environment (nature, church, home), or praying. The party can be in the background but the character is SEPARATE and NOT PARTICIPATING.
 - NO wings on humans, NO mystical effects.
       - Friendly, child - appropriate content only
         - Pure white background, no complex scenery
