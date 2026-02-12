@@ -564,10 +564,26 @@ export async function createActivityPDF(
 
         // Draw quotes
         whoSaidIt.forEach((item, idx) => {
+            // Calculate dynamic card height based on text wrapping
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(10);
+            const quoteText = doc.splitTextToSize(`"${item.quote}"`, pageWidth - (margin * 2) - 35);
+            const lineHeight = 5;
+            const textHeight = quoteText.length * lineHeight;
+            const cardPadding = 16; // top + bottom padding
+            const nameLineSpace = 10; // space for the "Nome:" line
+            const bubbleHeight = textHeight + cardPadding + nameLineSpace;
+
+            // Check if it fits on the page, otherwise add new page
+            if (cursorY + bubbleHeight + 6 > pageHeight - 15) {
+                doc.addPage();
+                cursorY = 20;
+            }
+
             // Speech bubble style
             doc.setFillColor(255, 255, 255);
             doc.setDrawColor(253, 186, 116); // Orange-300
-            doc.roundedRect(margin + 10, cursorY, pageWidth - (margin * 2) - 10, 18, 4, 4, 'FD');
+            doc.roundedRect(margin + 10, cursorY, pageWidth - (margin * 2) - 10, bubbleHeight, 4, 4, 'FD');
 
             // Triangle tail
             doc.triangle(
@@ -577,20 +593,21 @@ export async function createActivityPDF(
                 'FD'
             );
 
+            // Draw ALL lines of the quote
             doc.setFont("helvetica", "italic");
             doc.setFontSize(10);
             doc.setTextColor(67, 20, 7); // Orange-950
-            const quoteText = doc.splitTextToSize(`"${item.quote}"`, pageWidth - (margin * 2) - 30);
-            doc.text(quoteText[0], margin + 20, cursorY + 11);
+            doc.text(quoteText, margin + 20, cursorY + 10);
 
-            // Line for answer
+            // Line for answer - positioned BELOW the text
+            const nameLineY = cursorY + 10 + textHeight + 4;
             doc.setDrawColor(194, 65, 12); // Orange-800
-            doc.line(pageWidth - margin - 60, cursorY + 14, pageWidth - margin - 5, cursorY + 14);
+            doc.line(pageWidth - margin - 60, nameLineY, pageWidth - margin - 5, nameLineY);
             doc.setFontSize(8);
             doc.setTextColor(154, 52, 18); // Orange-700
-            doc.text(t.nameLabel.replace(':', ''), pageWidth - margin - 60, cursorY + 17);
+            doc.text(t.nameLabel.replace(':', ''), pageWidth - margin - 60, nameLineY + 3);
 
-            cursorY += 24;
+            cursorY += bubbleHeight + 6;
         });
 
         cursorY += 10;
