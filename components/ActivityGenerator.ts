@@ -715,6 +715,18 @@ export async function createActivityPDF(
             attrY += 8; // Tighter spacing
         });
 
+        // "Somente Cristo" Badge for full stats (Case D)
+        if (activity.characterCard.attributes.faith >= 10 &&
+            activity.characterCard.attributes.courage >= 10 &&
+            activity.characterCard.attributes.wisdom >= 10) {
+            doc.setFillColor(239, 68, 68); // Red-500
+            doc.roundedRect(cardX + 35, attrY + 2, 70, 8, 2, 2, 'F');
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(7);
+            doc.setTextColor(255, 255, 255);
+            doc.text("FORÇA TOTAL SOMENTE EM CRISTO!", pageWidth / 2, attrY + 7.5, { align: "center" });
+        }
+
         cursorY += cardHeight + 10;
     }
 

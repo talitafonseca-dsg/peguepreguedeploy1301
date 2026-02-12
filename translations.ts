@@ -3,7 +3,7 @@ import { LanguageCode } from "./types";
 
 export const translations: Record<LanguageCode, any> = {
   pt: {
-    title: "Pregue e Pegue",
+    title: "Pegue & Pregue",
     subtitle: "Ministério Infantil",
     prepareClass: "Prepare sua aula!",
     prepareDesc: "Criamos visuais bíblicos ricos, prontos para recortar e contar.",
@@ -81,6 +81,11 @@ export const translations: Record<LanguageCode, any> = {
     newsDraw: "Desenhe a foto aqui",
     newsWrite: "Escreva sua reportagem aqui...",
     activityMaze: "Labirinto Bíblico:",
+    catBible: "Histórias Bíblicas",
+    catCulture: "Cultura Nacional (Visão Bíblica)",
+    catBio: "Heróis da Fé e Biografias",
+    creatingStory: "Criando roteiro da história...",
+    creatingImage: "Ilustrando cena",
   },
   en: {
     title: "Teach & Tell",
@@ -161,6 +166,11 @@ export const translations: Record<LanguageCode, any> = {
     newsDraw: "Draw the photo here",
     newsWrite: "Write your report here...",
     activityMaze: "Bible Maze:",
+    catBible: "Bible Stories",
+    catCulture: "Culture & Faith",
+    catBio: "Faith Heroes & Biographies",
+    creatingStory: "Creating the story script...",
+    creatingImage: "Illustrating scene",
   },
   es: {
     title: "Enseña y Cuenta",
@@ -241,6 +251,11 @@ export const translations: Record<LanguageCode, any> = {
     newsDraw: "Dibuja la foto aquí",
     newsWrite: "Escribe tu reporte aquí...",
     activityMaze: "Laberinto Bíblico:",
+    catBible: "Historias Bíblicas",
+    catCulture: "Cultura y Fe",
+    catBio: "Héroes de la Fe y Biografías",
+    creatingStory: "Creando el guión de la historia...",
+    creatingImage: "Ilustrando escena",
   },
   fr: {
     title: "Raconte et Enseigne",
@@ -321,6 +336,11 @@ export const translations: Record<LanguageCode, any> = {
     newsDraw: "Dessine la photo ici",
     newsWrite: "Écris ton rapport ici...",
     activityMaze: "Labyrinthe Biblique :",
+    catBible: "Histoires Bibliques",
+    catCulture: "Culture et Foi",
+    catBio: "Héros de la Foi et Biographies",
+    creatingStory: "Création du scénario de l'histoire...",
+    creatingImage: "Illustration de la scène",
   },
   it: {
     title: "Racconta e Insegna",
@@ -401,5 +421,10 @@ export const translations: Record<LanguageCode, any> = {
     newsDraw: "Disegna la foto qui",
     newsWrite: "Scrivi il tuo rapporto qui...",
     activityMaze: "Labirinto Biblico:",
+    catBible: "Storie Bibliche",
+    catCulture: "Cultura e Fede",
+    catBio: "Eroi della Fede e Biografie",
+    creatingStory: "Creazione della sceneggiatura...",
+    creatingImage: "Illustrazione della scena",
   },
 };

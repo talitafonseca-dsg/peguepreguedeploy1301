@@ -47,14 +47,28 @@ export async function generateStoryStructure(
        - Mantenha o foco na sequência de eventos e personagens principais da Bíblia.
        
        CASO B: TEMA DOUTRINÁRIO/ENSINO (Ex: Armadura de Deus, Fruto do Espírito, Bem-Aventuranças, Parábolas)
-       - NÃO INVENTE histórias paralelas de "crianças modernas" (Ex: Nada de "Aninha aprendendo com a vovó").
-       - As cenas devem ilustrar os CONCEITOS ou SÍMBOLOS.
-       - Exemplo "Armadura de Deus": Cena 1=Paulo apresentando, Cena 2=Cinto da Verdade (foco visual no cinto), Cena 3=Couraça (foco na couraça), etc.
-       - Exemplo "Frutos do Espírito": Cada cena deve ilustrar um ou dois frutos com exemplos visuais claros ou metáforas bíblicas.
-       - O texto deve ser EXPLICATIVO e DIDÁTICO, falando diretamente sobre o conceito.
-       - CRÍTICO: PROIBIDO INVENTAR PERSONAGENS OUVINTES (Ex: Nada de "Rabi fictício ensinando na escola", nada de "Criança moderna ouvindo").
-       - Se for uma Parábola de Jesus (Ex: Bom Samaritano), narre a parábola DIRETAMENTE ou mostre Jesus ensinando seus Discípulos/Multidão.
-       - Fidelidade ESCRITURAL é a prioridade máxima. Não adicione "molduras narrativas" que não existem na Bíblia.
+       - As cenas devem ilustrar os CONCEITOS ou SÍMBOLOS bíblicos.
+       - O texto deve ser EXPLICATIVO e DIDÁTICO, focado no ensino bíblico direto.
+       
+       CASO C: CULTURA NACIONAL (Ex: Carnaval, Festas Juninas, Halloween)
+       - Abordagem: "No mundo, mas não do mundo".
+       - Explique a origem ou o conceito da festa de forma simples e RESPEITOSA.
+       - Contraste com a "Luz de Jesus" e como os cristãos aproveitam esse tempo para comunhão, retiros e acampamentos com os irmãos da igreja.
+       - **PROIBIDO**: Dizer que cristãos "celebram" ou "comemoram" Carnaval. Use termos como "aproveitar o feriado com Deus", "retiro espiritual", "acampamento da igreja".
+       - Utilize um tom pedagógico: mostre porque escolhemos o caminho de Deus sem atacar as pessoas que celebram.
+       - Ilustre alternativas cristãs: alegria genuína, paz, adoração, natureza e comunhão no acampamento.
+       - **VESTIMENTAS (CRÍTICO)**: Use roupas MODERNAS e ATUAIS para TODOS os personagens (protagonistas, pais, amigos).
+       
+       CASO D: HERÓIS DA FÉ E BIOGRAFIAS (Ex: João Ferreira de Almeida, John Wesley, Lutero)
+       - Foco: O agir de Deus através da vida de uma pessoa.
+       - Narre os marcos principais: o chamado, os desafios, a perseverança e o impacto para o Reino.
+       - Destaque a FONTE da força deles: A Palavra de Deus e o Espírito Santo.
+       - Mantenha a precisão histórica (século, país, vestimentas).
+
+       CRÍTICO (PARA TODOS):
+       - PROIBIDO inventar "crianças modernas" (Ex: Nada de "Aninha aprendendo com a vovó", nada de "Joãozinho na escola").
+       - A narrativa deve ser direta sobre o tema ou o personagem histórico/bíblico.
+       - Fidelidade ESCRITURAL e HISTÓRICA é a prioridade máxima.
 
     4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL - CRÍTICO): 
        - O CAMPO "characterDescription" DEVE SER DETALHADO E FIXO.
@@ -64,7 +78,11 @@ export async function generateStoryStructure(
        - Exemplo: "Gideon, homem de 30 anos (MATENHA ESSA IDADE), barba curta castanha, cabelo castanho encaracolado, túnica bege simples, cinto de couro marrom, sandálias gastas, corpo forte de guerreiro".
        - Se for Doutrina: Defina um personagem representativo fixo com os mesmos detalhes.
     
-    5. PRECISÃO HISTÓRICA: Garanta vestimentas da época e cenários autênticos do Oriente Médio antigo.
+    5. PRECISÃO HISTÓRICA E CULTURAL: 
+       - Se for Narrativa Bíblica: Vestimentas antigas do Oriente Médio para todos.
+       - Se for Biografia: Use vestimentas e arquitetura fiéis à época do personagem.
+       - Se for Cultura: Use vestimentas, cenários e ambientes MODERNOS e ATUAIS para TODOS os personagens na cena. Nada de roupas bíblicas em contextos culturais atuais.
+       - Represente a "Luz de Jesus" com cores quentes e vibrantes (amarelo, dourado) e o mundo com cores mais suaves ou contrastantes, sem ser assustador.
     
     6. PROMPTS DE IMAGEM (CRÍTICO - FIDELIDADE BÍBLICA E CONSISTÊNCIA):
        - O imagePrompt DEVE ilustrar EXATAMENTE o que está descrito no narrativeText daquela cena.
@@ -423,16 +441,18 @@ export async function generateActivityContent(
     - "familyQuestions": Array com 3 perguntas para discussão em família.
     - "characterCard": Objeto com dados para o card do herói.
        - "name": Nome do personagem principal.
-       - "title": Um título impacto / heroico(ex: "O Matador de Gigantes", "O Profeta de @Fogo").
+       - "title": Um título impacto / heroico(ex: "O Matador de Gigantes", "O Reformador da Fé").
        - "description": Breve descrição das qualidades dele(máx 2 linhas).
-       - "attributes": Objeto com níveis de 1 a 10(seja generoso!):
+       - "attributes": Objeto com níveis de 1 a 10:
           - "faith": Nível de Fé.
           - "courage": Nível de Coragem.
           - "wisdom": Nível de Sabedoria.
+       - **REGRA PARA HERÓIS DA FÉ / BIOGRAFIAS (CASO D)**: Os níveis de "faith", "courage" e "wisdom" DEVEM ser sempre 10 (100%), pois refletem a força que vem de Cristo. Na "description", sempre mencione que essa força vem de "Somente Cristo" ou "Toda força vem de Jesus".
     - "newsFlash": Objeto para a atividade de jornal.
-       - "title": Nome de umjornal da época ou temático(ex: "Diário de Jericó", "Jornal do Deserto").
-       - "headline": Uma manchete bombástica sobre o evento principal(ex: "MURALHAS CAEM MISTERIOSAMENTE!").
-       - "instructions": Instrução para a criança desenhar e escrever(ex: "Desenhe o momento da queda e entreviste uma testemunha.").
+       - "title": Nome de um jornal da época ou temático(ex: "Diário de Jericó", "O Pregador Mirim").
+       - "headline": Uma manchete impactante e apropriada para a história(ex: "MURALHAS CAEM!", "ALEGRIA NO ACAMPAMENTO COM JESUS").
+       - REGRA CRÍTICA PARA TEMAS CULTURAIS: NÃO use o verbo "celebrar" ou "festejar" em relação ao Carnaval. Use "Jovens brilham a luz de Jesus no feriado" ou "Acampamento traz alegria e comunhão".
+       - "instructions": Instrução para a criança desenhar e escrever.
 
     - "maze": Objeto para a atividade de labirinto.
         - "startPrompt": Prompt curto em INGLÊS para a imagem de ENTRADA do labirinto (ponto A). Deve ser um personagem ou objeto central da história (ex: "Noah"). MANTENHA o estilo Disney line art.

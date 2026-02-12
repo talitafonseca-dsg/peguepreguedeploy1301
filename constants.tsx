@@ -3,61 +3,121 @@ import React from 'react';
 
 import { LanguageCode } from './types';
 
-export const BIBLE_STORIES: Record<LanguageCode, string[]> = {
+export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string; stories: string[] }[]> = {
   pt: [
-    "Zaqueu, o cobrador de impostos",
-    "Noé e a Arca",
-    "Davi e o Gigante Golias",
-    "Jonas e o Grande Peixe",
-    "O Bom Samaritano",
-    "O Nascimento de Jesus",
-    "A Criação do Mundo",
-    "Daniel na Cova dos Leões",
-    "Moisés e a Travessia do Mar Vermelho"
+    {
+      label: "Histórias Bíblicas",
+      key: "catBible",
+      stories: [
+        "Zaqueu, o cobrador de impostos",
+        "Noé e a Arca",
+        "Davi e o Gigante Golias",
+        "Jonas e o Grande Peixe",
+        "O Bom Samaritano",
+        "O Nascimento de Jesus",
+        "A Criação do Mundo",
+        "Daniel na Cova dos Leões",
+        "Moisés e a Travessia do Mar Vermelho"
+      ]
+    },
+    {
+      label: "Cultura Nacional (Visão Bíblica)",
+      key: "catCulture",
+      stories: [
+        "O Carnaval à luz da Bíblia",
+        "Festas Juninas e a Palavra de Deus",
+        "A importância de brilhar a luz de Jesus"
+      ]
+    },
+    {
+      label: "Heróis da Fé e Biografias",
+      key: "catBio",
+      stories: [
+        "João Ferreira de Almeida (Tradução da Bíblia)",
+        "John Wesley (O Avivamento)",
+        "A Reforma Protestante explicada",
+        "Charles Spurgeon (O Príncipe dos Pregadores)",
+        "Missionários pioneiros no Brasil"
+      ]
+    }
   ],
   en: [
-    "Zacchaeus the Tax Collector",
-    "Noah's Ark",
-    "David and Goliath",
-    "Jonah and the Big Fish",
-    "The Good Samaritan",
-    "The Birth of Jesus",
-    "The Creation of the World",
-    "Daniel in the Lion's Den",
-    "Moses and the Red Sea"
+    {
+      label: "Bible Stories",
+      key: "catBible",
+      stories: [
+        "Zacchaeus the Tax Collector",
+        "Noah's Ark",
+        "David and Goliath",
+        "Jonah and the Big Fish",
+        "The Good Samaritan",
+        "The Birth of Jesus",
+        "The Creation of the World",
+        "Daniel in the Lion's Den",
+        "Moses and the Red Sea"
+      ]
+    },
+    {
+      label: "History & Biographies",
+      key: "catBio",
+      stories: [
+        "John Wesley (The Revival)",
+        "The Protestant Reformation",
+        "Charles Spurgeon",
+        "William Carey (Missions)"
+      ]
+    }
   ],
   es: [
-    "Zaqueo, el recaudador de impuestos",
-    "El Arca de Noé",
-    "David y Goliat",
-    "Jonás y el Gran Pez",
-    "El Buen Samaritano",
-    "El Nacimiento de Jesús",
-    "La Creación del Mundo",
-    "Daniel en el Foso de los Leones",
-    "Moisés y el Mar Rojo"
+    {
+      label: "Historias Bíblicas",
+      key: "catBible",
+      stories: [
+        "Zaqueo, el recaudador de impuestos",
+        "El Arca de Noé",
+        "David y Goliat",
+        "Jonás y el Gran Pez",
+        "El Buen Samaritano",
+        "El Nacimiento de Jesús",
+        "La Creación del Mundo",
+        "Daniel en el Foso de los Leones",
+        "Moisés y el Mar Rojo"
+      ]
+    }
   ],
   fr: [
-    "Zachée le collecteur d'impôts",
-    "L'Arche de Noé",
-    "David et Goliath",
-    "Jonas et le Grand Poisson",
-    "Le Bon Samaritain",
-    "La Naissance de Jésus",
-    "La Création du Monde",
-    "Daniel dans la Fosse aux Lions",
-    "Moïse et la Mer Rouge"
+    {
+      label: "Histoires Bibliques",
+      key: "catBible",
+      stories: [
+        "Zachée le collecteur d'impôts",
+        "L'Arche de Noé",
+        "David et Goliath",
+        "Jonas et le Grand Poisson",
+        "Le Bon Samaritain",
+        "La Naissance de Jésus",
+        "La Création du Monde",
+        "Daniel dans la Fosse aux Lions",
+        "Moïse et la Mer Rouge"
+      ]
+    }
   ],
   it: [
-    "Zaccheo il pubblicano",
-    "L'Arca di Noè",
-    "Davide e Golia",
-    "Giona e il Grande Pesce",
-    "Il Buon Samaritano",
-    "La Nascita di Gesù",
-    "La Creazione del Mondo",
-    "Daniele nella Fossa dei Leoni",
-    "Mosè e il Mar Rosso"
+    {
+      label: "Storie Bibliche",
+      key: "catBible",
+      stories: [
+        "Zaccheo il pubblicano",
+        "L'Arca di Noè",
+        "Davide e Golia",
+        "Giona e il Grande Pesce",
+        "Il Buon Samaritano",
+        "La Nascita di Gesù",
+        "La Creazione del Mondo",
+        "Daniele nella Fossa dei Leoni",
+        "Mosè e il Mar Rosso"
+      ]
+    }
   ]
 };
 

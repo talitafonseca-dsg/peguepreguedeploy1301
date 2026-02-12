@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AgeGroup, IllustrationStyle, StoryScene, BibleStory, LanguageCode, LANGUAGES, ActivityContent } from './types';
-import { BIBLE_STORIES, ICONS, COLORS } from './constants';
+import { STORY_CATEGORIES, ICONS, COLORS } from './constants';
 import { generateStoryStructure, generateSceneImage, generateActivityContent } from './services/gemini';
 import { createPrintablePDF } from './components/PDFGenerator';
 import { createActivityPDF } from './components/ActivityGenerator';
@@ -35,13 +35,14 @@ const App: React.FC = () => {
   const [demoRemainingDays, setDemoRemainingDays] = useState<number | null>(null);
 
   const [lang, setLang] = useState<LanguageCode>('pt');
-  const [selectedStory, setSelectedStory] = useState(BIBLE_STORIES[0]);
+  const [selectedStory, setSelectedStory] = useState(STORY_CATEGORIES[lang][0].stories[0]);
   const [customStory, setCustomStory] = useState('');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>(AgeGroup.GROUP_5_6);
   const [style, setStyle] = useState<IllustrationStyle>(IllustrationStyle.STYLE_2D);
   const [darkMode, setDarkMode] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>('catBible');
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingActivity, setIsGeneratingActivity] = useState(false);
@@ -637,39 +638,69 @@ const App: React.FC = () => {
             {/* Selection Grid */}
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Story */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-[2.5rem] border-2 border-blue-100 dark:border-blue-800 shadow-sm hover:shadow-md transition-shadow">
-                <label className="block text-sm font-black mb-4 flex items-center gap-3 text-blue-700 dark:text-blue-300 uppercase tracking-widest">
-                  <span className="bg-blue-500 text-white p-2 rounded-xl"><ICONS.Bible /></span> {t.storyLabel}
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-[2.5rem] border-2 border-blue-100 dark:border-blue-800 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                <label className="block text-sm font-black mb-6 flex items-center gap-3 text-blue-700 dark:text-blue-300 uppercase tracking-widest">
+                  <span className="bg-blue-500 text-white p-2 rounded-xl">📖</span> {t.storyLabel}
                 </label>
-                <select
-                  value={selectedStory || "custom"}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === "custom") {
-                      setSelectedStory("");
-                      setCustomStory("");
-                    } else {
-                      setSelectedStory(val);
-                      setCustomStory("");
-                    }
-                  }}
-                  className="w-full p-4 rounded-xl border-2 border-blue-200 dark:border-blue-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 transition-colors font-bold text-lg"
-                >
-                  {BIBLE_STORIES[lang].map((story) => (
-                    <option key={story} value={story}>{story}</option>
+
+                {/* Category Selection Tabs */}
+                <div className="grid grid-cols-3 gap-2 mb-6">
+                  {STORY_CATEGORIES[lang].map((cat) => (
+                    <button
+                      key={cat.key}
+                      onClick={() => {
+                        setActiveCategory(cat.key);
+                        setSelectedStory(cat.stories[0]);
+                        setCustomStory("");
+                      }}
+                      className={`py-3 px-2 rounded-2xl font-black text-[10px] sm:text-xs transition-all border-2 ${activeCategory === cat.key
+                        ? 'bg-blue-600 border-blue-700 text-white shadow-lg'
+                        : 'bg-white dark:bg-slate-800 border-blue-100 dark:border-slate-700 text-blue-400 dark:text-slate-400 hover:bg-blue-50'
+                        }`}
+                    >
+                      {t[cat.key] || cat.label}
+                    </button>
                   ))}
-                  <option value="custom">{t.otherStory}...</option>
-                </select>
-                {(selectedStory === "" || !BIBLE_STORIES[lang].includes(selectedStory)) && (
+                </div>
+
+                {/* Suggestions for Active Category */}
+                <div className="mb-4">
+                  <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">Sugestões de Temas:</label>
+                  <select
+                    value={STORY_CATEGORIES[lang].find(c => c.key === activeCategory)?.stories.includes(selectedStory) ? selectedStory : "custom"}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "custom") {
+                        setSelectedStory("");
+                        setCustomStory("");
+                      } else {
+                        setSelectedStory(val);
+                        setCustomStory("");
+                      }
+                    }}
+                    className="w-full p-4 rounded-xl border-2 border-blue-100 dark:border-blue-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 transition-colors font-bold text-base"
+                  >
+                    {STORY_CATEGORIES[lang].find(c => c.key === activeCategory)?.stories.map((story) => (
+                      <option key={story} value={story}>{story}</option>
+                    ))}
+                    <option value="custom">{t.otherStory}...</option>
+                  </select>
+                </div>
+
+                {/* Custom Input - Always accessible for more detail */}
+                <div className="mt-4">
+                  <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">Escreva o tema específico abaixo:</label>
                   <input
                     type="text"
                     placeholder={t.otherStory}
-                    className="w-full mt-4 bg-white dark:bg-slate-900 border-2 border-blue-200 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base"
+                    className="w-full bg-white dark:bg-slate-900 border-2 border-blue-100 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base shadow-inner"
                     value={customStory}
-                    onChange={(e) => setCustomStory(e.target.value)}
-                    autoFocus
+                    onChange={(e) => {
+                      setCustomStory(e.target.value);
+                      setSelectedStory(""); // If writing, it overrides the select
+                    }}
                   />
-                )}
+                </div>
               </div>
 
               {/* Age */}
