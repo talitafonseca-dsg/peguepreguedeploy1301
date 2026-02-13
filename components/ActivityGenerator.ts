@@ -1049,7 +1049,7 @@ export async function createActivityPDF(
             doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
             doc.setTextColor(236, 72, 153); // Pink-500
-            const title = (t as any).memoryGameTitle || "16. Jogo da Memória";
+            const title = t.memoryGameTitle || "16. Jogo da Memoria";
             doc.text(title, margin, cursorY);
             cursorY += 10;
 
@@ -1058,14 +1058,16 @@ export async function createActivityPDF(
 
             // Instruction for 2x printing
             const totalCards = cards.length * 2;
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(10);
             doc.setTextColor(220, 38, 38); // Red-600
-            doc.text(`ATENCAO: IMPRIMA ESTA PAGINA 2 VEZES! (Total: ${totalCards} cartas)`, margin, cursorY);
+            const instruction = (t.memoryGameInstruction || "ATENCAO: IMPRIMA ESTA PAGINA 2 VEZES! (Total: {0} cartas)").replace("{0}", totalCards.toString());
+            doc.text(instruction, margin, cursorY);
             cursorY += 10;
 
             // Grid Layout
             const cardWidth = 50;
-            const cardHeight = 50;
+            const cardHeight = 65; // Taller to look like a card
             const gap = 8;
             const cols = 3;
             const startX = (pageWidth - ((cardWidth * cols) + (gap * (cols - 1)))) / 2;
@@ -1134,7 +1136,7 @@ export async function createActivityPDF(
             // Footer Instructions
             doc.setFontSize(10);
             doc.setTextColor(100, 100, 100);
-            const instruct = "Recorte as cartas e divirta-se encontrando os pares!";
+            const instruct = t.memoryGameFooter || "Recorte as cartas e divirta-se encontrando os pares!";
             doc.text(instruct, pageWidth / 2, cursorY + (4 * (cardHeight + gap)) + 10, { align: "center" });
         }
     }

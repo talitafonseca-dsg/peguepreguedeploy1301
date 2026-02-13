@@ -91,6 +91,9 @@ export const translations: Record<LanguageCode, any> = {
     objectivePlaceholder: "Ex: Ensinar que a santidade é viver separado para Deus...",
     creatingStory: "Criando roteiro da história...",
     creatingImage: "Ilustrando cena",
+    memoryGameTitle: "16. Jogo da Memória",
+    memoryGameInstruction: "ATENCÃO: IMPRIMA ESTA PÁGINA 2 VEZES! (Total: {0} cartas)",
+    memoryGameFooter: "Recorte as cartas e divirta-se encontrando os pares!",
   },
   en: {
     title: "Teach & Tell",
@@ -181,6 +184,9 @@ export const translations: Record<LanguageCode, any> = {
     objectivePlaceholder: "E.g.: Teach that holiness means living set apart for God...",
     creatingStory: "Creating the story script...",
     creatingImage: "Illustrating scene",
+    memoryGameTitle: "16. Memory Game",
+    memoryGameInstruction: "ATTENTION: PRINT THIS PAGE 2 TIMES! (Total: {0} cards)",
+    memoryGameFooter: "Cut out the cards and have fun finding the pairs!",
   },
   es: {
     title: "Enseña y Cuenta",
@@ -271,6 +277,9 @@ export const translations: Record<LanguageCode, any> = {
     objectivePlaceholder: "Ej: Enseñar que la santidad es vivir apartado para Dios...",
     creatingStory: "Creando el guión de la historia...",
     creatingImage: "Ilustrando escena",
+    memoryGameTitle: "16. Juego de Memoria",
+    memoryGameInstruction: "ATENCIÓN: ¡IMPRIME ESTA PÁGINA 2 VECES! (Total: {0} cartas)",
+    memoryGameFooter: "¡Corta las cartas y diviértete encontrando las parejas!",
   },
   fr: {
     title: "Raconte et Enseigne",
@@ -361,6 +370,9 @@ export const translations: Record<LanguageCode, any> = {
     objectivePlaceholder: "Ex : Enseigner que la sainteté c'est vivre séparé pour Dieu...",
     creatingStory: "Création du scénario de l'histoire...",
     creatingImage: "Illustration de la scène",
+    memoryGameTitle: "16. Jeu de Mémoire",
+    memoryGameInstruction: "ATTENTION : IMPRIMEZ CETTE PAGE 2 FOIS ! (Total : {0} cartes)",
+    memoryGameFooter: "Découpez les cartes et amusez-vous à trouver les paires !",
   },
   it: {
     title: "Racconta e Insegna",
@@ -451,5 +463,8 @@ export const translations: Record<LanguageCode, any> = {
     objectivePlaceholder: "Es: Insegnare che la santità è vivere separati per Dio...",
     creatingStory: "Creazione della sceneggiatura...",
     creatingImage: "Illustrazione della scena",
+    memoryGameTitle: "16. Gioco della Memoria",
+    memoryGameInstruction: "ATTENZIONE: STAMPA QUESTA PAGINA 2 VOLTE! (Total: {0} carte)",
+    memoryGameFooter: "Ritaglia le carte e divertiti a trovare le coppie!",
   },
 };
