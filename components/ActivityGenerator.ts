@@ -1053,14 +1053,15 @@ export async function createActivityPDF(
             doc.text(title, margin, cursorY);
             cursorY += 10;
 
-            // Instruction for 2x printing
-            doc.setFontSize(10);
-            doc.setTextColor(220, 38, 38); // Red-600 to highlight
-            doc.text("⚠️ IMPRIMA ESTA PÁGINA 2 VEZES PARA JOGAR! (Total 24 cartas)", margin, cursorY);
-            cursorY += 10;
-
             // Select up to 12 images
             const cards = validScenes.slice(0, 12);
+
+            // Instruction for 2x printing
+            const totalCards = cards.length * 2;
+            doc.setFontSize(10);
+            doc.setTextColor(220, 38, 38); // Red-600
+            doc.text(`ATENCAO: IMPRIMA ESTA PAGINA 2 VEZES! (Total: ${totalCards} cartas)`, margin, cursorY);
+            cursorY += 10;
 
             // Grid Layout
             const cardWidth = 50;
@@ -1076,17 +1077,24 @@ export async function createActivityPDF(
                 const x = startX + (col * (cardWidth + gap));
                 const y = cursorY + (row * (cardHeight + gap));
 
-                // Card Border (Dashed for cutting)
-                doc.setDrawColor(200, 200, 200);
+                // Card Styling - Rounded Corners ("Playing Card" look)
+                doc.setDrawColor(150, 150, 150);
                 doc.setLineWidth(0.5);
+
+                // Outer Cut Line (Dashed)
                 doc.setLineDashPattern([3, 3], 0);
-                doc.rect(x, y, cardWidth, cardHeight);
+                doc.roundedRect(x, y, cardWidth, cardHeight, 4, 4);
+
+                // Inner Design Line (Solid) - To look like a card frame
                 doc.setLineDashPattern([], 0);
+                doc.setDrawColor(236, 72, 153); // Pink-500 theme
+                doc.setLineWidth(1);
+                doc.roundedRect(x + 2, y + 2, cardWidth - 4, cardHeight - 4, 3, 3);
 
                 // Image with Aspect Ratio Preservation (Contain)
                 if (scene.imageUrl) {
                     try {
-                        const pad = 3;
+                        const pad = 6; // Increased padding to stay inside the inner border
                         const boxW = cardWidth - (pad * 2);
                         const boxH = cardHeight - (pad * 2);
                         const boxX = x + pad;
@@ -1112,7 +1120,7 @@ export async function createActivityPDF(
 
                         doc.addImage(scene.imageUrl, "PNG", drawX, drawY, drawW, drawH);
                     } catch (e) {
-                        console.error("Error adding memory game image", e);
+                        // Ignore
                     }
                 }
 
