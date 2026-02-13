@@ -19,11 +19,11 @@ const App: React.FC = () => {
 
   // Mapa de logos por idioma
   const LOGO_MAP: Record<LanguageCode, string> = {
-    pt: '/logo.png',
-    en: '/logo_en.png',
-    es: '/logo_es.png',
-    fr: '/logo_fr.png',
-    it: '/logo_it.png',
+    pt: 'logo.png',
+    en: 'logo_en.png',
+    es: 'logo_es.png',
+    fr: 'logo_fr.png',
+    it: 'logo_it.png',
   };
 
   const [userApiKey, setUserApiKey] = useState<string | null>(null);
