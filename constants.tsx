@@ -95,6 +95,16 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
       ]
     },
     {
+      label: "Héroes de la Fe y Biografías",
+      key: "catBio",
+      stories: [
+        "Juan Wesley (El Avivamiento)",
+        "La Reforma Protestante",
+        "Charles Spurgeon (El Príncipe de los Predicadores)",
+        "William Carey (Misiones)"
+      ]
+    },
+    {
       label: "Tema Bíblico",
       key: "catTheme",
       stories: []
@@ -117,6 +127,16 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
       ]
     },
     {
+      label: "Héros de la Foi et Biographies",
+      key: "catBio",
+      stories: [
+        "John Wesley (Le Réveil)",
+        "La Réforme Protestante",
+        "Charles Spurgeon (Le Prince des Prédicateurs)",
+        "William Carey (Missions)"
+      ]
+    },
+    {
       label: "Thème Biblique",
       key: "catTheme",
       stories: []
@@ -136,6 +156,16 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
         "La Creazione del Mondo",
         "Daniele nella Fossa dei Leoni",
         "Mosè e il Mar Rosso"
+      ]
+    },
+    {
+      label: "Eroi della Fede e Biografie",
+      key: "catBio",
+      stories: [
+        "John Wesley (Il Risveglio)",
+        "La Riforma Protestante",
+        "Charles Spurgeon (Il Principe dei Predicatori)",
+        "William Carey (Missioni)"
       ]
     },
     {

@@ -1,3 +1,4 @@
+import { getFixedCharacterDescription } from "./characterRegistry";
 import { GoogleGenAI, Type } from "@google/genai";
 import { AgeGroup, IllustrationStyle, BibleStory, LanguageCode, ActivityContent } from "../types";
 
@@ -22,6 +23,21 @@ export async function generateStoryStructure(
   supabaseToken?: string
 ): Promise<BibleStory> {
   const languageName = langMap[lang];
+  const fixedCharacterDesc = getFixedCharacterDescription(storyName);
+
+  let characterEnforcement = "";
+  if (fixedCharacterDesc) {
+    characterEnforcement = `
+    IMPORTANT: This story involves a known biblical figure.
+    You MUST define the 'characterDescription' field based on this FIXED VISUAL PROFILE (translate to ${languageName}):
+    "${fixedCharacterDesc}"
+    
+    CRITICAL: 
+    - You must NOT change the age, hair color, or clothing color from this profile.
+    - Use this description as the source of truth.
+    `;
+  }
+
 
   const prompt = `
     Como um especialista em educação cristã infantil e teólogo experiente, adapte a história bíblica: "${storyName}" para crianças de ${age}.
@@ -165,6 +181,9 @@ export async function generateStoryStructure(
        - PROIBIDO inventar "crianças modernas" (Ex: Nada de "Aninha aprendendo com a vovó", nada de "Joãozinho na escola").
        - A narrativa deve ser direta sobre o tema ou o personagem histórico/bíblico.
        - Fidelidade ESCRITURAL e HISTÓRICA é a prioridade máxima.
+
+
+    ${characterEnforcement}
 
     4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL - CRÍTICO): 
        - O CAMPO "characterDescription" DEVE SER DETALHADO E FIXO.
