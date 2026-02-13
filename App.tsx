@@ -258,11 +258,21 @@ const App: React.FC = () => {
     setIsGeneratingActivity(true);
     try {
       const supabaseToken = (await supabase.auth.getSession()).data.session?.access_token;
+
+      const fullStoryContext = `
+      TÍTULO: ${generatedTitle}
+      PERSONAGEM PRINCIPAL: ${characterDescription}
+      
+      A HISTÓRIA:
+      ${scenes.map((s, i) => `CENA ${i + 1}: ${s.narrativeText}`).join('\n\n')}
+      `;
+
       const data = await generateActivityContent(
         userApiKey,
         generatedTitle,
         ageGroup,
         lang,
+        fullStoryContext,
         isDemoMode ? supabaseToken : undefined
       );
 
@@ -359,7 +369,7 @@ const App: React.FC = () => {
     if (!activityData) return;
     setIsGeneratingActivity(true);
     try {
-      await createActivityPDF(activityData, activityColoringImage, lang, mazeStartImage, mazeEndImage);
+      await createActivityPDF(activityData, activityColoringImage, lang, mazeStartImage, mazeEndImage, scenes);
     } catch (e: any) {
       alert(`Erro ao criar PDF: ${e.message}`);
     } finally {

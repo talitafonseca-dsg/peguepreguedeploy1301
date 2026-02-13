@@ -36,6 +36,14 @@ const CHARACTER_DB: CharacterProfile[] = [
     {
         keywords: ["jesus", "jesús", "gesù"],
         visual: "Jesus Christ: Man approx 30-33 years old, middle-eastern olive skin, SHOULDER-LENGTH BROWN WAVY HAIR, FULL BROWN BEARD. He wears a LONG WHITE TUNIC (teaching robe) with a BLUE SASH/MANTLE draped over one shoulder. Gentle, kind, and authoritative expression. NO HALO."
+    },
+    {
+        keywords: ["samaritano", "samaritan", "samaritain"],
+        visual: "The Good Samaritan (Main Character): Middle-aged man, approx 40 years old, olive skin, short black beard, wearing a RUSTIC RED TUNIC with a CREAM-COLORED HEAD SCARF (TURBAN). Kind expression. \nSecondary Character (The Wounded Man): Man approx 30 years old, pale skin, wearing a TORN GRAY TUNIC, lying on ground, bandages/wounds visible."
+    },
+    {
+        keywords: ["filho pródigo", "prodigal son", "prodigo"],
+        visual: "The Prodigal Son (Main Character): Young man, approx 20 years old, olive skin, messy dark hair, patchy beard. Wears a DIRTY, RAGGED GREEN TUNIC (after losing money). \nThe Father: Elderly man, white beard, wearing a RICH PURPLE ROBE and GOLD RING, running with open arms."
     }
 ];
 

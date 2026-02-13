@@ -1,6 +1,6 @@
 
 import { jsPDF } from "jspdf";
-import { ActivityContent, LanguageCode } from "../types";
+import { ActivityContent, LanguageCode, StoryScene } from "../types";
 import { translations } from "../translations";
 
 // Helper to clean AI strings from quotes, parentheses and emojis
@@ -149,7 +149,8 @@ export async function createActivityPDF(
     coloringImageUrl: string | null,
     lang: LanguageCode,
     mazeStartImage?: string | null,
-    mazeEndImage?: string | null
+    mazeEndImage?: string | null,
+    scenes?: StoryScene[]
 ) {
     const doc = new jsPDF({
         orientation: "p",
@@ -1035,6 +1036,191 @@ export async function createActivityPDF(
         doc.setLineDashPattern([], 0); // Reset
 
         doc.addImage(coloringImageUrl, "PNG", x, y, imgWidth, imgHeight);
+    }
+
+    // 16. Jogo da Memória (Memory Game) - BONUS
+    if (scenes && scenes.length > 0) {
+        const validScenes = scenes.filter(s => s.imageUrl);
+        // Use up to 12 unique images (user prints twice)
+        if (validScenes.length >= 2) {
+            doc.addPage();
+            cursorY = 20;
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(236, 72, 153); // Pink-500
+            const title = (t as any).memoryGameTitle || "16. Jogo da Memória";
+            doc.text(title, margin, cursorY);
+            cursorY += 10;
+
+            // Instruction for 2x printing
+            doc.setFontSize(10);
+            doc.setTextColor(220, 38, 38); // Red-600 to highlight
+            doc.text("⚠️ IMPRIMA ESTA PÁGINA 2 VEZES PARA JOGAR! (Total 24 cartas)", margin, cursorY);
+            cursorY += 10;
+
+            // Select up to 12 images
+            const cards = validScenes.slice(0, 12);
+
+            // Grid Layout
+            const cardWidth = 50;
+            const cardHeight = 50;
+            const gap = 8;
+            const cols = 3;
+            const startX = (pageWidth - ((cardWidth * cols) + (gap * (cols - 1)))) / 2;
+
+            let row = 0;
+            let col = 0;
+
+            cards.forEach((scene, i) => {
+                const x = startX + (col * (cardWidth + gap));
+                const y = cursorY + (row * (cardHeight + gap));
+
+                // Card Border (Dashed for cutting)
+                doc.setDrawColor(200, 200, 200);
+                doc.setLineWidth(0.5);
+                doc.setLineDashPattern([3, 3], 0);
+                doc.rect(x, y, cardWidth, cardHeight);
+                doc.setLineDashPattern([], 0);
+
+                // Image with Aspect Ratio Preservation (Contain)
+                if (scene.imageUrl) {
+                    try {
+                        const pad = 3;
+                        const boxW = cardWidth - (pad * 2);
+                        const boxH = cardHeight - (pad * 2);
+                        const boxX = x + pad;
+                        const boxY = y + pad;
+
+                        const imgProps = doc.getImageProperties(scene.imageUrl);
+                        const imgRatio = imgProps.width / imgProps.height;
+                        const boxRatio = boxW / boxH;
+
+                        let drawW = boxW;
+                        let drawH = boxH;
+
+                        if (imgRatio > boxRatio) {
+                            // Image is wider than box -> Fit to Width
+                            drawH = boxW / imgRatio;
+                        } else {
+                            // Image is taller than box -> Fit to Height
+                            drawW = boxH * imgRatio;
+                        }
+
+                        const drawX = boxX + (boxW - drawW) / 2;
+                        const drawY = boxY + (boxH - drawH) / 2;
+
+                        doc.addImage(scene.imageUrl, "PNG", drawX, drawY, drawW, drawH);
+                    } catch (e) {
+                        console.error("Error adding memory game image", e);
+                    }
+                }
+
+                col++;
+                if (col >= cols) {
+                    col = 0;
+                    row++;
+                }
+            });
+
+            // Footer Instructions
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            const instruct = "Recorte as cartas e divirta-se encontrando os pares!";
+            doc.text(instruct, pageWidth / 2, cursorY + (4 * (cardHeight + gap)) + 10, { align: "center" });
+        }
+    }
+
+    // 17. Marca-Páginas (Bookmarks) - BONUS
+    if (coloringImageUrl || (scenes && scenes.filter(s => s.imageUrl).length > 0)) {
+        doc.addPage();
+        const bookmarkY = 20;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(16, 185, 129); // Emerald-500
+        const bmTitle = (t as any).bookmarksTitle || "17. Marca-Páginas";
+        doc.text(bmTitle, margin, bookmarkY);
+
+        const startY = bookmarkY + 15;
+
+        const bookmarkWidth = 50;
+        const bookmarkHeight = 180;
+        const gap = 10;
+        const count = 3;
+        const startX = (pageWidth - ((bookmarkWidth * count) + (gap * (count - 1)))) / 2;
+
+        const validScenes = scenes ? scenes.filter(s => s.imageUrl) : [];
+
+        for (let i = 0; i < count; i++) {
+            const x = startX + (i * (bookmarkWidth + gap));
+            const y = startY;
+
+            // Bookmark Outline (Using dashed for cut)
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.5);
+            doc.setLineDashPattern([3, 3], 0);
+            doc.rect(x, y, bookmarkWidth, bookmarkHeight);
+            doc.setLineDashPattern([], 0);
+
+            // Hole punch circle
+            doc.setDrawColor(150, 150, 150);
+            doc.circle(x + (bookmarkWidth / 2), y + 10, 3);
+
+            // Content
+            let img = null;
+            if (i === 0 && coloringImageUrl) img = coloringImageUrl;
+            else if (validScenes.length > 0) img = validScenes[(i + (coloringImageUrl ? 0 : 1)) % validScenes.length]?.imageUrl;
+
+            if (img) {
+                try {
+                    const margin = 5;
+                    const boxW = bookmarkWidth - (margin * 2);
+                    const boxH = bookmarkWidth - (margin * 2); // Square area for image
+                    const boxX = x + margin;
+                    const boxY = y + 20;
+
+                    const imgProps = doc.getImageProperties(img);
+                    const imgRatio = imgProps.width / imgProps.height;
+                    const boxRatio = boxW / boxH;
+
+                    let drawW = boxW;
+                    let drawH = boxH;
+
+                    if (imgRatio > boxRatio) {
+                        drawH = boxW / imgRatio;
+                    } else {
+                        drawW = boxH * imgRatio;
+                    }
+
+                    const drawX = boxX + (boxW - drawW) / 2;
+                    const drawY = boxY + (boxH - drawH) / 2;
+
+                    doc.addImage(img, "PNG", drawX, drawY, drawW, drawH);
+                } catch (e) { }
+            }
+
+            // Verse or Text
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(11);
+            doc.setTextColor(50, 50, 50);
+            let text = "Jesus Te Ama";
+            if (activity.bibleVerse) text = `"${activity.bibleVerse}"`;
+
+            // Truncate if too long
+            const splitText = doc.splitTextToSize(text, bookmarkWidth - 10);
+            const maxLines = 10;
+            doc.text(splitText.slice(0, maxLines), x + (bookmarkWidth / 2), y + 80, { align: "center" });
+
+            // Decor Footer
+            doc.setFillColor(i === 0 ? 254 : (i === 1 ? 240 : 255), i === 0 ? 240 : (i === 1 ? 253 : 240), 200); // Pastel colors
+            doc.rect(x + 5, y + bookmarkHeight - 35, bookmarkWidth - 10, 25, 'F');
+            doc.setFontSize(9);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Pegue & Pregue", x + (bookmarkWidth / 2), y + bookmarkHeight - 22, { align: "center" });
+            doc.setFontSize(7);
+            doc.text("www.peguepregue.online", x + (bookmarkWidth / 2), y + bookmarkHeight - 15, { align: "center" });
+        }
     }
 
     // Global Footer Logic

@@ -210,10 +210,16 @@ export async function generateStoryStructure(
     
     6. PROMPTS DE IMAGEM (CRÍTICO - FIDELIDADE BÍBLICA E CONSISTÊNCIA):
        - O imagePrompt DEVE ilustrar EXATAMENTE o que está descrito no narrativeText daquela cena.
-       - IMPORTANTE: NÃO repita a descrição física completa do personagem no prompt da cena, pois usaremos a "characterDescription" separadamente.
-       - MAS, garanta que a ação e a emoção sejam descritas.
-       - Exemplo Jonas: Se o texto diz "Jonas orou no ventre do peixe", o prompt deve ser "Jonas praying on his knees, dark interior with soft light, expression of faith" - (A aparência dele virá do characterDescription).
-       - Exemplo Daniel: Se o texto diz "Daniel orava na cova", mostre ele orando pacificamente - NÃO mostre leões atacando.
+        - CRITICAL VISUAL CONSISTENCY STRATEGY (ABSOLUTELY MANDATORY):
+        - For EVERY scene, the "imagePrompt" MUST include the FULL VISUAL DESCRIPTION of the Main Character AND any Secondary Character present.
+        - DO NOT rely on external descriptions. The "imagePrompt" must be SELF-CONTAINED.
+        - FORMAT: "Scene Action... [Character Name: Visual details]... [Secondary Character: Visual details]"
+        - EXAMPLE: "The Good Samaritan (Middle-aged, olive skin, short beard, RED TUNIC, CREAM TURBAN) is bandaging the Wounded Man (pale skin, TORN GRAY TUNIC, bandages) on the rocky road."
+        - YOU MUST REPEAT THESE VISUAL DETAILS IN EVERY SINGLE SCENE where they appear.
+        - IF A FIXED DESCRIPTION WAS PROVIDED ABOVE, COPY-PASTE IT INTO EVERY SCENE PROMPT.
+        - NEVER change the clothing colors or physical features between scenes.
+        - Exemplo Jonas: If text says "Jonah prayed", prompt MUST be "Jonah (Old man, long gray beard, RAGGED BLUE TUNIC) praying..."
+        - Exemplo Daniel: If text says "Daniel in the den", prompt MUST be "Daniel (Young man, Bablylonian BLUE ROBE) standing..."
        - NUNCA mostre momentos de violência ou medo excessivo.
        - DICA DE CONSISTÊNCIA: Se o personagem é adulto, NUNCA use palavras como "boy", "child", "kid", "little" no imagePrompt, a menos que seja outro personagem.
        - Mostre o MOMENTO DE FÉ/MILAGRE, não o momento de perigo.
@@ -423,12 +429,26 @@ CRITICAL FOR CONSISTENCY(MUITO IMPORTANTE):
 ${stylePrompt}
 
     SCENE: ${scenePrompt}
-
-    MAIN CHARACTER(MUST LOOK IDENTICAL IN EVERY IMAGE):
-${characterDesc}
-    - The character MUST have the EXACT same face, hair style (bald/hairy/short/long), beard style, clothes, and body type in EVERY scene.
-    - CRITICAL CONSISTENCY: If the character is established as BALD, they MUST be BALD in all scenes. If they have a BEARD, it must be the SAME beard in all scenes.
-    - DO NOT change the character's appearance randomly. KEEP IT CONSISTENT.
+    
+    MAIN CHARACTER (MUST LOOK IDENTICAL IN EVERY IMAGE):
+    ${characterDesc}
+    
+    CRITICAL CONSISTENCY ENFORCEMENT V2:
+    1. EXTREME PRIORITY: The Main Character MUST wear the EXACT SAME CLOTHES in every single scene.
+       - If they wore a "Blue Tunic" in scene 1, they MUST wear a "Blue Tunic" in scene 10.
+       - NEVER change clothing arbitrarily.
+    2. FACIAL FEATURES:
+       - Beard/No Beard: If established with a beard, MUST HAVE BEARD. If clean-shaven, MUST BE CLEAN-SHAVEN.
+       - Hair Color/Style: MUST TIMELINE MATCH description.
+       - Age: MUST REMAIN CONSISTENT (Do not make them younger/older).
+    3. SECONDARY CHARACTERS:
+       - If a secondary character (e.g., Jesus, Wife, King) appears, they MUST ALSO follow their specific visual description from the prompt.
+       
+    STRICT RULES:
+    - CRITICAL: NO TEXT, NO LETTERS, NO NUMBERS, NO SPEECH BUBBLES anywhere in the image.
+- CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT RAYS, NO DIVINE GLOWS, NO HOLY RADIANCE. (Even for Jesus).
+- CRITICAL: IF THE SCENE IS ABOUT CARNIVAL/PARTY: The main character must NEVER be dancing, wearing carnival costumes/masks, or mixing with the crowd. They must be observing from a distance (looking reflective/sad for them), or in a separate peaceful environment (nature, church, home), or praying. The party can be in the background but the character is SEPARATE and NOT PARTICIPATING.
+- NO wings on humans, NO mystical effects.
 
 BIBLICAL ACCURACY RULES:
     - NEVER show God as a human figure or old man with beard
@@ -564,6 +584,7 @@ export async function generateActivityContent(
   storyName: string,
   age: AgeGroup,
   lang: LanguageCode,
+  storyContext?: string,
   supabaseToken?: string
 ): Promise<ActivityContent> {
   const languageName = langMap[lang];
@@ -592,6 +613,13 @@ export async function generateActivityContent(
     - SE ${age} = "7–9 anos" ou "10–12 anos":
       - Complexidade padrão, desafios maiores, vocabulário mais rico.
       - wordSearch: 8 palavras de até 8 letras.
+
+    ${storyContext ? `
+    **CONTEXTO COMPLETO DA HISTÓRIA (FONTE DA VERDADE):**
+    Utilize EXCLUSIVAMENTE o texto abaixo para criar as perguntas e atividades. NÃO invente personagens ou eventos que não estejam neste texto.
+    
+    ${storyContext}
+    ` : ''}
     
     Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo(NENHUM CAMPO PODE SER NULL):
     1. title: Título da atividade(ex: "Aprendendo com [Nome da História]").
