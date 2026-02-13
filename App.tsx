@@ -43,6 +43,8 @@ const App: React.FC = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('catBible');
+  const [biblicalTheme, setBiblicalTheme] = useState('');
+  const [lessonObjective, setLessonObjective] = useState('');
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingActivity, setIsGeneratingActivity] = useState(false);
@@ -185,7 +187,17 @@ const App: React.FC = () => {
   const handleGenerate = async () => {
     if (!userApiKey && !isDemoMode) return;
 
-    const storyToGenerate = customStory.trim() !== '' ? customStory : selectedStory;
+    let storyToGenerate = customStory.trim() !== '' ? customStory : selectedStory;
+
+    // Se for Tema Bíblico, compor o prompt com tema + objetivo
+    if (activeCategory === 'catTheme') {
+      if (!biblicalTheme.trim()) return;
+      storyToGenerate = `[TEMA BÍBLICO] ${biblicalTheme.trim()}`;
+      if (lessonObjective.trim()) {
+        storyToGenerate += ` | OBJETIVO: ${lessonObjective.trim()}`;
+      }
+    }
+
     if (!storyToGenerate) return;
 
     setIsGenerating(true);
@@ -644,63 +656,106 @@ const App: React.FC = () => {
                 </label>
 
                 {/* Category Selection Tabs */}
-                <div className="grid grid-cols-3 gap-2 mb-6">
-                  {STORY_CATEGORIES[lang].map((cat) => (
-                    <button
-                      key={cat.key}
-                      onClick={() => {
-                        setActiveCategory(cat.key);
-                        setSelectedStory(cat.stories[0]);
-                        setCustomStory("");
-                      }}
-                      className={`py-3 px-2 rounded-2xl font-black text-[10px] sm:text-xs transition-all border-2 ${activeCategory === cat.key
-                        ? 'bg-blue-600 border-blue-700 text-white shadow-lg'
-                        : 'bg-white dark:bg-slate-800 border-blue-100 dark:border-slate-700 text-blue-400 dark:text-slate-400 hover:bg-blue-50'
-                        }`}
-                    >
-                      {t[cat.key] || cat.label}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-2 gap-2 mb-6">
+                  {STORY_CATEGORIES[lang].map((cat) => {
+                    const iconMap: Record<string, string> = {
+                      catBible: '📖',
+                      catCulture: '🌍',
+                      catBio: '🏆',
+                      catTheme: '💡',
+                    };
+                    return (
+                      <button
+                        key={cat.key}
+                        onClick={() => {
+                          setActiveCategory(cat.key);
+                          if (cat.stories.length > 0) {
+                            setSelectedStory(cat.stories[0]);
+                          } else {
+                            setSelectedStory('');
+                          }
+                          setCustomStory('');
+                          setBiblicalTheme('');
+                          setLessonObjective('');
+                        }}
+                        className={`py-3 px-3 rounded-2xl font-black text-xs transition-all border-2 flex flex-col items-center justify-center gap-1 ${activeCategory === cat.key
+                          ? 'bg-blue-600 border-blue-700 text-white shadow-lg'
+                          : 'bg-white dark:bg-slate-800 border-blue-100 dark:border-slate-700 text-blue-400 dark:text-slate-400 hover:bg-blue-50'
+                          }`}
+                      >
+                        <span className="text-lg">{iconMap[cat.key] || '📌'}</span>
+                        <span className="leading-tight text-center">{t[cat.key] || cat.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {/* Suggestions for Active Category */}
-                <div className="mb-4">
-                  <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">Sugestões de Temas:</label>
-                  <select
-                    value={STORY_CATEGORIES[lang].find(c => c.key === activeCategory)?.stories.includes(selectedStory) ? selectedStory : "custom"}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === "custom") {
-                        setSelectedStory("");
-                        setCustomStory("");
-                      } else {
-                        setSelectedStory(val);
-                        setCustomStory("");
-                      }
-                    }}
-                    className="w-full p-4 rounded-xl border-2 border-blue-100 dark:border-blue-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 transition-colors font-bold text-base"
-                  >
-                    {STORY_CATEGORIES[lang].find(c => c.key === activeCategory)?.stories.map((story) => (
-                      <option key={story} value={story}>{story}</option>
-                    ))}
-                    <option value="custom">{t.otherStory}...</option>
-                  </select>
-                </div>
+                {/* Tema Bíblico Fields (only when catTheme is active) */}
+                {activeCategory === 'catTheme' ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">{t.themeLabel}</label>
+                      <input
+                        type="text"
+                        placeholder={t.themePlaceholder}
+                        className="w-full bg-white dark:bg-slate-900 border-2 border-blue-100 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base shadow-inner"
+                        value={biblicalTheme}
+                        onChange={(e) => setBiblicalTheme(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">{t.objectiveLabel}</label>
+                      <textarea
+                        placeholder={t.objectivePlaceholder}
+                        rows={3}
+                        className="w-full bg-white dark:bg-slate-900 border-2 border-blue-100 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base shadow-inner resize-none"
+                        value={lessonObjective}
+                        onChange={(e) => setLessonObjective(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Suggestions for Active Category */}
+                    <div className="mb-4">
+                      <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">Sugestões de Temas:</label>
+                      <select
+                        value={STORY_CATEGORIES[lang].find(c => c.key === activeCategory)?.stories.includes(selectedStory) ? selectedStory : "custom"}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === "custom") {
+                            setSelectedStory("");
+                            setCustomStory("");
+                          } else {
+                            setSelectedStory(val);
+                            setCustomStory("");
+                          }
+                        }}
+                        className="w-full p-4 rounded-xl border-2 border-blue-100 dark:border-blue-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 transition-colors font-bold text-base"
+                      >
+                        {STORY_CATEGORIES[lang].find(c => c.key === activeCategory)?.stories.map((story) => (
+                          <option key={story} value={story}>{story}</option>
+                        ))}
+                        <option value="custom">{t.otherStory}...</option>
+                      </select>
+                    </div>
 
-                {/* Custom Input - Always accessible for more detail */}
-                <div className="mt-4">
-                  <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">Escreva o tema específico abaixo:</label>
-                  <input
-                    type="text"
-                    placeholder={t.otherStory}
-                    className="w-full bg-white dark:bg-slate-900 border-2 border-blue-100 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base shadow-inner"
-                    value={customStory}
-                    onChange={(e) => {
-                      setCustomStory(e.target.value);
-                      setSelectedStory(""); // If writing, it overrides the select
-                    }}
-                  />
-                </div>
+                    {/* Custom Input - Always accessible for more detail */}
+                    <div className="mt-4">
+                      <label className="block text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase mb-2 ml-1">Escreva o tema específico abaixo:</label>
+                      <input
+                        type="text"
+                        placeholder={t.otherStory}
+                        className="w-full bg-white dark:bg-slate-900 border-2 border-blue-100 dark:border-blue-800 rounded-2xl px-4 py-4 focus:border-blue-400 focus:outline-none transition-all text-slate-800 dark:text-white font-medium text-base shadow-inner"
+                        value={customStory}
+                        onChange={(e) => {
+                          setCustomStory(e.target.value);
+                          setSelectedStory(""); // If writing, it overrides the select
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Age */}
@@ -838,14 +893,24 @@ const App: React.FC = () => {
                         </span>
                       </div>
                       {scene.imageUrl && !scene.loading && (
-                        <button
-                          onClick={() => handleRefreshScene(idx)}
-                          className="p-3 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 text-slate-400 hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                        </button>
+                        <div className="relative group/btn">
+                          <button
+                            onClick={() => handleRefreshScene(idx)}
+                            className={`p-3 rounded-2xl border-2 transition-all shadow-sm ${idx === 0
+                              ? 'bg-green-100 border-green-200 text-green-600 hover:bg-green-500 hover:text-white hover:border-green-600 animate-pulse'
+                              : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-400 hover:text-purple-600 hover:border-purple-200'
+                              }`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                          </button>
+                          {/* Tooltip: Auto-visible on first item, hover on others */}
+                          <div className={`absolute right-0 -top-12 w-48 bg-slate-800 text-white text-[10px] font-bold p-2 rounded-xl transition-opacity pointer-events-none z-20 shadow-xl text-center mb-2 ${idx === 0 ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`}>
+                            Falhas ou Personagem Diferente? <span className="text-yellow-400">Recriar!</span>
+                            <div className="absolute bottom-[-4px] right-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                          </div>
+                        </div>
                       )}
                     </div>
 

@@ -39,6 +39,11 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
         "Charles Spurgeon (O Príncipe dos Pregadores)",
         "Missionários pioneiros no Brasil"
       ]
+    },
+    {
+      label: "Tema Bíblico",
+      key: "catTheme",
+      stories: []
     }
   ],
   en: [
@@ -66,6 +71,11 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
         "Charles Spurgeon",
         "William Carey (Missions)"
       ]
+    },
+    {
+      label: "Biblical Theme",
+      key: "catTheme",
+      stories: []
     }
   ],
   es: [
@@ -83,6 +93,11 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
         "Daniel en el Foso de los Leones",
         "Moisés y el Mar Rojo"
       ]
+    },
+    {
+      label: "Tema Bíblico",
+      key: "catTheme",
+      stories: []
     }
   ],
   fr: [
@@ -100,6 +115,11 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
         "Daniel dans la Fosse aux Lions",
         "Moïse et la Mer Rouge"
       ]
+    },
+    {
+      label: "Thème Biblique",
+      key: "catTheme",
+      stories: []
     }
   ],
   it: [
@@ -117,6 +137,11 @@ export const STORY_CATEGORIES: Record<LanguageCode, { label: string; key: string
         "Daniele nella Fossa dei Leoni",
         "Mosè e il Mar Rosso"
       ]
+    },
+    {
+      label: "Tema Biblico",
+      key: "catTheme",
+      stories: []
     }
   ]
 };

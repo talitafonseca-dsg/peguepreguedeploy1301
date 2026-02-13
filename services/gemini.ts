@@ -27,16 +27,44 @@ export async function generateStoryStructure(
     Como um especialista em educação cristã infantil e teólogo experiente, adapte a história bíblica: "${storyName}" para crianças de ${age}.
     Toda a resposta (título, descrições e narração) deve ser estritamente em ${languageName}.
     
+    **ADAPTAÇÃO POR FAIXA ETÁRIA (CRÍTICO):**
+    - SE ${age} = "3–4 anos":
+      - Frases MUITO CURTAS (máximo 2 frases simples por cena).
+      - Vocabulário SIMPLES (palavras do dia a dia da criança).
+      - Tom ACOLHEDOR e LÚDICO, como uma contadora de histórias.
+      - FOCO em emoções e ações concretas ("Jesus ajudou", "Deus cuidou").
+      - EVITE conceitos abstratos (justiça, redenção, expiação). Simplifique: "Deus ama você!".
+      - USE 8-10 CENAS no máximo.
+    - SE ${age} = "5–6 anos":
+      - Frases curtas e claras (3-4 frases por cena).
+      - Vocabulário adequado, sem termos teológicos complexos.
+      - Pode incluir lições morais simples.
+    - SE ${age} = "7–9 anos":
+      - Frases mais elaboradas (4-5 frases por cena).
+      - Pode usar termos bíblicos com explicação simples.
+      - Inclua referências bíblicas (livro e capítulo).
+    - SE ${age} = "10–12 anos":
+      - Frases completas e maduras (5-6 frases por cena).
+      - Linguagem mais profunda, conceitos teológicos explicados.
+      - Inclua versículos com referência completa.
+      - Pode abordar contexto histórico e geográfico.
+    
     REGRAS IMPORTANTES:
     
-    1. ESTRUTURA: Analise a complexidade da história "${storyName}" e divida em 10 a 12 cenas narrativas claras e cronológicas.
+    1. ESTRUTURA: Analise a complexidade da história "${storyName}" e divida em cenas narrativas claras e cronológicas.
        - Histórias longas/complexas (Criação, Êxodo, Vida de José): USE 12 CENAS para cobrir toda a narrativa.
        - Histórias médias (Davi e Golias, Daniel, Jonas): USE 10-11 CENAS.
        - Histórias curtas (Parábolas simples): USE 10 CENAS mínimo para aprofundar os detalhes.
-       - IMPORTANTE: A história deve ficar COMPLETA, sem cortar partes importantes.
+       - TEMA BÍBLICO (quando iniciado com [TEMA BÍBLICO]): USE 12 A 16 CENAS para explorar o tema com profundidade e riqueza bíblica.
+       - IMPORTANTE: A história/tema deve ficar COMPLETO(A), sem cortar partes importantes.
     
     2. FIDELIDADE BÍBLICA: O narrativeText de cada cena DEVE:
        - Ser FIEL às escrituras sagradas.
+       - **CRÍTICO: NUNCA INVENTE NOMES** para personagens que não têm nome na Bíblia.
+         - Ex: O menino dos 5 pães e 2 peixinhos NÃO TEM NOME. Chame-o apenas de "o menino" ou "o jovem".
+         - Ex: A esposa de Noé NÃO TEM NOME. Chame-a de "esposa de Noé".
+         - Ex: Os magos do oriente NÃO TÊM NOMES na Bíblia. Chame-os de "magos".
+         - INVENTAR NOMES É ESTRITAMENTE PROIBIDO.
        - Ter entre 4 a 6 frases por cena.
        - Manter linguagem apropriada para crianças.
     
@@ -48,35 +76,90 @@ export async function generateStoryStructure(
        
        CASO B: TEMA DOUTRINÁRIO/ENSINO (Ex: Armadura de Deus, Fruto do Espírito, Bem-Aventuranças, Parábolas)
        - As cenas devem ilustrar os CONCEITOS ou SÍMBOLOS bíblicos.
-       - O texto deve ser EXPLICATIVO e DIDÁTICO, focado no ensino bíblico direto.
+       - **USE ANALOGIAS CRIATIVAS**: Compare conceitos abstratos com objetos visuais do dia a dia da criança.
+         - Ex: "Fruto do Espírito" pode ser comparado a uma uva ou tangerina (um fruto, vários gomos/sabores).
+         - Ex: "Trindade" pode ser comparada à água (gelo, líquido, vapor) ou maçã (casca, polpa, semente).
+       - O texto deve ser EXPLICATIVO, CRIATIVO e DIDÁTICO, fugindo do óbvio.
        
        CASO C: CULTURA NACIONAL (Ex: Carnaval, Festas Juninas, Halloween)
        - Abordagem: "No mundo, mas não do mundo".
        - VISÃO: As festas mundanas (Carnaval, etc) oferecem uma alegria passageira e enganosa.
        - A LIÇÃO deve ensinar que a VERDADEIRA alegria vem somente de Deus e da sua Palavra.
        - NÃO mostre o personagem principal, nem seus amigos ou familiares "curtindo" a festa. ELES NÃO PARTICIPAM.
-       - CENA VISUAL: O personagem deve estar:
-         1. Em um retiro/acampamento da igreja (longe da festa - MOSTRAR NATUREZA, BARRACAS).
-         2. Ou em casa/apartamento moderno observando da JANELA DE VIDRO (tristeza pela ilusão do mundo).
-         3. Ao fundo (longe): Cenário URBANO MODERNO com asfalto, prédios, carros, luzes de cidade e desfile de carnaval indistinto.
        - NUNCA descreva o personagem dançando, usando máscaras, fantasias de carnaval ou adereços de festa.
        - Use termos como "barulho", "ilusão", "alegria que acaba logo" para se referir à festa.
        - CONTRASTE: Mostre a paz e a luz duradoura de quem está com Jesus.
        - **VESTIMENTAS (CRÍTICO)**: Use roupas MODERNAS e ATUAIS para TODOS os personagens (jeans, camisetas, tênis), mas discretas e cristãs (sem fantasias).
        - **AMBIENTAÇÃO (CRÍTICO)**: O cenário DEVE SER MODERNO (Cidades atuais, ruas asfaltadas, casas modernas, carros). NADA DE EDIFICAÇÕES ANTIGAS OU BÍBLICAS.
        
-       **CRÍTICO PARA FAIXA ETÁRIA 10-12 ANOS (PROFUNDIDADE):**
-       - Se a idade for "10–12 anos", a narrativa DEVE ser mais profunda e educativa.
-       - **EXPLIQUE A ORIGEM HISTÓRICA:** Cite a origem pagã da festa (ex: saturnálias, festas da carne, origem do Halloween) de forma educativa.
-       - Explique TEOLOGICAMENTE por que não participamos (Idolatria, foco na carne vs espírito).
-       - Não use apenas "é perigoso", explique a **RAIZ ESPIRITUAL** e **HISTÓRICA** do problema.
-       - A linguagem deve ser séria e madura, tratando a criança como alguém capaz de entender história e teologia básica.
+       **ADAPTAÇÃO POR FAIXA ETÁRIA PARA CULTURA NACIONAL (CRÍTICO):**
+       
+       **SE ${age} = "3–4 anos":**
+       - USE APENAS 6-8 CENAS (menos visuais, conteúdo mais direto).
+       - FORMATO SUGERIDO: "5 motivos por que o cristão não participa do Carnaval" ou estrutura similar de lista simples.
+       - Cada cena = 1 motivo explicado com linguagem MUITO SIMPLES (2 frases curtas máximo).
+       - Exemplo: "Motivo 1: Porque a festa não agrada a Deus. Jesus quer que a gente brinque de um jeito que Ele goste!"
+       - ILUSTRAÇÕES COLORIDAS e ALEGRES: Mostre crianças FELIZES em atividades cristãs (brincando na igreja, cantando louvor, fazendo artes bíblicas).
+       - NÃO mostre cenas tristes, escuras ou assustadoras.
+       - FOCO na ALEGRIA de estar com Jesus, não no medo da festa.
+       - Tom positivo e acolhedor o tempo todo.
+       
+       **SE ${age} = "5–6 anos":**
+       - USE 8-10 CENAS.
+       - Explique de forma simples por que não participamos, com exemplos do dia a dia.
+       - Mostre ALTERNATIVAS divertidas: acampamento da igreja, culto kids, brincadeiras com amigos cristãos.
+       - Ilustrações coloridas e alegres, crianças em atividades saudáveis.
+       - Tom positivo: "A gente não precisa da festa, porque com Jesus é MUITO melhor!"
+       
+       **SE ${age} = "7–9 anos":**
+       - USE 10-12 CENAS.
+       - Explique a ORIGEM HISTÓRICA da festa de forma educativa e acessível.
+       - O que é paganismo? Explicação simples: "Antigamente, pessoas adoravam coisas que não eram Deus."
+       - Por que cristãos não comemoram? Base bíblica com versículos simples.
+       - Mostre o contraste: a alegria do mundo (passageira) vs a alegria de Deus (eterna).
+       - CENA VISUAL: Criança em retiro/acampamento da igreja ou em casa com família, paz e luz.
+       
+       **SE ${age} = "10–12 anos":**
+       - USE 12 CENAS com profundidade.
+       - **EXPLIQUE A ORIGEM HISTÓRICA DETALHADA:** Cite a origem pagã da festa (saturnálias, festas da carne, origem celta do Halloween) de forma educativa.
+       - **O QUE É PAGANISMO:** Explique teologicamente — adoração a falsos deuses, idolatria, foco na carne vs espírito.
+       - **POR QUE NÃO COMEMORAMOS:** Base bíblica sólida (1 João 2:15-17, Romanos 12:2, 2 Coríntios 6:14-17).
+       - Explique a **RAIZ ESPIRITUAL** e **HISTÓRICA** do problema, não apenas "é perigoso".
+       - A linguagem deve ser séria e madura, tratando a criança como alguém capaz de entender história e teologia.
+       - CENA VISUAL: Pode incluir representações históricas (antigas civilizações pagãs) para contexto educativo.
        
        CASO D: HERÓIS DA FÉ E BIOGRAFIAS (Ex: João Ferreira de Almeida, John Wesley, Lutero)
        - Foco: O agir de Deus através da vida de uma pessoa.
        - Narre os marcos principais: o chamado, os desafios, a perseverança e o impacto para o Reino.
        - Destaque a FONTE da força deles: A Palavra de Deus e o Espírito Santo.
        - Mantenha a precisão histórica (século, país, vestimentas).
+       
+       CASO E: TEMA BÍBLICO (Quando o título começa com [TEMA BÍBLICO])
+       - SE o título contiver "[TEMA BÍBLICO]", este é um TEMA DOUTRINÁRIO livre escolhido pela professora.
+       - O texto após "[TEMA BÍBLICO]" contém o TEMA (ex: "Santidade", "Graça", "Perdão") e opcionalmente o OBJETIVO DA AULA (após "| OBJETIVO:").
+       
+       **PRIORIDADE DO NOVO TESTAMENTO (CRÍTICO):**
+       - A MAIORIA das cenas (70-80%) DEVE ser baseada no NOVO TESTAMENTO.
+       - PRIORIZE os ensinamentos de JESUS (Evangelhos) e as cartas de PAULO (Romanos, Gálatas, Efésios, etc.).
+       - Use VERSÍCULOS do Novo Testamento como base principal: palavras de Jesus, parábolas, epístolas.
+       - O Antigo Testamento pode ser usado como COMPLEMENTO (máximo 2-3 cenas), para mostrar o CONTEXTO ou a SOMBRA que se cumpriu em Cristo.
+       - Exemplo para "Graça": Foque em Efésios 2:8-9, João 3:16, Romanos 5:8, Tito 2:11 — NÃO em Adão e Eva ou Abraão como tema central.
+       - Exemplo para "Santidade": Foque em 1 Pedro 1:15-16, Hebreus 12:14, 1 Tessalonicenses 4:7 — NÃO reduza a histórias do AT.
+       
+       **ESTRUTURA DAS CENAS:**
+       - Cenas 1-2: Introdução ao tema — O que a Bíblia diz? (definição bíblica clara e simples).
+       - Cenas 3-10: Ensinamentos de JESUS e dos APÓSTOLOS sobre o tema, com versículos específicos, parábolas, e exemplos do Novo Testamento.
+       - Cenas 11-13: Pode incluir 1-2 exemplos do Antigo Testamento como COMPLEMENTO (sombra/tipo que aponta para Cristo).
+       - Cenas 14-16: Aplicação prática — Como viver isso hoje? O que o Espírito Santo nos ensina?
+       
+       - FOCO: Explicar o TEMA à LUZ DO NOVO TESTAMENTO, de forma DIDÁTICA e adaptada para a faixa etária da criança.
+       - **CRIATIVIDADE DIDÁTICA**: Use comparações e objetos visuais para facilitar o entendimento (Ex: Sal da terra = tempero que dá sabor).
+       - Cada cena deve trazer um ASPECTO diferente do tema, com VERSÍCULOS BÍBLICOS ESPECÍFICOS (livro, capítulo e versículo) no narrativeText.
+       - As cenas devem ser EDUCATIVAS e RICAS em conteúdo bíblico, não apenas ilustrativas.
+       - Se houver OBJETIVO DA AULA fornecido, a narrativa DEVE estar alinhada com esse objetivo pedagógico.
+       - USE 12 A 16 CENAS para cobrir o tema com profundidade.
+       - O personagem (characterDescription) deve ser JESUS ensinando, ou um APÓSTOLO (Paulo, Pedro, João), ou um personagem do NT apropriado ao tema.
+       - Vestimentas e cenários bíblicos (Oriente Médio antigo, época de Jesus) são o padrão.
 
        CRÍTICO (PARA TODOS):
        - PROIBIDO inventar "crianças modernas" (Ex: Nada de "Aninha aprendendo com a vovó", nada de "Joãozinho na escola").
@@ -85,10 +168,19 @@ export async function generateStoryStructure(
 
     4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL - CRÍTICO): 
        - O CAMPO "characterDescription" DEVE SER DETALHADO E FIXO.
+       - **COR DAS ROUPAS (CRÍTICO)**: Você DEVE definir a cor e o tipo de cada peça de roupa. (Ex: "Blue tunic with red sash", "White robe with gold belt"). NUNCA deixe ambíguo.
        - VOCÊ DEVE DEFINIR A IDADE APRENTE DO PERSONAGEM (Ex: "30 anos", "60 anos", "criança de 8 anos").
        - A IDADE DEVE SER MANTIDA EM TODAS AS CENAS. PROIBIDO MUDAR A IDADE.
+       - **GÊNERO (ABSOLUTAMENTE CRÍTICO)**:
+         - SEMPRE especifique o GÊNERO do personagem de forma EXPLÍCITA e INEQUÍVOCA.
+         - Use termos como "HOMEM/MAN" ou "MULHER/WOMAN" de forma clara.
+         - Para personagens MASCULINOS: Especifique "male", traços masculinos (barba, mandíbula forte, ombros largos, peito plano/liso, corpo musculoso).
+         - Para personagens FEMININOS: Especifique "female", traços femininos (rosto delicado, cabelos longos típicos da época).
+         - ADÃO = HOMEM (male, masculine features, flat chest, muscular build, short/medium hair)
+         - EVA = MULHER (female, feminine features, long hair)
+         - NUNCA confunda gêneros. Isso é fidelidade bíblica básica.
        - Se for Narrativa: Defina o protagonista com DETALHES VISUAIS ESPECÍFICOS.
-       - Exemplo: "Gideon, homem de 30 anos (MATENHA ESSA IDADE), barba curta castanha, cabelo castanho encaracolado, túnica bege simples, cinto de couro marrom, sandálias gastas, corpo forte de guerreiro".
+       - Exemplo: "Gideon, HOMEM de 30 anos (MATENHA ESSA IDADE), barba curta castanha, cabelo castanho encaracolado, túnica bege simples, cinto de couro marrom, sandálias gastas, corpo forte de guerreiro, peito plano masculino".
        - Se for Doutrina: Defina um personagem representativo fixo com os mesmos detalhes.
     
     5. PRECISÃO HISTÓRICA E CULTURAL: 
@@ -112,6 +204,12 @@ export async function generateStoryStructure(
        - NÃO inclua números repetitivos.
         - STRICT RULE: NEVER include halos, aureolas, divine glows, radiant rings, or light rays behind characters.
         - Characters must be human figures without any mystical effects.
+       - **PERSONAGENS SECUNDÁRIOS (CRÍTICO PARA CONSISTÊNCIA)**:
+          - Se houver outro personagem importante (ex: O Homem Ferido, O Filho Pródigo), você DEVE descrevê-lo visualmente NA PRIMEIRA CENA que ele aparece (roupa, cabelo, barba).
+          - E VOCÊ DEVE **REPETIR A MESMA DESCRIÇÃO VISUAL** EM TODAS AS OUTRAS CENAS onde ele aparecer.
+          - Ex CENA 1: "Samaritan sees a Wounded Man (long GREY hair, TORN BROWN tunic)..."
+          - Ex CENA 2: "Samaritan puts the Wounded Man (long GREY hair, TORN BROWN tunic) on donkey..."
+          - ISSO É OBRIGATÓRIO PARA QUE O SEGUNDO PERSONAGEM NÃO MUDE DE ROUPA/ROSTO.
        - Se houver Jesus ou multidão, descreva-os.
     
     7. TÍTULO: Deve ser APENAS o nome da história.
@@ -229,7 +327,7 @@ export async function generateSceneImage(
   supabaseToken?: string
 ): Promise<string> {
   // Define o estilo visual baseado na escolha do usuário
-  let stylePrompt = "";
+  let stylePrompt = "ABSOLUTELY NO TEXT, NO LETTERS, NO WORDS, NO WATERMARKS, NO SPEECH BUBBLES. ";
   if (style === IllustrationStyle.STYLE_2D) {
     stylePrompt = `PREMIUM 2D STICKER ILLUSTRATION STYLE:
 - High quality digital sticker art with thick white outline around everything
@@ -307,10 +405,11 @@ ${stylePrompt}
 
     SCENE: ${scenePrompt}
 
-MAIN CHARACTER(MUST LOOK IDENTICAL IN EVERY IMAGE):
+    MAIN CHARACTER(MUST LOOK IDENTICAL IN EVERY IMAGE):
 ${characterDesc}
-    - The character MUST have the EXACT same face, hair, clothes, and body type in EVERY scene
-      - DO NOT change the character's appearance
+    - The character MUST have the EXACT same face, hair style (bald/hairy/short/long), beard style, clothes, and body type in EVERY scene.
+    - CRITICAL CONSISTENCY: If the character is established as BALD, they MUST be BALD in all scenes. If they have a BEARD, it must be the SAME beard in all scenes.
+    - DO NOT change the character's appearance randomly. KEEP IT CONSISTENT.
 
 BIBLICAL ACCURACY RULES:
     - NEVER show God as a human figure or old man with beard
@@ -326,6 +425,23 @@ STRICT RULES:
 - CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT RAYS, NO DIVINE GLOWS, NO HOLY RADIANCE. (Even for Jesus).
 - CRITICAL: IF THE SCENE IS ABOUT CARNIVAL/PARTY: The main character must NEVER be dancing, wearing carnival costumes/masks, or mixing with the crowd. They must be observing from a distance (looking reflective/sad for them), or in a separate peaceful environment (nature, church, home), or praying. The party can be in the background but the character is SEPARATE and NOT PARTICIPATING.
 - NO wings on humans, NO mystical effects.
+
+GENDER ACCURACY (ABSOLUTELY CRITICAL - ZERO TOLERANCE):
+- MALE characters (Adam, Moses, David, Jesus, Paul, etc.) MUST look DISTINCTLY MALE: masculine facial features, broad shoulders, shorter hair (unless historically accurate), facial hair when appropriate.
+- FEMALE characters (Eve, Mary, Ruth, Esther, etc.) MUST look DISTINCTLY FEMALE: feminine face, longer hair, softer features.
+- NEVER make male characters look feminine or female characters look masculine.
+- If the scene has BOTH male and female characters, they MUST be CLEARLY DISTINGUISHABLE by gender.
+- Adam = MAN (strong build, masculine face). Eve = WOMAN (feminine features, long hair).
+- ANGELS MUST ALWAYS have MASCULINE appearance (strong jawline, broad shoulders, short hair, masculine face, warrior-like build). In the Bible, angels ALWAYS appeared as MEN. NEVER draw angels with feminine features, long flowing hair, or delicate faces.
+- This is NON-NEGOTIABLE biblical accuracy.
+
+MODESTY & CLOTHING (ABSOLUTELY CRITICAL):
+- JESUS must ALWAYS wear a LONG, LOOSE, FLOWING ROBE/TUNIC that covers his ENTIRE body from neck to ankles. NEVER show Jesus with exposed arms, bare chest, muscular build, or tight clothing.
+- Jesus should have a GENTLE, SERENE appearance — NOT muscular, NOT athletic, NOT warrior-like. He is a teacher and shepherd.
+- ALL biblical characters must wear MODEST clothing that covers the body appropriately. Tunics must reach at LEAST to the knees, preferably ankles.
+- NEVER draw any character with exposed upper body, tight-fitting clothes, or revealing clothing.
+- This applies to ALL illustration styles including coloring pages and line art.
+
       - Friendly, child - appropriate content only
         - Pure white background, no complex scenery
           - MAINTAIN THE EXACT SAME ART STYLE IN ALL IMAGES
@@ -438,6 +554,26 @@ export async function generateActivityContent(
     Público Alvo: Crianças de ${age}.
     Idioma: ${languageName}.
     
+    **REGRAS DE ADAPTAÇÃO POR IDADE (CRÍTICO):**
+    - SE ${age} = "3–4 anos":
+      - Quiz: Perguntas SIMPLES com apenas 3 opções (A, B, C). Linguagem fácil.
+      - wordSearch: Apenas 5 palavras, TODAS com no MÁXIMO 5 LETRAS.
+      - scrambleWords: Palavras de no MÁXIMO 4 LETRAS, com dicas muito claras.
+      - completeThePhrase: Frase MUITO curta e simples, palavra fácil.
+      - matchColumns: Apenas 3 pares simples (personagem → ação básica).
+      - trueOrFalse: Apenas 3 afirmações SIMPLES e óbvias.
+      - orderEvents: Apenas 3 eventos, com frases curtas.
+      - secretPhrase: Máximo 3 palavras curtas.
+      - familyQuestions: Perguntas simples sobre sentimentos ("Você gostou?", "Como você se sentiu?").
+    - SE ${age} = "5–6 anos":
+      - Quiz: 4 opções, linguagem clara.
+      - wordSearch: 6 palavras de até 6 letras.
+      - scrambleWords: Palavras de até 5 letras.
+      - Demais atividades com complexidade moderada.
+    - SE ${age} = "7–9 anos" ou "10–12 anos":
+      - Complexidade padrão, desafios maiores, vocabulário mais rico.
+      - wordSearch: 8 palavras de até 8 letras.
+    
     Gere um JSON VÁLIDO e COMPLETO com todos os campos abaixo(NENHUM CAMPO PODE SER NULL):
     1. title: Título da atividade(ex: "Aprendendo com [Nome da História]").
     - "bibleVerse": Um versículo CHAVE e ESPECÍFICO desta história(com referência).NÃO use Salmos genéricos.
@@ -449,10 +585,13 @@ export async function generateActivityContent(
     - "wordSearch": Array com EXATAMENTE 8 palavras - chave DA HISTÓRIA(todas em UPPERCASE, sem acentos, sem espaços, MÁXIMO 8 LETRAS CADA - palavras curtas!).
     - "coloringPrompt": Prompt DETALHADO em INGLÊS para gerar um desenho de colorir sobre a cena principal.
        - IMPORTANTE: O prompt DEVE especificar claramente cada personagem(ex: "a man named Adam" ou "a woman named Eve").
-       - CRÍTICO: Todos os personagens devem ter ANATOMIA HUMANA CORRETA - rostos humanos normais, proporções corretas, sem híbridos, sem distorções.
-       - Se houver crianças, especifique "cute human children with normal human faces and bodies".
+       - CRÍTICO: Todos os personagens devem ter APARÊNCIA HUMANA CORRETA - rostos simpáticos, estilo Disney.
+       - CRÍTICO: Jesus DEVE SEMPRE usar túnica LONGA e SOLTA que cobre TODO o corpo do pescoço aos tornozelos. NUNCA muscular ou com corpo exposto.
+       - CRÍTICO: TODOS os personagens bíblicos devem usar roupas MODESTAS que cobrem o corpo adequadamente.
+       - Se houver crianças, especifique "cute human children with happy expressions".
        - Se houver multidão, especifique "group of people with distinct human features".
-        - OBRIGATÓRIO incluir no final: "Disney animation style, modern 3D animated character line art, expressive eyes, Pixar-like character design, professional clean line art, high quality coloring book illustration, pure black outlines on white background, NO shading, NO fills, NO solid black areas, clean elegant strokes, perfect human anatomy, NO HALOS, NO AUREOLAS, NO LIGHT RAYS, NO SUNBURSTS"
+       - **CRÍTICO: O prompt de colorir deve dizer explicitamente "NO TEXT, NO WORDS, NO LABELS inside the drawing".**
+        - OBRIGATÓRIO incluir no final: "Disney animation style, modern 3D animated character line art, expressive eyes, Pixar-like character design, professional clean line art, high quality coloring book illustration, pure black outlines on white background, NO shading, NO fills, NO solid black areas, clean elegant strokes, NO HALOS, NO AUREOLAS, NO LIGHT RAYS, NO SUNBURSTS, NO TEXT, NO LETTERS, NO WORDS written on objects, characters wearing long modest robes covering entire body"
     - "completeThePhrase": Objeto com "phrase" e "missingWord".
        - A frase deve ser um VERSÍCULO CHAVE ou LIÇÃO MORAL da história.
        - A frase NÃO pode ser simples demais.
@@ -507,8 +646,8 @@ export async function generateActivityContent(
        - "instructions": Instrução para a criança desenhar e escrever.
 
     - "maze": Objeto para a atividade de labirinto.
-        - "startPrompt": Prompt curto em INGLÊS para a imagem de ENTRADA do labirinto (ponto A). Deve ser um personagem ou objeto central da história (ex: "Noah"). MANTENHA o estilo Disney line art.
-        - "endPrompt": Prompt curto em INGLÊS para a imagem de CHEGADA do labirinto (ponto B). Deve ser o destino ou objetivo (ex: "The Ark"). MANTENHA o estilo Disney line art.
+        - "startPrompt": Prompt curto em INGLÊS para a imagem de ENTRADA do labirinto (ponto A). Deve ser um personagem ou objeto central da história (ex: "Noah"). MANTENHA o estilo Disney line art. CRÍTICO: NUNCA GERE ANJOS, NUNCA GERE ASAS EM HUMANOS. SE FOR CRIANÇA, É APENAS UMA CRIANÇA NORMAL. DO NOT USE WORDS LIKE "ANGEL", "WINGS", "HALO" FOR HUMAN CHARACTERS.
+        - "endPrompt": Prompt curto em INGLÊS para a imagem de CHEGADA do labirinto (ponto B). Deve ser o destino ou objetivo (ex: "The Ark"). MANTENHA o estilo Disney line art. DO NOT USE WINGS OR ANGELS.
         - "instructions": Uma frase curta de incentivo em ${languageName} (ex: "Ajude Noé a chegar na Arca!").
 
     Retorne APENAS o JSON válido, sem markdown.
