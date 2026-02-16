@@ -1076,6 +1076,14 @@ export async function createActivityPDF(
             let col = 0;
 
             cards.forEach((scene, i) => {
+                // Check for page overflow before drawing
+                if (cursorY + (row * (cardHeight + gap)) + cardHeight > pageHeight - 25) {
+                    doc.addPage();
+                    cursorY = 20;
+                    row = 0;
+                    col = 0;
+                }
+
                 const x = startX + (col * (cardWidth + gap));
                 const y = cursorY + (row * (cardHeight + gap));
 
@@ -1133,11 +1141,14 @@ export async function createActivityPDF(
                 }
             });
 
-            // Footer Instructions
+            // Footer Instructions - Positioned after the last row
             doc.setFontSize(10);
             doc.setTextColor(100, 100, 100);
             const instruct = t.memoryGameFooter || "Recorte as cartas e divirta-se encontrando os pares!";
-            doc.text(instruct, pageWidth / 2, cursorY + (4 * (cardHeight + gap)) + 10, { align: "center" });
+            const finalY = cursorY + (row * (cardHeight + gap)) + cardHeight + 10;
+            // Ensure footer doesn't overflow the page
+            const footerY = finalY > pageHeight - 15 ? pageHeight - 15 : finalY;
+            doc.text(instruct, pageWidth / 2, footerY, { align: "center" });
         }
     }
 
