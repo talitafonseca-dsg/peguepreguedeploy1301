@@ -29,19 +29,31 @@ export async function generateStoryStructure(
   if (fixedCharacterDesc) {
     characterEnforcement = `
     IMPORTANT: This story involves a known biblical figure.
-    You MUST define the 'characterDescription' field based on this FIXED VISUAL PROFILE (translate to ${languageName}):
+    You MUST define the 'characterDescription' field based on this FIXED VISUAL PROFILE:
     "${fixedCharacterDesc}"
     
     CRITICAL: 
     - You must NOT change the age, hair color, or clothing color from this profile.
     - Use this description as the source of truth.
+    - **ALWAYS keep the 'characterDescription' field in ENGLISH for image generation consistency.**
     `;
   }
 
 
   const prompt = `
     Como um especialista em educação cristã infantil e teólogo experiente, adapte a história bíblica: "${storyName}" para crianças de ${age}.
-    Toda a resposta (título, descrições e narração) deve ser estritamente em ${languageName}.
+    Toda a resposta (título e narração) deve ser estritamente em ${languageName}.
+    
+    **CAMPO 'characterDescription' (DNA VISUAL - CRÍTICO):**
+    - O campo 'characterDescription' deve ser preenchido OBRIGATORIAMENTE em INGLÊS.
+    - Ele servirá como a "identidade visual fixa" para o gerador de imagens.
+    - Descreva os personagens principais com detalhes imutáveis: idade, tom de pele, cor/estilo do cabelo, barba, e CORES ESPECÍFICAS DAS ROUPAS.
+    - Se houver descrição fixa fornecida acima, USE-A INTEGRALMENTE.
+    
+    REGRAS DE CONSISTÊNCIA DE PERSONAGEM (ZERO TOLERANCIA):
+    - Você deve criar uma "DNA Visual" para o protagonista e personagens secundários.
+    - Essa DNA deve ser REPETIDA INTEGRALMENTE no início de cada 'imagePrompt' de cada cena.
+    - NUNCA mude a cor da roupa ou traços físicos entre as cenas.
     
     **ADAPTAÇÃO POR FAIXA ETÁRIA (CRÍTICO):**
     - SE ${age} = "3–4 anos":
@@ -176,6 +188,13 @@ export async function generateStoryStructure(
        - USE 12 A 16 CENAS para cobrir o tema com profundidade.
        - O personagem (characterDescription) deve ser JESUS ensinando, ou um APÓSTOLO (Paulo, Pedro, João), ou um personagem do NT apropriado ao tema.
        - Vestimentas e cenários bíblicos (Oriente Médio antigo, época de Jesus) são o padrão.
+        CASO F: CRIAÇÃO DO MUNDO (Ex: Gênesis, 7 dias da criação)
+        - FOCO TOTAL nos 7 dias e na magnificência da obra de Deus.
+        - Cada cena deve focar nos ELEMENTOS CRIADOS (Luz, Céu, Terra, Estrelas, Animais).
+        - **IMPORTANTE**: O CharacterDescription será a "Presença de Deus".
+        - O texto deve ser poético e majestoso.
+        - Use o imagePrompt para descrever cenários VASTOS e belos.
+
 
        CRÍTICO (PARA TODOS):
        - PROIBIDO inventar "crianças modernas" (Ex: Nada de "Aninha aprendendo com a vovó", nada de "Joãozinho na escola").
@@ -188,8 +207,10 @@ export async function generateStoryStructure(
     4. DESCRIÇÃO DO PERSONAGEM (CONSISTÊNCIA VISUAL - CRÍTICO): 
        - O CAMPO "characterDescription" DEVE SER DETALHADO E FIXO.
        - **COR DAS ROUPAS (CRÍTICO)**: Você DEVE definir a cor e o tipo de cada peça de roupa. (Ex: "Blue tunic with red sash", "White robe with gold belt"). NUNCA deixe ambíguo.
-       - VOCÊ DEVE DEFINIR A IDADE APRENTE DO PERSONAGEM (Ex: "30 anos", "60 anos", "criança de 8 anos").
-       - A IDADE DEVE SER MANTIDA EM TODAS AS CENAS. PROIBIDO MUDAR A IDADE.
+
+        - VOCÊ DEVE DEFINIR A IDADE APRENTE DO PERSONAGEM (Ex: "30 anos", "60 anos", "criança de 8 anos").
+        - **IMPORTANTE (REGRA DE ENVELHECIMENTO)**: Se a história cobrir o crescimento do personagem (ex: nascimento até vida adulta), a idade DEVE mudar no 'imagePrompt' de cada cena conforme a narrativa, mas manter os traços físicos (cor do cabelo, olhos).
+
        - **GÊNERO (ABSOLUTAMENTE CRÍTICO)**:
          - SEMPRE especifique o GÊNERO do personagem de forma EXPLÍCITA e INEQUÍVOCA.
          - Use termos como "HOMEM/MAN" ou "MULHER/WOMAN" de forma clara.
@@ -210,14 +231,20 @@ export async function generateStoryStructure(
     
     6. PROMPTS DE IMAGEM (CRÍTICO - FIDELIDADE BÍBLICA E CONSISTÊNCIA):
        - O imagePrompt DEVE ilustrar EXATAMENTE o que está descrito no narrativeText daquela cena.
+        
         - CRITICAL VISUAL CONSISTENCY STRATEGY (ABSOLUTELY MANDATORY):
-        - For EVERY scene, the "imagePrompt" MUST include the FULL VISUAL DESCRIPTION of the Main Character AND any Secondary Character present.
+        - For EVERY scene, the "imagePrompt" MUST include the FULL VISUAL DESCRIPTION of ALL main characters present.
+        - If there are TWO main characters (like Jacob and Esau), describe BOTH of them in EVERY scene to distinguish them.
+        - **BABY STAGE RULE**: If characters are babies, you MUST specify the physical differences (e.g., "newborn baby Esau with long red hair" vs "newborn baby Jacob with short dark hair").
+
         - DO NOT rely on external descriptions. The "imagePrompt" must be SELF-CONTAINED.
         - FORMAT: "Scene Action... [Character Name: Visual details]... [Secondary Character: Visual details]"
         - EXAMPLE: "The Good Samaritan (Middle-aged, olive skin, short beard, RED TUNIC, CREAM TURBAN) is bandaging the Wounded Man (pale skin, TORN GRAY TUNIC, bandages) on the rocky road."
         - YOU MUST REPEAT THESE VISUAL DETAILS IN EVERY SINGLE SCENE where they appear.
         - IF A FIXED DESCRIPTION WAS PROVIDED ABOVE, COPY-PASTE IT INTO EVERY SCENE PROMPT.
         - NEVER change the clothing colors or physical features between scenes.
+        - **REGRA DE GÊMEOS (CRÍTICO)**: Se houver gêmeos na história (ex: Jacó e Esaú), eles DEVEM sempre ter a mesma idade em todas as cenas. Se um é bebê, o outro é bebê. Se um é adulto, o outro é adulto.
+
         - Exemplo Jonas: If text says "Jonah prayed", prompt MUST be "Jonah (Old man, long gray beard, RAGGED BLUE TUNIC) praying..."
         - Exemplo Daniel: If text says "Daniel in the den", prompt MUST be "Daniel (Young man, Bablylonian BLUE ROBE) standing..."
        - NUNCA mostre momentos de violência ou medo excessivo.
@@ -236,14 +263,17 @@ export async function generateStoryStructure(
           - Ex CENA 2: "Samaritan puts the Wounded Man (long GREY hair, TORN BROWN tunic) on donkey..."
           - ISSO É OBRIGATÓRIO PARA QUE O SEGUNDO PERSONAGEM NÃO MUDE DE ROUPA/ROSTO.
        - Se houver Jesus ou multidão, descreva-os.
+        - **REGRA PARA A CRIAÇÃO (MUITO IMPORTANTE)**:
+           - Se a história for sobre a Criação, o imagePrompt deve focar no RESULTADO do dia (ex: Dia 1: Contraste entre luz brilhante e escuridão profunda; Dia 4: Galáxias, estrelas e planetas no cosmos).
+           - NUNCA mostre Deus como um homem. Represente Sua glória com raios de luz dourada saindo do topo da imagem.
+
     
     7. TÍTULO: Deve ser APENAS o nome da história.
 
     CRITICAMENTE IMPORTANTE:
-    - O conteúdo de "narrativeText", "title" e "characterDescription" DEVE SER ESTRITAMENTE EM ${languageName}.
-    - SE ${languageName} FOR "English", USE TEXTO EM INGLÊS.
-    - SE ${languageName} FOR "Español", USE TEXTO EM ESPANHOL.
-    - O idioma de resposta é ${languageName}.
+    - O conteúdo de "narrativeText" e "title" DEVE SER ESTRITAMENTE EM ${languageName}.
+    - O campo "characterDescription" DEVE SER ESTRITAMENTE EM INGLÊS.
+    - O idioma de resposta é ${languageName} (exceto descrições técnicas de imagem).
     
     LANGUAGE ENFORCEMENT:
     - You MUST output the JSON values in ${languageName}.
@@ -430,10 +460,16 @@ ${stylePrompt}
 
     SCENE: ${scenePrompt}
     
-    MAIN CHARACTER (MUST LOOK IDENTICAL IN EVERY IMAGE):
+    
+    MAIN CHARACTER(S) (MUST LOOK IDENTICAL IN EVERY IMAGE):
     ${characterDesc}
     
     CRITICAL CONSISTENCY ENFORCEMENT V2:
+    - If TWO characters are described above (e.g., Jacob and Esau), they MUST BOTH be present if mentioned in the scene.
+    - **TWIN DIFFERENTIATION (ABSOLUTELY CRITICAL)**:
+        - ESAU: Must ALWAYS have RED hair. As a baby, he must have a lot of RED hair. As an adult, he is HAIRY and rugged.
+        - JACOB: Must ALWAYS have DARK BROWN hair and SMOOTH skin.
+        - NEVER make them look identical. One is RED/HAIRY, the other is DARK/SMOOTH.
     1. EXTREME PRIORITY: The Main Character MUST wear the EXACT SAME CLOTHES in every single scene.
        - If they wore a "Blue Tunic" in scene 1, they MUST wear a "Blue Tunic" in scene 10.
        - NEVER change clothing arbitrarily.

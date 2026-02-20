@@ -44,17 +44,46 @@ const CHARACTER_DB: CharacterProfile[] = [
     {
         keywords: ["filho pródigo", "prodigal son", "prodigo"],
         visual: "The Prodigal Son (Main Character): Young man, approx 20 years old, olive skin, messy dark hair, patchy beard. Wears a DIRTY, RAGGED GREEN TUNIC (after losing money). \nThe Father: Elderly man, white beard, wearing a RICH PURPLE ROBE and GOLD RING, running with open arms."
+    },
+    {
+        keywords: ["criação", "creation", "création", "creazione"],
+        visual: "Presence of God: Represented ONLY by powerful golden light rays, glowing atmosphere, and cosmic energy. ABSOLUTELY NO HUMAN FIGURE, no face, no beard, no body. Focus on the MAGNIFICENCE of the creation acts (light, stars, nature) rather than a person."
+    },
+    {
+        keywords: ["jacó", "jacob", "giacobbe"],
+        visual: "Jacob (Twin 1): Dark brown hair, olive skin, smooth face. AS A BABY: Tiny newborn with SHORT DARK hair and smooth skin. AS AN ADULT: Smooth face (no beard), wearing a simple DARK GREEN tunic. IMPORTANT: He is the twin of Esau but looks completely opposite (smooth and dark)."
+    },
+    {
+        keywords: ["esaú", "esau"],
+        visual: "Esau (Twin 2): Red hair. AS A BABY: Tiny newborn with noticeably LONG, THICK, BRIGHT RED HAIR on his head. AS AN ADULT: He is extremely hairy on arms and chest, with a long wild red beard and messy red hair. Wears a rustic furry tunic. IMPORTANT: He is the twin of Jacob but looks completely opposite (hairy and red)."
+    },
+    {
+        keywords: ["paralítico de betesda", "paralítico", "bethesda paralytic", "paralytic of bethesda"],
+        visual: "Paralytic of Bethesda (Main Character): Man approx 40 years old, thin and weak appearance, olive skin, messy shoulder-length dark brown hair, scruffy beard. Wears a VERY RAGGED and DIRTY BEIGE TUNIC. He is often seen lying on a simple wooden mat/stretcher."
+    },
+    {
+        keywords: ["pedro", "peter", "pierre", "pietro"],
+        visual: "Peter (Apostle): Strong man approx 45 years old, tanned skin, short curly salt-and-pepper hair, thick graying beard. Wears a DARK BLUE TUNIC with a brown sash. Resolute and passionate expression."
+    },
+    {
+        keywords: ["paulo", "paul", "pablo", "paul"],
+        visual: "Paul (Apostle): Man approx 50 years old, receding hairline with short dark hair, well-kept dark beard. Wears a SIMPLE GRAY ROBE. Intelligent and intense eyes."
+    },
+    {
+        keywords: ["maria", "mary", "marie"],
+        visual: "Mary (Mother of Jesus): Kind woman approx 45-50 years old, gentle features, wearing a LIGHT BLUE ROBE and a CREAM-COLORED HEAD SCARF. Warm and caring expression."
     }
 ];
 
 export function getFixedCharacterDescription(storyTitle: string): string | null {
     const lowerTitle = storyTitle.toLowerCase();
+    const matches: string[] = [];
 
     for (const char of CHARACTER_DB) {
         if (char.keywords.some(k => lowerTitle.includes(k))) {
-            return char.visual;
+            matches.push(char.visual);
         }
     }
 
-    return null;
+    return matches.length > 0 ? matches.join("\n\n") : null;
 }
