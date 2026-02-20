@@ -236,6 +236,7 @@ export async function generateStoryStructure(
         - For EVERY scene, the "imagePrompt" MUST include the FULL VISUAL DESCRIPTION of ALL main characters present.
         - If there are TWO main characters (like Jacob and Esau), describe BOTH of them in EVERY scene to distinguish them.
         - **BABY STAGE RULE**: If characters are babies, you MUST specify the physical differences (e.g., "newborn baby Esau with long red hair" vs "newborn baby Jacob with short dark hair").
+        - **PREGNANCY SCENE RULE (ABSOLUTELY CRITICAL)**: If a scene describes a character as PREGNANT (e.g., "Rebekah pregnant", "the woman with child"), you MUST show ONLY the pregnant belly. NEVER show babies outside the womb, NEVER show babies being held, NEVER show babies in arms or on laps. The babies are HIDDEN INSIDE the belly and must NOT be visible. A pregnancy scene = only the pregnant woman, NO babies shown anywhere.
 
         - DO NOT rely on external descriptions. The "imagePrompt" must be SELF-CONTAINED.
         - FORMAT: "Scene Action... [Character Name: Visual details]... [Secondary Character: Visual details]"
@@ -485,6 +486,7 @@ ${stylePrompt}
 - CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT RAYS, NO DIVINE GLOWS, NO HOLY RADIANCE. (Even for Jesus).
 - CRITICAL: IF THE SCENE IS ABOUT CARNIVAL/PARTY: The main character must NEVER be dancing, wearing carnival costumes/masks, or mixing with the crowd. They must be observing from a distance (looking reflective/sad for them), or in a separate peaceful environment (nature, church, home), or praying. The party can be in the background but the character is SEPARATE and NOT PARTICIPATING.
 - NO wings on humans, NO mystical effects.
+- **PREGNANCY RULE (ABSOLUTELY CRITICAL)**: If the scene describes a PREGNANT character (e.g., "Rebekah pregnant", "woman with child", "grávida"), show ONLY the woman with a visible round belly. NEVER show any baby, infant, or newborn outside the womb. NEVER place babies in arms, on lap, on the ground, or anywhere visible in the scene. The babies are HIDDEN inside the belly — they must NOT appear anywhere in the image.
 
 BIBLICAL ACCURACY RULES:
     - NEVER show God as a human figure or old man with beard
@@ -500,6 +502,7 @@ STRICT RULES:
 - CRITICAL: ABSOLUTELY NO HALOS, NO AUREOLAS, NO GLOWING RINGS around heads, NO SUNBURSTS, NO LIGHT RAYS, NO DIVINE GLOWS, NO HOLY RADIANCE. (Even for Jesus).
 - CRITICAL: IF THE SCENE IS ABOUT CARNIVAL/PARTY: The main character must NEVER be dancing, wearing carnival costumes/masks, or mixing with the crowd. They must be observing from a distance (looking reflective/sad for them), or in a separate peaceful environment (nature, church, home), or praying. The party can be in the background but the character is SEPARATE and NOT PARTICIPATING.
 - NO wings on humans, NO mystical effects.
+- **PREGNANCY RULE (ABSOLUTELY CRITICAL)**: If the scene describes a PREGNANT character (e.g., "Rebekah pregnant", "woman with child", "grávida"), show ONLY the woman with a visible round belly. NEVER show any baby, infant, or newborn outside the womb. NEVER place babies in arms, on lap, on the ground, or anywhere visible in the scene. The babies are HIDDEN inside the belly — they must NOT appear anywhere in the image.
 
 GENDER ACCURACY (ABSOLUTELY CRITICAL - ZERO TOLERANCE):
 - MALE characters (Adam, Moses, David, Jesus, Paul, etc.) MUST look DISTINCTLY MALE: masculine facial features, broad shoulders, shorter hair (unless historically accurate), facial hair when appropriate.
